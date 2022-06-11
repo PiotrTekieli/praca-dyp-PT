@@ -1,24 +1,45 @@
+var beginPoint;
+
 export class Eraser {
-    strokeWidth = 20
-    pressure = false
+    useEditingLayer = false;
+    strokeWidth = 25
+    pressure = true
     color = null
 
-    pointerDown(event, pointer, paper) {
-        
+    pointerDown(event, pointer, ctx) {
+        pointer.startPointRecording()
+        beginPoint = pointer.position
     }
 
-    pointerMove(event, pointer, paper) {
+    pointerMove(event, pointer, ctx) {
         if (event.pressure) {
-            var path = new paper.Path();
-
-            path.add(new paper.Point(pointer.oldPos.x, pointer.oldPos.y))
-            path.add(new paper.Point(pointer.newPos.x, pointer.newPos.y))
             
-            path.strokeWidth = this.strokeWidth * (this.pressure ? event.pressure : 1)
-            path.strokeCap = 'round'
-            path.strokeColor = new paper.Color(0,1)
-            path.blendMode = 'destination-out'
+            
+            if (pointer.getPointsLenght() > 3) {
+                const lastTwoPoints = pointer.getLastTwoPoints()
+                const controlPoint = lastTwoPoints[0];
+                const endPoint = {
+                    x: (lastTwoPoints[0].x + lastTwoPoints[1].x) / 2,
+                    y: (lastTwoPoints[0].y + lastTwoPoints[1].y) / 2,
+                }
+
+                ctx.beginPath();
+                ctx.moveTo(beginPoint.x, beginPoint.y)
+                //ctx.lineTo(pointer.newPos.x, pointer.newPos.y)
+                ctx.quadraticCurveTo(controlPoint.x, controlPoint.y, endPoint.x, endPoint.y);
+                ctx.lineCap = 'round';
+                ctx.globalCompositeOperation = 'destination-out'
+                ctx.lineWidth = this.strokeWidth * (this.pressure ? event.pressure : 1);
+                ctx.stroke();
+
+                beginPoint = endPoint;                
+            }
+            return true;
         }
+    }
+
+    pointerUp(event, pointer, ctx) {
+        pointer.clearPoints()
     }
 
     changeColor(color) {
