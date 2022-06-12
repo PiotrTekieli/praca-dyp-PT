@@ -1,3 +1,5 @@
+import { Point } from "./Point.mjs";
+
 var points = []
 var pointRecording = false
 
@@ -15,14 +17,18 @@ export class Pointer {
 
     set(e, ctx) {
         var rect = ctx.canvas.getBoundingClientRect();
-        var position = ({ x: e.pageX - rect.left, y: e.pageY - rect.top })
-        
+        var position = new Point(
+            e.pageX - rect.left,
+            e.pageY - rect.top 
+        )
+        position.pressure = e.pressure;        
         this.position = position;
+        
 
         if (pointRecording) {
             points.push(this.position);
             if (points.length > 10) {
-                points = points.slice(-10);
+                points = points.slice(-3);
             }
             
         }
@@ -35,7 +41,7 @@ export class Pointer {
     }
 
     getLastTwoPoints() {
-        return points.slice(-2)
+        return points.slice(-3)
     }
 
     startPointRecording() {

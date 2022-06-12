@@ -17,6 +17,7 @@
 
   onMount(() => {
     currentCtx = getContext(baseCanvas)
+
     editingCtx = getContext(editingCanvas)
     canvasList.push(baseCanvas)
   })  
@@ -133,9 +134,11 @@
   
 </script>
 
-<main bind:this={mainContainer} on:pointerdown={handlePointerDown} on:pointermove={handlePointerMove}  on:pointerup={handlePointerUp} on:pointerleave={handlePointerUp}>
+<svelte:body on:pointerdown={handlePointerDown} on:pointermove={handlePointerMove}  on:pointerup={handlePointerUp} on:pointerleave={handlePointerUp}></svelte:body>
+
+<main bind:this={mainContainer}>
   <canvas bind:this={baseCanvas} width={canvasSize.x} height={canvasSize.y}></canvas>
-  <canvas bind:this={editingCanvas} width={canvasSize.x} height={canvasSize.y}></canvas>
+  <canvas bind:this={editingCanvas} width={canvasSize.x} height={canvasSize.y}></canvas>  
 </main>
 
 <style>
