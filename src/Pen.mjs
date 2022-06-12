@@ -4,7 +4,7 @@ import { Draw, Setup, Reset } from '../src/SmoothDraw.mjs'
 
 export class Pen {
     useEditingLayer = true;
-    strokeWidth = 50
+    strokeWidth = 5
     pressure = true
     color = 'black'
     

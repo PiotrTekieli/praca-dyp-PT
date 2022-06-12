@@ -20,39 +20,49 @@ export function Reset() {
     prevPointBottom = null
 }
 
+function _getQBezierValue(t, p1, p2, p3) {
+    var iT = 1 - t;
+    return iT * iT * p1 + 2 * iT * t * p2 + t * t * p3;
+}
+
+function getQuadraticCurvePoint(startX, startY, cpX, cpY, endX, endY, position) {
+    return {
+        x:  _getQBezierValue(position, startX, cpX, endX),
+        y:  _getQBezierValue(position, startY, cpY, endY)
+    };
+}
+
+function lerp(a, b, n) {
+    return (1 - n) * a + n * b;
+  }
+
 export function Draw(pointer, ctx) {
-    // Constant gap circle method
-    // Good but lacks smoothing between points
-    /*if (pointer.getPointsLenght() > 2) {
+    
+    if (pointer.getPointsLenght() > 2) {
         const lastTwoPoints = pointer.getLastTwoPoints()
-        const firstPoint = beginPoint
-        const lastPoint = lastTwoPoints[1]
-        const direction = PointSubtract(lastPoint, firstPoint)
-
-        var mag = Math.sqrt(direction.x * direction.x + direction.y * direction.y)
-
-        const normalDirection = new Point(
-            direction.x / mag,
-            direction.y / mag
-        )
         
-        var position = new Point(firstPoint.x, firstPoint.y)
-        ctx.beginPath()
-        for(var i = 0; i < mag; i++) {
-            var progress = i / mag
-            var radius = (1 - progress) * firstPoint.pressure + progress * lastPoint.pressure;
-            ctx.arc(position.x, position.y, radius * strokeWidth * 0.7, 0, 2 * Math.PI)
-            position.x += normalDirection.x;
-            position.y += normalDirection.y;
-        }
-        ctx.fillStyle = 'red'
-        ctx.globalCompositeOperation = "destination-over"
-        ctx.fill();
-        ctx.fillStyle = 'black'
-        ctx.globalCompositeOperation = "source-over"
-    }*/
+        const controlPoint = lastTwoPoints[0]
+        const lastPoint = lastTwoPoints[1]
+        const endPoint = PointMul(PointAdd(controlPoint, lastPoint), 0.5)     
 
-    if (pointer.getPointsLenght() >= 2 && begin) {
+        const direction = PointSubtract(endPoint, beginPoint)
+        var mag = Math.sqrt(direction.x * direction.x + direction.y * direction.y)
+        
+        var progress = 0;
+        ctx.beginPath()
+        
+        while(progress < 1) {
+            var position = getQuadraticCurvePoint(beginPoint.x, beginPoint.y, controlPoint.x, controlPoint.y, endPoint.x, endPoint.y, progress)
+            ctx.arc(position.x, position.y, lerp(beginPoint.pressure, lastPoint.pressure, progress) * strokeWidth, 0, 2 * Math.PI)
+            progress += 1 / mag
+        }
+
+        ctx.fill();
+        beginPoint = endPoint;
+        beginPoint.pressure = lastPoint.pressure
+    }
+
+    /*if (pointer.getPointsLenght() >= 2 && begin) {
         begin = false;
         const lastTwoPoints = pointer.getLastTwoPoints()
         const lastPoint = lastTwoPoints[1]
@@ -156,5 +166,5 @@ export function Draw(pointer, ctx) {
         beginPoint.pressure = lastPoint.pressure;
         prevPointTop = PointAdd(endPoint, PointMul(directionUp, lastPoint.pressure * strokeWidth))
         prevPointBottom = PointAdd(endPoint, PointMul(directionDown, lastPoint.pressure * strokeWidth))
-    }
+    }*/
 }
