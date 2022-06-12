@@ -47,7 +47,7 @@
   document.onkeydown = function (e) {
     console.log(e.key)
     if (e.key == 'w') {
-      editingCtx.strokeStyle = "#" + Math.round((Math.random() * 900000 + 100000)).toString();      
+      editingCtx.fillStyle = "#" + Math.round((Math.random() * 900000 + 100000)).toString();      
     }
 
     if (e.key == 'f') {
@@ -56,7 +56,7 @@
 
     if (e.key == 'r') {
       console.log(canvasList)
-      editingCtx.strokeStyle = '#444999'
+      editingCtx.fillStyle = '#444999'
       editingCtx.globalAlpha = '0.5'
       editingCtx.globalCompositeOperation = 'xor'
     }
@@ -134,7 +134,7 @@
   
 </script>
 
-<svelte:body on:pointerdown={handlePointerDown} on:pointermove={handlePointerMove}  on:pointerup={handlePointerUp} on:pointerleave={handlePointerUp}></svelte:body>
+<svelte:window on:pointerdown={handlePointerDown} on:pointermove={handlePointerMove}  on:pointerup={handlePointerUp} on:pointerleave={handlePointerUp}></svelte:window>
 
 <main bind:this={mainContainer}>
   <canvas bind:this={baseCanvas} width={canvasSize.x} height={canvasSize.y}></canvas>
