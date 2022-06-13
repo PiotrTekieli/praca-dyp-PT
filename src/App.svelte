@@ -1,47 +1,49 @@
 <script>
   import { onMount } from "svelte";
 
-  import { Pointer } from '../src/Pointer.mjs'
-  import { Pen } from '../src/Pen.mjs'
-  import { Eraser } from '../src/Eraser.mjs'
+  import { LayerManager } from './Canvas/LayerManager.mjs'
+
+  import { Pointer } from './Canvas/Pointer.mjs'
+  import { Pen } from './Tools/Pen.mjs'
+  import { Eraser } from './Tools/Eraser.mjs'
 
   let canvasSize = {
     x: 600,
     y: 600
   }
   
-  let mainContainer;
-  let baseCanvas, editingCanvas;
-  let currentCtx = null, editingCtx = null;
-  let canvasList = []
+  let mainContainer
+  let baseCanvas
+
+  let layerManager
+  let editingCtx
+
+  let pointer
+  let currentTool = new Pen()
 
   onMount(() => {
-    currentCtx = getContext(baseCanvas)
-
-    editingCtx = getContext(editingCanvas)
-    canvasList.push(baseCanvas)
+    layerManager = new LayerManager(baseCanvas, mainContainer)
+    editingCtx = layerManager.getEditingContext()
+    
+    pointer = new Pointer(baseCanvas)
   })  
   
-  
-  var pointer = new Pointer();
-  var currentTool = new Pen()
-  
   function handlePointerDown(e) {
-    pointer.set(e, editingCtx)
+    pointer.set(e)
         
     currentTool.pointerDown(e, pointer, getContextForTool(currentTool))
   }
 
   function handlePointerMove(e) {
-    pointer.set(e, editingCtx)         
+    pointer.set(e)         
     currentTool.pointerMove(e, pointer, getContextForTool(currentTool))
   }
 
   function handlePointerUp(e) {
-    pointer.set(e, editingCtx)  
+    pointer.set(e)
 
     currentTool.pointerUp(e, pointer, getContextForTool(currentTool))
-    PushEditingLayer();
+    layerManager.pushEditingLayer();
   }
 
   document.onkeydown = function (e) {
@@ -51,11 +53,11 @@
     }
 
     if (e.key == 'f') {
-      createCanvas();
+      layerManager.addLayer(layerManager.createLayer())
     }
 
     if (e.key == 'r') {
-      console.log(canvasList)
+      console.log()
       editingCtx.fillStyle = '#444999'
       editingCtx.globalAlpha = '0.5'
       editingCtx.globalCompositeOperation = 'xor'
@@ -66,70 +68,21 @@
     }
 
     if (e.key == '2') {
-      PutAbove(currentCtx.canvas, 3)
+      layerManager.putSelectedLayerAbove(3)
     }
     if (e.key == '3') {
-      PutAbove(currentCtx.canvas, 4)
+      layerManager.putSelectedLayerAbove(5)
     }
     if (e.key == '4') {
-      PutAbove(currentCtx.canvas, 0)
+      layerManager.putSelectedLayerAbove(0)
     }
     if (e.key == '5') {
-      PutAbove(currentCtx.canvas, 8)
+      layerManager.putSelectedLayerAbove(8)
     }
-  }
-
-  function createCanvas() {
-    var newCanvas = baseCanvas.cloneNode()
-    newCanvas.id = canvasList.length
-
-    Clear(getContext(newCanvas))
-    canvasList.push(newCanvas)
-    currentCtx = getContext(newCanvas)
-    mainContainer.appendChild(newCanvas)
-
-    mainContainer.appendChild(editingCanvas); // TODO switch when selecting different layer
-
-    return newCanvas;
   }
 
   function getContextForTool(tool) {
-    return tool.useEditingLayer ? editingCtx : currentCtx;
-  }
-
-  function getContext(canvas) {
-    return canvas.getContext('2d');
-  }
-
-  function Clear(ctx) {
-    ctx.clearRect(0, 0, canvasSize.x, canvasSize.y);
-  }
-
-  function PutAbove(canvas, canvasNumber) {
-    var index = canvasList.findIndex((element) => element == canvas);  
-    
-    canvasList.splice(index, 1);
-    
-    var tempList = canvasList.slice(0, canvasNumber + 1)
-    tempList.push(canvas)
-    tempList = tempList.concat(canvasList.slice(canvasNumber + 1))
-    
-    canvasList = tempList;
-    
-    canvasList.forEach(c => {
-      mainContainer.appendChild(c);
-    })
-    mainContainer.appendChild(editingCanvas);
-  }
-
-  function PushEditingLayer() {
-    var img = new Image()
-    img.src = editingCanvas.toDataURL()    
-
-    img.onload = () => {
-      currentCtx.drawImage(img, 0, 0)
-      editingCtx.clearRect(0, 0, canvasSize.x, canvasSize.y);
-    }
+    return tool.useEditingLayer ? editingCtx : layerManager.getCurrentContext();
   }
   
 </script>
@@ -137,8 +90,7 @@
 <svelte:window on:pointerdown={handlePointerDown} on:pointermove={handlePointerMove}  on:pointerup={handlePointerUp} on:pointerleave={handlePointerUp}></svelte:window>
 
 <main bind:this={mainContainer}>
-  <canvas bind:this={baseCanvas} width={canvasSize.x} height={canvasSize.y}></canvas>
-  <canvas bind:this={editingCanvas} width={canvasSize.x} height={canvasSize.y}></canvas>  
+  <canvas bind:this={baseCanvas} width={canvasSize.x} height={canvasSize.y}></canvas>  
 </main>
 
 <style>
@@ -158,5 +110,6 @@
   canvas {
     position: absolute;
     image-rendering: crisp-edges;
+    image-rendering: -webkit-optimize-contrast;
   }
 </style>

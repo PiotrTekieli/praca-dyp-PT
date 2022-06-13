@@ -2,11 +2,13 @@ import { Point } from "./Point.mjs";
 
 var points = []
 var pointRecording = false
+var ctx
 
 export class Pointer {
-   
-
-    oldPos = {
+    constructor(canvas) {
+        ctx = canvas.getContext('2d')
+    }
+    oldPos = {  // not needed
         x: 0,
         y: 0
     }
@@ -15,7 +17,7 @@ export class Pointer {
         y: 0
     }
 
-    set(e, ctx) {
+    set(e) {
         var rect = ctx.canvas.getBoundingClientRect();
         var position = new Point(
             e.pageX - rect.left,

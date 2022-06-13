@@ -1,20 +1,19 @@
-import { Point, PointAdd, PointSubtract, PointMul } from '../src/Point.mjs'
-import { Draw, Setup, Reset } from '../src/SmoothDraw.mjs'
+import { Draw, Setup, Reset } from './SmoothDraw.mjs'
 
-
-export class Pen {
-    useEditingLayer = true;
-    strokeWidth = 5
+export class Eraser {
+    useEditingLayer = false;
+    strokeWidth = 50
     pressure = true
-    color = 'black'
-    
+    color = null
+
 
     pointerDown(event, pointer, ctx) {
         pointer.startPointRecording()       
         
         ctx.save();  
         ctx.lineCap = 'round'
-        //ctx.fillStyle = this.color
+        ctx.globalCompositeOperation = "destination-out"
+        ctx.fillStyle = this.color
 
         Setup(this.strokeWidth, pointer, ctx)
     }

@@ -1,5 +1,3 @@
-import { Point, PointAdd, PointSubtract, PointMul } from './Point.mjs'
-
 var begin = true
 var beginPoint
 var prevPointTop, prevPointBottom
@@ -43,9 +41,9 @@ export function Draw(pointer, ctx) {
         
         const controlPoint = lastTwoPoints[0]
         const lastPoint = lastTwoPoints[1]
-        const endPoint = PointMul(PointAdd(controlPoint, lastPoint), 0.5)     
+        const endPoint = controlPoint.Add(lastPoint).Multiply(0.5) //PointMul(PointAdd(controlPoint, lastPoint), 0.5)     
 
-        const direction = PointSubtract(endPoint, beginPoint)
+        const direction = endPoint.Subtract(beginPoint)
         var mag = Math.sqrt(direction.x * direction.x + direction.y * direction.y)
         
         var progress = 0;
