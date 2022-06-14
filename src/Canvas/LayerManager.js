@@ -23,7 +23,7 @@ export class LayerManager {
         
         editingLayer = this.createLayer()
         editingLayer.id = "editing"
-        this.addLayer(baseLayer, -1)
+        this.addLayer(baseLayer)
     }
 
     createLayer() {
@@ -55,12 +55,10 @@ export class LayerManager {
         tempList = tempList.concat(layerList.slice(layerIndex + 1))
         
         layerList = tempList;
-        console.log(layerList)
         this.updateOrder()
     }
 
     updateOrder() {            
-        console.log(layerList)
         layerList.forEach(c => {
             mainContainer.appendChild(c)
             if (c == currentCtx.canvas)

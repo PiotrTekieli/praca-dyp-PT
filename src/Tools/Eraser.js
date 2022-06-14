@@ -1,4 +1,4 @@
-import { Draw, Setup, Reset } from './SmoothDraw.mjs'
+import { Draw, Setup, Reset } from './SmoothDraw'
 
 export class Eraser {
     useEditingLayer = false;

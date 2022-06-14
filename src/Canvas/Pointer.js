@@ -1,4 +1,4 @@
-import { Point } from "./Point.mjs";
+import { Point } from "./Point";
 
 var points = []
 var pointRecording = false

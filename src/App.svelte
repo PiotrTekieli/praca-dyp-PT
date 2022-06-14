@@ -1,11 +1,11 @@
 <script>
   import { onMount } from "svelte";
 
-  import { LayerManager } from './Canvas/LayerManager.mjs'
+  import { LayerManager } from './Canvas/LayerManager'
 
-  import { Pointer } from './Canvas/Pointer.mjs'
-  import { Pen } from './Tools/Pen.mjs'
-  import { Eraser } from './Tools/Eraser.mjs'
+  import { Pointer } from './Canvas/Pointer'
+  import { Pen } from './Tools/Pen'
+  import { Eraser } from './Tools/Eraser'
 
   let canvasSize = {
     x: 600,
