@@ -1,3 +1,6 @@
+import { writable, get } from "svelte/store"
+import { Layer } from "./Layer"
+
 var canvasSize = {
     x: 0,
     y: 0
@@ -9,88 +12,99 @@ var editingLayer
 
 var layerList = []
 
-var currentCtx
+function createContextStore() {
+    const { subscribe, set } = writable();
+
+    return {
+        subscribe,
+        set        
+    }
+}
+
+export const currentContext = createContextStore()
 
 export class LayerManager {
 
     constructor(baseCanvas, main) {
+
         mainContainer = main
 
-        baseLayer = baseCanvas
-        baseLayer.id = "0"
-        canvasSize.x = baseLayer.width
-        canvasSize.y = baseLayer.height
+        baseCanvas.id = "0"
+        canvasSize.x = baseCanvas.width
+        canvasSize.y = baseCanvas.height
+        baseLayer = new Layer(baseCanvas)
         
         editingLayer = this.createLayer()
-        editingLayer.id = "editing"
+        editingLayer.canvas.id = "editing"
+        
         this.addLayer(baseLayer)
+        
     }
 
     createLayer() {
-        var newLayer = baseLayer.cloneNode()
-        clear(getContext(newLayer))
+        var newLayer = new Layer(baseLayer.canvas.cloneNode())
+        clear(newLayer.context)
         return newLayer; 
     }
 
     addLayer(layer) {
         layerList.push(layer)
-        layer.id = layerList.length-1        
+        layer.canvas.id = layerList.length-1    
+          
         
         var position = 0
-        if (currentCtx)
-            position = this.getLayerIndex(currentCtx.canvas)
-        currentCtx = getContext(layer)
+        if (get(currentContext))
+            position = this.getCanvasIndex(get(currentContext).canvas)
+            
+        currentContext.set(layer.context)
         this.putSelectedLayerAbove(position)
         
     }
 
-    putSelectedLayerAbove(layerIndex) {
-        var layer = currentCtx.canvas
-        var currentIndex = this.getLayerIndex(layer)
+    putSelectedLayerAbove(layerIndex) {        
+        var layer = new Layer(get(currentContext).canvas)
+        var currentIndex = this.getCanvasIndex(get(currentContext).canvas)
         
         layerList.splice(currentIndex, 1);
         
         var tempList = layerList.slice(0, layerIndex + 1)
         tempList.push(layer)
         tempList = tempList.concat(layerList.slice(layerIndex + 1))
+        console.log(tempList)
         
         layerList = tempList;
         this.updateOrder()
     }
 
     updateOrder() {            
-        layerList.forEach(c => {
-            mainContainer.appendChild(c)
-            if (c == currentCtx.canvas)
-                mainContainer.appendChild(editingLayer);
+        layerList.forEach(l => {
+            mainContainer.appendChild(l.canvas)
+            if (l.canvas == get(currentContext).canvas)
+                mainContainer.appendChild(editingLayer.canvas);
         })
         
     }
 
     selectLayer(index) {
-        currentCtx = layerList[index]
+        currentContext.set(layerList[index].context)
     }
-
-    getLayerIndex(layer) {
-        return layerList.findIndex((element) => element == layer);  
-    }
-
+    
     getCurrentContext() {
-        return currentCtx
+        return get(currentContext)
     }
-
+    
     getEditingContext() {
-        return getContext(editingLayer)
+        return editingLayer.context
     }
-
+    
     pushEditingLayer() {
-        this.getCurrentContext().drawImage(editingLayer, 0, 0)
+        this.getCurrentContext().drawImage(editingLayer.canvas, 0, 0)
         this.getEditingContext().clearRect(0, 0, canvasSize.x, canvasSize.y);
     }
-}
 
-function getContext(canvas) {
-    return canvas.getContext('2d');
+    getCanvasIndex(canvas) {
+        return layerList.findIndex((element) => element.canvas == canvas);  
+    }
 }
 
 function clear(ctx) {

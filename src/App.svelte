@@ -1,7 +1,7 @@
 <script>
   import { onMount } from "svelte";
 
-  import { LayerManager } from './Canvas/LayerManager'
+  import { LayerManager, currentContext } from './Canvas/LayerManager'
 
   import { Pointer } from './Canvas/Pointer'
   import { Pen } from './Tools/Pen'
@@ -20,6 +20,7 @@
 
   let pointer
   let currentTool = new Pen()
+  $: $currentContext, console.log($currentContext)
 
   onMount(() => {
     layerManager = new LayerManager(baseCanvas, mainContainer)
@@ -82,7 +83,7 @@
   }
 
   function getContextForTool(tool) {
-    return tool.useEditingLayer ? editingCtx : layerManager.getCurrentContext();
+    return tool.useEditingLayer ? editingCtx : $currentContext;
   }
   
 </script>
@@ -90,7 +91,7 @@
 <svelte:window on:pointerdown={handlePointerDown} on:pointermove={handlePointerMove}  on:pointerup={handlePointerUp} on:pointerleave={handlePointerUp}></svelte:window>
 
 <main bind:this={mainContainer}>
-  <canvas bind:this={baseCanvas} width={canvasSize.x} height={canvasSize.y}></canvas>  
+  <canvas bind:this={baseCanvas} width={canvasSize.x} height={canvasSize.y}></canvas>
 </main>
 
 <style>
