@@ -1,5 +1,6 @@
 import { writable, get } from "svelte/store"
 import { Layer } from "./Layer"
+import { currentContext } from "../lib/stores"
 
 var canvasSize = {
     x: 0,
@@ -11,17 +12,6 @@ var baseLayer
 var editingLayer
 
 var layerList = []
-
-function createContextStore() {
-    const { subscribe, set } = writable();
-
-    return {
-        subscribe,
-        set        
-    }
-}
-
-export const currentContext = createContextStore()
 
 export class LayerManager {
 

@@ -1,7 +1,8 @@
 <script>
   import { onMount } from "svelte";
 
-  import { LayerManager, currentContext } from './Canvas/LayerManager'
+  import { LayerManager } from './Canvas/LayerManager'
+  import { currentContext, modifierKeys } from "./lib/stores";
 
   import { Pointer } from './Canvas/Pointer'
   import { Pen } from './Tools/Pen'
@@ -12,7 +13,7 @@
     y: 600
   }
   
-  let mainContainer
+  let canvasContainer
   let baseCanvas
 
   let layerManager
@@ -20,10 +21,17 @@
 
   let pointer
   let currentTool = new Pen()
+
+  let drawing = false
+
   $: $currentContext, console.log($currentContext)
+  $: $modifierKeys, console.log($modifierKeys)
+  $: drawing, console.log(drawing)
+  const modifierKeyNames = ["Alt", "Control", "Shift", " "]
+
 
   onMount(() => {
-    layerManager = new LayerManager(baseCanvas, mainContainer)
+    layerManager = new LayerManager(baseCanvas, canvasContainer)
     editingCtx = layerManager.getEditingContext()
     
     pointer = new Pointer(baseCanvas)
@@ -31,24 +39,34 @@
   
   function handlePointerDown(e) {
     pointer.set(e)
-        
+    drawing = true
     currentTool.pointerDown(e, pointer, getContextForTool(currentTool))
   }
 
   function handlePointerMove(e) {
-    pointer.set(e)         
+    pointer.set(e)
     currentTool.pointerMove(e, pointer, getContextForTool(currentTool))
   }
 
   function handlePointerUp(e) {
     pointer.set(e)
-
+    drawing = false
     currentTool.pointerUp(e, pointer, getContextForTool(currentTool))
     layerManager.pushEditingLayer();
   }
 
-  document.onkeydown = function (e) {
-    console.log(e.key)
+  function handlePointerLost() {
+    drawing = false
+    currentTool.cancel()
+  }
+
+  function handleKeyDown(e) {
+    if (drawing)
+      return
+
+    if (modifierKeyNames.includes(e.key))
+      modifierKeys.add(e.key)
+
     if (e.key == 'w') {
       editingCtx.fillStyle = "#" + Math.round((Math.random() * 900000 + 100000)).toString();      
     }
@@ -82,16 +100,40 @@
     }
   }
 
+  function handleKeyUp(e) {
+    if (modifierKeyNames.includes(e.key))
+      modifierKeys.remove(e.key)
+  }
+  function handleOnFocus(e) {
+    modifierKeys.clear()
+    
+    //cancel drawing operation if needed
+    handlePointerLost()
+  }
+
   function getContextForTool(tool) {
     return tool.useEditingLayer ? editingCtx : $currentContext;
   }
   
 </script>
 
-<svelte:window on:pointerdown={handlePointerDown} on:pointermove={handlePointerMove}  on:pointerup={handlePointerUp} on:pointerleave={handlePointerUp}></svelte:window>
+<svelte:window 
+  on:keydown={handleKeyDown}
+  on:keyup={handleKeyUp}
+  on:blur={handleOnFocus}
+></svelte:window>
 
-<main bind:this={mainContainer}>
-  <canvas bind:this={baseCanvas} width={canvasSize.x} height={canvasSize.y}></canvas>
+
+<main
+  on:pointerdown={handlePointerDown}
+  on:pointermove={handlePointerMove}
+  on:pointerup={handlePointerUp}
+  on:pointerleave={handlePointerUp}>
+
+  <div bind:this={canvasContainer}>
+    <canvas bind:this={baseCanvas} width={canvasSize.x} height={canvasSize.y}></canvas>
+  </div>
+
 </main>
 
 <style>
@@ -100,12 +142,21 @@
       Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
   }
 
-  main {
+  div {
     background-color: white;
     width: 600px;
     height: 600px;
     left: 200px;
     position: fixed;
+  }
+  
+  main {
+    width: 100vw;
+    height: 100vh;
+    background-color: gray;
+    position: fixed;
+    top: 0;
+    left: 0;
   }
 
   canvas {

@@ -1,4 +1,4 @@
-import { Draw, Setup, Reset } from './SmoothDraw'
+import { Draw, Setup } from './SmoothDraw'
 
 export class Pen {
     useEditingLayer = true;
@@ -24,7 +24,10 @@ export class Pen {
     }
 
     pointerUp(event, pointer, ctx) {
-        Reset()
+        this.cancel(pointer, ctx)        
+    }
+
+    cancel(pointer, ctx) {
         pointer.clearPoints()
         ctx.restore()
     }

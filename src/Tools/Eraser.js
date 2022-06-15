@@ -1,4 +1,4 @@
-import { Draw, Setup, Reset } from './SmoothDraw'
+import { Draw, Setup } from './SmoothDraw'
 
 export class Eraser {
     useEditingLayer = false;
@@ -25,7 +25,10 @@ export class Eraser {
     }
 
     pointerUp(event, pointer, ctx) {
-        Reset()
+        this.cancel(pointer, ctx)
+    }
+
+    cancel(pointer, ctx) {
         pointer.clearPoints()
         ctx.restore()
     }
