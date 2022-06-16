@@ -93,6 +93,16 @@ export class LayerManager {
     }
 
     refreshMainCanvas() {
+
+        // PROBLEMS:
+        // for some reason the clipping cache is drawing twice? some of the antialiasing is lost
+        // not tested and probably doesn't work with layers above the selected
+        // probably doesn't work if the layer above is also clipping
+        // probably doesn't work if the first layer is clipping
+        // probably doesn't work if layer clipped to had opacity or blending modes
+        // maybe more
+
+
         clear(drawingLayer.context)
         this.drawLayerPlain(drawingLayer.context, layerList[selectedLayerIndex])
         this.drawLayerPlain(drawingLayer.context, editingLayer)
