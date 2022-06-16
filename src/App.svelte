@@ -26,7 +26,7 @@
 
   $: $currentContext, console.log($currentContext)
   $: $modifierKeys, console.log($modifierKeys)
-  $: drawing, console.log(drawing)
+  $: drawing, console.log("Drawing: ", drawing)
   const modifierKeyNames = ["Alt", "Control", "Shift", " "]
 
 
@@ -46,6 +46,7 @@
   function handlePointerMove(e) {
     pointer.set(e)
     currentTool.pointerMove(e, pointer, getContextForTool(currentTool))
+    layerManager.refreshMainCanvas()
   }
 
   function handlePointerUp(e) {
@@ -57,7 +58,7 @@
 
   function handlePointerLost() {
     drawing = false
-    currentTool.cancel()
+    currentTool.cancel(pointer, getContextForTool(currentTool))
   }
 
   function handleKeyDown(e) {
@@ -70,9 +71,11 @@
     if (e.key == 'w') {
       editingCtx.fillStyle = "#" + Math.round((Math.random() * 900000 + 100000)).toString();      
     }
-
+    if (e.key == 'q') {
+      layerManager.refreshMainCanvas()
+    }
     if (e.key == 'f') {
-      layerManager.addLayer(layerManager.createLayer())
+      layerManager.addLayer()
     }
 
     if (e.key == 'r') {

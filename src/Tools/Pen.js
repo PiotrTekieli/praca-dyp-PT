@@ -2,7 +2,7 @@ import { Draw, Setup } from './SmoothDraw'
 
 export class Pen {
     useEditingLayer = true;
-    strokeWidth = 5
+    strokeWidth = 20
     pressure = true
     color = 'black'
     
