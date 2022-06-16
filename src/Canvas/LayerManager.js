@@ -19,6 +19,8 @@ let editingLayer
 
 let layerList = []
 
+//let backgroundColor = 'black'
+
 export class LayerManager {
 
     constructor(canvas, container) {
@@ -47,7 +49,7 @@ export class LayerManager {
         }
 
         if (layerList.length == 2) {
-            layer.blendMode = 'source-atop'
+            layer.blendMode = 'multiply'
             layer.opacity = 0.5
         }
 
@@ -95,6 +97,8 @@ export class LayerManager {
         var ctx = mainCanvas.getContext('2d')
 
         clear(ctx)
+        //ctx.fillStyle = backgroundColor
+        //ctx.fillRect(0, 0, canvasSize.x, canvasSize.y)
         this.drawLayer(ctx, backCacheLayer)
         this.drawLayer(ctx, drawingLayer)
         this.drawLayer(ctx, frontCacheLayer)
@@ -103,7 +107,6 @@ export class LayerManager {
     updateCaches() {            // on change order or change select
         console.log(layerList)
         console.log("Selected layer: ", selectedLayerIndex)
-        console.log(get(currentContext))
 
         clear(backCacheLayer.context)
         clear(frontCacheLayer.context)
