@@ -19,10 +19,9 @@ let editingLayer
 
 let layerList = []
 
-//let backgroundColor = 'black'
+let backgroundColor = 'white'   // css color value of the background
 
 export class LayerManager {
-
     constructor(canvas, container) {
         mainCanvas = canvas
 
@@ -46,11 +45,6 @@ export class LayerManager {
             layerList.push(layer)
             this.selectLayer(0)
             return layer
-        }
-
-        if (layerList.length == 2) {
-            layer.blendMode = 'multiply'
-            layer.opacity = 0.5
         }
 
         layerList.splice(selectedLayerIndex+1, 0, layer)    // add above selected
@@ -81,12 +75,11 @@ export class LayerManager {
     selectLayer(index) {
         currentContext.set(layerList[index].context)
         selectedLayerIndex = index
-        editingLayer.blendMode = layerList[selectedLayerIndex].blendMode
 
         this.updateCaches()
     }
 
-    refreshMainCanvas() {
+    refreshMainCanvas() {           // on modifying the current canvas in any way (drawing, opacity or blend mode)
         clear(drawingLayer.context)
         this.drawLayerPlain(drawingLayer.context, layerList[selectedLayerIndex])
         this.drawLayerPlain(drawingLayer.context, editingLayer)
@@ -97,26 +90,23 @@ export class LayerManager {
         var ctx = mainCanvas.getContext('2d')
 
         clear(ctx)
-        //ctx.fillStyle = backgroundColor
-        //ctx.fillRect(0, 0, canvasSize.x, canvasSize.y)
         this.drawLayer(ctx, backCacheLayer)
         this.drawLayer(ctx, drawingLayer)
         this.drawLayer(ctx, frontCacheLayer)
     }
 
-    updateCaches() {            // on change order or change select
+    updateCaches() {                // on change order, switch selected layer or background color change
         console.log(layerList)
         console.log("Selected layer: ", selectedLayerIndex)
 
-        clear(backCacheLayer.context)
+        backCacheLayer.context.fillStyle = backgroundColor
+        backCacheLayer.context.fillRect(0, 0, canvasSize.x, canvasSize.y)
         clear(frontCacheLayer.context)
 
         for(let i = 0; i < layerList.length; i++) {
             var context;
             if (i < selectedLayerIndex)
                 context = backCacheLayer.context
-            /*else if (i == selectedLayerIndex)
-                context = drawingLayer.context*/
             else if (i > selectedLayerIndex)
                 context = frontCacheLayer.context
 
@@ -145,14 +135,9 @@ export class LayerManager {
 
     pushEditingLayer() {
         var ctx = get(currentContext)
-
-        ctx.save()
-        //ctx.globalCompositeOperation = editingLayer.blendMode
-
         ctx.drawImage(editingLayer.canvas, 0, 0)
         clear(editingLayer.context)
-
-        ctx.restore()
+        this.refreshMainCanvas()
     }
 }
 

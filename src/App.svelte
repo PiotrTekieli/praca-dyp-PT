@@ -41,11 +41,14 @@
     pointer.set(e)
     drawing = true
     currentTool.pointerDown(e, pointer, getContextForTool(currentTool))
+
+    layerManager.refreshMainCanvas()
   }
 
   function handlePointerMove(e) {
     pointer.set(e)
     currentTool.pointerMove(e, pointer, getContextForTool(currentTool))
+
     layerManager.refreshMainCanvas()
   }
 
@@ -53,12 +56,15 @@
     pointer.set(e)
     drawing = false
     currentTool.pointerUp(e, pointer, getContextForTool(currentTool))
-    layerManager.pushEditingLayer();
+
+    layerManager.pushEditingLayer()
   }
 
   function handlePointerLost() {
     drawing = false
     currentTool.cancel(pointer, getContextForTool(currentTool))
+
+    layerManager.pushEditingLayer()
   }
 
   function handleKeyDown(e) {
@@ -70,9 +76,6 @@
 
     if (e.key == 'w') {
       editingCtx.fillStyle = "#" + Math.round((Math.random() * 900000 + 100000)).toString();
-    }
-    if (e.key == 'q') {
-      layerManager.refreshMainCanvas()
     }
     if (e.key == 'f') {
       layerManager.addLayer()
