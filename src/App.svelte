@@ -12,7 +12,7 @@
     x: 600,
     y: 600
   }
-  
+
   let canvasContainer
   let baseCanvas
 
@@ -26,38 +26,45 @@
 
   $: $currentContext, console.log($currentContext)
   $: $modifierKeys, console.log($modifierKeys)
-  $: drawing, console.log(drawing)
+  $: drawing, console.log("Drawing: ", drawing)
   const modifierKeyNames = ["Alt", "Control", "Shift", " "]
 
 
   onMount(() => {
     layerManager = new LayerManager(baseCanvas, canvasContainer)
     editingCtx = layerManager.getEditingContext()
-    
+
     pointer = new Pointer(baseCanvas)
-  })  
-  
+  })
+
   function handlePointerDown(e) {
     pointer.set(e)
     drawing = true
     currentTool.pointerDown(e, pointer, getContextForTool(currentTool))
+
+    layerManager.refreshMainCanvas()
   }
 
   function handlePointerMove(e) {
     pointer.set(e)
     currentTool.pointerMove(e, pointer, getContextForTool(currentTool))
+
+    layerManager.refreshMainCanvas()
   }
 
   function handlePointerUp(e) {
     pointer.set(e)
     drawing = false
     currentTool.pointerUp(e, pointer, getContextForTool(currentTool))
-    layerManager.pushEditingLayer();
+
+    layerManager.pushEditingLayer()
   }
 
   function handlePointerLost() {
     drawing = false
-    currentTool.cancel()
+    currentTool.cancel(pointer, getContextForTool(currentTool))
+
+    layerManager.pushEditingLayer()
   }
 
   function handleKeyDown(e) {
@@ -68,11 +75,10 @@
       modifierKeys.add(e.key)
 
     if (e.key == 'w') {
-      editingCtx.fillStyle = "#" + Math.round((Math.random() * 900000 + 100000)).toString();      
+      editingCtx.fillStyle = "#" + Math.round((Math.random() * 900000 + 100000)).toString();
     }
-
     if (e.key == 'f') {
-      layerManager.addLayer(layerManager.createLayer())
+      layerManager.addLayer()
     }
 
     if (e.key == 'r') {
@@ -106,7 +112,7 @@
   }
   function handleOnFocus(e) {
     modifierKeys.clear()
-    
+
     //cancel drawing operation if needed
     handlePointerLost()
   }
@@ -114,10 +120,10 @@
   function getContextForTool(tool) {
     return tool.useEditingLayer ? editingCtx : $currentContext;
   }
-  
+
 </script>
 
-<svelte:window 
+<svelte:window
   on:keydown={handleKeyDown}
   on:keyup={handleKeyUp}
   on:blur={handleOnFocus}
@@ -149,7 +155,7 @@
     left: 200px;
     position: fixed;
   }
-  
+
   main {
     width: 100vw;
     height: 100vh;

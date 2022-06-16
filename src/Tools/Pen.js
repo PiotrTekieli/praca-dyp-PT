@@ -2,15 +2,15 @@ import { Draw, Setup } from './SmoothDraw'
 
 export class Pen {
     useEditingLayer = true;
-    strokeWidth = 5
+    strokeWidth = 20
     pressure = true
     color = 'black'
-    
+
 
     pointerDown(event, pointer, ctx) {
-        pointer.startPointRecording()       
-        
-        ctx.save();  
+        pointer.startPointRecording()
+
+        ctx.save();
         ctx.lineCap = 'round'
         //ctx.fillStyle = this.color
 
@@ -24,7 +24,7 @@ export class Pen {
     }
 
     pointerUp(event, pointer, ctx) {
-        this.cancel(pointer, ctx)        
+        this.cancel(pointer, ctx)
     }
 
     cancel(pointer, ctx) {
