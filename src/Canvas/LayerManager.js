@@ -21,7 +21,7 @@ let layerList = []
 
 let backgroundColor = 'white'   // css color value of the background
 
-export class LayerManager {
+export default class LayerManager {
     constructor(canvas, container) {
         mainCanvas = canvas
 
@@ -69,7 +69,6 @@ export class LayerManager {
         layerList.splice(selectedLayerIndex, 1)
 
         this.selectLayer(layerIndex)
-        this.updateCaches()
     }
 
     selectLayer(index) {
@@ -77,6 +76,16 @@ export class LayerManager {
         selectedLayerIndex = index
 
         this.updateCaches()
+    }
+
+    selectLayerAbove() {
+        if (selectedLayerIndex < layerList.length - 1)
+            this.selectLayer(selectedLayerIndex + 1)
+    }
+
+    selectLayerBelow() {
+        if (selectedLayerIndex > 0)
+            this.selectLayer(selectedLayerIndex - 1)
     }
 
     refreshMainCanvas() {           // on modifying the current canvas in any way (drawing, opacity or blend mode)
@@ -109,6 +118,7 @@ export class LayerManager {
                 context = backCacheLayer.context
             else if (i > selectedLayerIndex)
                 context = frontCacheLayer.context
+            else context = null
 
             if (context)
                 this.drawLayer(context, layerList[i])

@@ -1,6 +1,6 @@
 import { Draw, Setup } from './SmoothDraw'
 
-export class Eraser {
+export default class Eraser {
     useEditingLayer = false;
     strokeWidth = 50
     pressure = true
@@ -8,9 +8,9 @@ export class Eraser {
 
 
     pointerDown(event, pointer, ctx) {
-        pointer.startPointRecording()       
-        
-        ctx.save();  
+        pointer.startPointRecording()
+
+        ctx.save();
         ctx.lineCap = 'round'
         ctx.globalCompositeOperation = "destination-out"
         ctx.fillStyle = this.color

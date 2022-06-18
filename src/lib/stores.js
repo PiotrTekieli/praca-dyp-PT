@@ -5,11 +5,35 @@ function createSetStore() {
 
     return {
         subscribe,
-        set        
+        set
     }
 }
 
 export const currentContext = createSetStore()
+
+function createToolStore() {
+    const { subscribe, set } = writable();
+    let selected, temporary
+
+    return {
+        subscribe,
+        set: (tool) => {
+            set(tool)
+            selected = tool
+        },
+        setTemp: (tool) => {
+            set(tool)
+            temporary = tool
+        },
+        clearTemp: () => {
+            set(selected)
+            temporary = null
+        }
+    }
+}
+
+
+export const currentTool = createToolStore()
 
 function createModifierKeysStore() {
     const { subscribe, update, set } = writable([])
@@ -17,6 +41,9 @@ function createModifierKeysStore() {
 
     return {
         subscribe,
+        equals: (array) => {
+            return currentList.length === array.length && currentList.every((value) => array.includes(value))
+        },
         add: (key) => {
             if (!currentList.includes(key))
                 update(list => {

@@ -1,6 +1,6 @@
 import { Draw, Setup } from './SmoothDraw'
 
-export class Pen {
+export default class Pen {
     useEditingLayer = true;
     strokeWidth = 20
     pressure = true

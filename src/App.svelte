@@ -1,12 +1,14 @@
 <script>
   import { onMount } from "svelte";
 
-  import { LayerManager } from './Canvas/LayerManager'
-  import { currentContext, modifierKeys } from "./lib/stores";
+  import LayerManager from './Canvas/LayerManager'
+  import ToolManager from "./Tools/ToolManager"
 
-  import { Pointer } from './Canvas/Pointer'
-  import { Pen } from './Tools/Pen'
-  import { Eraser } from './Tools/Eraser'
+  import { currentContext, currentTool, modifierKeys } from "./lib/stores"
+
+  import Pointer from './Canvas/Pointer'
+  import Pen from './Tools/Pen'
+  import Eraser from './Tools/Eraser'
 
   let canvasSize = {
     x: 600,
@@ -20,13 +22,15 @@
   let editingCtx
 
   let pointer
-  let currentTool = new Pen()
+  let toolManager = new ToolManager()
 
   let drawing = false
+  let pressedKey = ''
 
   $: $currentContext, console.log($currentContext)
   $: $modifierKeys, console.log($modifierKeys)
   $: drawing, console.log("Drawing: ", drawing)
+  $: tool = $currentTool
   const modifierKeyNames = ["Alt", "Control", "Shift", " "]
 
 
@@ -40,14 +44,14 @@
   function handlePointerDown(e) {
     pointer.set(e)
     drawing = true
-    currentTool.pointerDown(e, pointer, getContextForTool(currentTool))
+    tool.pointerDown(e, pointer, getContextForTool(tool))
 
     layerManager.refreshMainCanvas()
   }
 
   function handlePointerMove(e) {
     pointer.set(e)
-    currentTool.pointerMove(e, pointer, getContextForTool(currentTool))
+    tool.pointerMove(e, pointer, getContextForTool(tool))
 
     layerManager.refreshMainCanvas()
   }
@@ -55,26 +59,71 @@
   function handlePointerUp(e) {
     pointer.set(e)
     drawing = false
-    currentTool.pointerUp(e, pointer, getContextForTool(currentTool))
+    tool.pointerUp(e, pointer, getContextForTool(tool))
 
     layerManager.pushEditingLayer()
   }
 
   function handlePointerLost() {
     drawing = false
-    currentTool.cancel(pointer, getContextForTool(currentTool))
+    tool.cancel(pointer, getContextForTool(tool))
 
     layerManager.pushEditingLayer()
   }
 
+
+
   function handleKeyDown(e) {
+    e.preventDefault()
+
     if (drawing)
       return
 
-    if (modifierKeyNames.includes(e.key))
+    if (modifierKeyNames.includes(e.key)) {
       modifierKeys.add(e.key)
+      return
+    }
+    else if (pressedKey == '')
+      pressedKey = e.code
+    else
+      return
 
-    if (e.key == 'w') {
+
+    // shortcuts
+    if (!$modifierKeys.length) {              // no modifier keys pressed
+
+      switch(pressedKey) {
+        case 'KeyQ':
+          toolManager.switchTool("pen")
+          break
+
+        case 'KeyE':
+          toolManager.switchTool("eraser")
+          break
+
+        case 'KeyF':
+          toolManager.switchToolTemp("eraser")
+          break
+      }
+
+    }
+
+    else if (modifierKeys.equals(["Shift"])) {   // pressing just shift
+
+      switch(pressedKey) {
+        case 'KeyW':
+          layerManager.addLayer()
+          break
+        case 'KeyR':
+          layerManager.selectLayerAbove()
+          break
+        case 'KeyF':
+          layerManager.selectLayerBelow()
+          break
+      }
+
+    }
+    /*if (e.key == 'w') {
       editingCtx.fillStyle = "#" + Math.round((Math.random() * 900000 + 100000)).toString();
     }
     if (e.key == 'f') {
@@ -89,7 +138,10 @@
     }
 
     if (e.key == 'e') {
-      currentTool = new Eraser();
+      toolManager.switchToolTemp("eraser")
+    }
+    if (e.key == 'r') {
+      toolManager.clearTempTool()
     }
 
     if (e.key == '2') {
@@ -103,15 +155,20 @@
     }
     if (e.key == '5') {
       layerManager.putSelectedLayerAbove(8)
-    }
+    }*/
   }
 
   function handleKeyUp(e) {
     if (modifierKeyNames.includes(e.key))
       modifierKeys.remove(e.key)
+
+    if (e.code == pressedKey)
+      pressedKey = ''
+
   }
   function handleOnFocus(e) {
     modifierKeys.clear()
+    pressedKey = ''
 
     //cancel drawing operation if needed
     handlePointerLost()
@@ -120,6 +177,8 @@
   function getContextForTool(tool) {
     return tool.useEditingLayer ? editingCtx : $currentContext;
   }
+
+  window.onbeforeunload = (event) => { event.preventDefault(); return event.returnValue = "Are you sure you want to leave? You have unsaved changes" }
 
 </script>
 
