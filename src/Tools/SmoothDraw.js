@@ -1,10 +1,16 @@
 var beginPoint
 var strokeWidth
+var pointer
+var ctx
 
-export function Setup(width, pointer, ctx) {
+
+export function Setup(width, p, context) {
     strokeWidth = width
+    pointer = p
+    ctx = context
+
     beginPoint = pointer.position
-    ctx.beginPath()        
+    ctx.beginPath()
     ctx.arc(beginPoint.x, beginPoint.y, beginPoint.pressure * strokeWidth, 0, 2 * Math.PI)
     ctx.fill()
 }
@@ -25,21 +31,21 @@ function lerp(a, b, n) {
     return (1 - n) * a + n * b;
   }
 
-export function Draw(pointer, ctx) {
-    
+export function Draw() {
+
     if (pointer.getPointsLenght() > 2) {
         const lastTwoPoints = pointer.getLastTwoPoints()
-        
+
         const controlPoint = lastTwoPoints[0]
         const lastPoint = lastTwoPoints[1]
-        const endPoint = controlPoint.Add(lastPoint).Multiply(0.5) //PointMul(PointAdd(controlPoint, lastPoint), 0.5)     
+        const endPoint = controlPoint.Add(lastPoint).Multiply(0.5) //PointMul(PointAdd(controlPoint, lastPoint), 0.5)
 
         const direction = endPoint.Subtract(beginPoint)
         var mag = Math.sqrt(direction.x * direction.x + direction.y * direction.y)
-        
+
         var progress = 0;
         ctx.beginPath()
-        
+
         while(progress < 1) {
             var position = getQuadraticCurvePoint(beginPoint.x, beginPoint.y, controlPoint.x, controlPoint.y, endPoint.x, endPoint.y, progress)
             ctx.arc(position.x, position.y, lerp(beginPoint.pressure, lastPoint.pressure, progress) * strokeWidth, 0, 2 * Math.PI)

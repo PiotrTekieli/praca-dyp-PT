@@ -50,10 +50,12 @@
   }
 
   function handlePointerMove(e) {
-    pointer.set(e)
-    tool.pointerMove(e, pointer, getContextForTool(tool))
+    if (drawing) {
+      pointer.set(e)
+      tool.pointerMove(e, pointer, getContextForTool(tool))
 
-    layerManager.refreshMainCanvas()
+      layerManager.refreshMainCanvas()
+    }
   }
 
   function handlePointerUp(e) {
