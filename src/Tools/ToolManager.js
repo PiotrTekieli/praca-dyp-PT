@@ -18,17 +18,20 @@ export default class ToolManager {
 
     switchTool(toolName) {
         console.log("Tool switched to: ", toolName)
-        toolList[toolName].cancel()
+        if (get(currentTool))
+            get(currentTool).cancel()
         currentTool.set(toolList[toolName])
     }
 
     switchToolTemp(toolName) {
-        toolList[toolName].cancel()
+        get(currentTool).cancel()
+        console.log("Tool switched to: ", toolName)
         currentTool.setTemp(toolList[toolName])
     }
 
     clearTempTool() {
         get(currentTool).cancel()
+        console.log("Tool cleared")
         currentTool.clearTemp()
     }
 }

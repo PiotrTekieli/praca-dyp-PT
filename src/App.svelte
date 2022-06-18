@@ -28,10 +28,23 @@
   let pressedKey = ''
 
   $: $currentContext, console.log($currentContext)
-  $: $modifierKeys, console.log($modifierKeys)
   $: drawing, console.log("Drawing: ", drawing)
   $: tool = $currentTool
+
   const modifierKeyNames = ["Alt", "Control", "Shift", " "]
+  $: $modifierKeys, handleTempTools()
+
+  function handleTempTools() {
+    console.log($modifierKeys)
+
+    if (!$modifierKeys.length)
+      toolManager.clearTempTool()
+    else if (modifierKeys.equals(["Shift"])) {    // pressing just shift
+      toolManager.switchToolTemp("eraser")        // eraser for testing
+    }
+
+    tool = $currentTool
+  }
 
 
   onMount(() => {
@@ -52,7 +65,7 @@
   function handlePointerMove(e) {
     if (drawing) {
       pointer.set(e)
-      tool.pointerMove(e, pointer, getContextForTool(tool))
+      tool.pointerMove(e)
 
       layerManager.refreshMainCanvas()
     }
@@ -61,14 +74,14 @@
   function handlePointerUp(e) {
     pointer.set(e)
     drawing = false
-    tool.pointerUp(e, pointer, getContextForTool(tool))
+    tool.pointerUp(e)
 
     layerManager.pushEditingLayer()
   }
 
   function handlePointerLost() {
     drawing = false
-    tool.cancel(pointer, getContextForTool(tool))
+    tool.cancel()
 
     layerManager.pushEditingLayer()
   }
@@ -119,7 +132,6 @@
           layerManager.selectLayerBelow()
           break
       }
-
     }
     /*if (e.key == 'w') {
       editingCtx.fillStyle = "#" + Math.round((Math.random() * 900000 + 100000)).toString();
