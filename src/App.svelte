@@ -100,10 +100,6 @@
         case 'KeyE':
           toolManager.switchTool("eraser")
           break
-
-        case 'KeyF':
-          toolManager.switchToolTemp("eraser")
-          break
       }
 
     }
