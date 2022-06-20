@@ -1,4 +1,5 @@
 import { Draw, Setup } from './SmoothDraw'
+import History from '../Canvas/History'
 
 var p
 var ctx
@@ -37,7 +38,7 @@ export default class Pen {
     cancel() {
         p?.clearPoints()
         ctx?.restore()
-
+        
         p = null
         ctx = null
         this.drawing = false

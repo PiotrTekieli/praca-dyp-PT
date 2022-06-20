@@ -3,12 +3,11 @@
 
   import LayerManager from './Canvas/LayerManager'
   import ToolManager from "./Tools/ToolManager"
+  import History from "./Canvas/History";
 
   import { currentContext, currentTool, modifierKeys } from "./lib/stores"
 
   import Pointer from './Canvas/Pointer'
-  import Pen from './Tools/Pen'
-  import Eraser from './Tools/Eraser'
 
   let canvasSize = {
     x: 600,
@@ -49,6 +48,9 @@
 
   onMount(() => {
     layerManager = new LayerManager(baseCanvas, canvasContainer)
+    History.setup(layerManager)
+    History.addStep({ name: 'edit-layer' })
+    //History.addStep({ name: 'edit-layer', canvas: $currentContext.canvas })
     editingCtx = layerManager.getEditingContext()
 
     pointer = new Pointer(baseCanvas)
@@ -77,6 +79,7 @@
     tool.pointerUp(e)
 
     layerManager.pushEditingLayer()
+    History.addStep({ name: 'edit-layer' })
   }
 
   function handlePointerLost() {
@@ -132,6 +135,15 @@
           layerManager.selectLayerBelow()
           break
       }
+    }
+    
+    else if (modifierKeys.equals(["Control"])) {   // pressing just shift
+
+      switch(pressedKey) {
+        case 'KeyZ':
+          History.undo()
+      }
+
     }
     /*if (e.key == 'w') {
       editingCtx.fillStyle = "#" + Math.round((Math.random() * 900000 + 100000)).toString();

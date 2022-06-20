@@ -1,6 +1,7 @@
 import { get } from "svelte/store"
 import { Layer } from "./Layer"
 import { currentContext } from "../lib/stores"
+import History from "../Canvas/History"
 
 let selectedLayerIndex = 0
 
@@ -143,12 +144,36 @@ export default class LayerManager {
         return editingLayer.context
     }
 
+    getSelectedLayerIndex() {
+        return selectedLayerIndex
+    }
+
     pushEditingLayer() {
         var ctx = get(currentContext)
         ctx.drawImage(editingLayer.canvas, 0, 0)
         clear(editingLayer.context)
         this.refreshMainCanvas()
     }
+
+    replaceLayer(layerId, canvas) {
+        layerList[layerId].context.save()
+        //layerList[layerId].context.globalCompositeOperation = 'copy'
+        clear(layerList[layerId].context)
+        layerList[layerId].context.drawImage(canvas, 0, 0)
+        layerList[layerId].context.restore()
+
+        this.updateCaches()
+    }
+
+    cloneSelectedCanvas() {
+        var original = layerList[selectedLayerIndex].canvas
+        var canvas = document.createElement("canvas")
+        canvas.width = canvasSize.x
+        canvas.height = canvasSize.y
+        canvas.getContext('2d').drawImage(original, 0, 0)
+        return canvas
+    }
+
 }
 
 function clear(ctx) {
