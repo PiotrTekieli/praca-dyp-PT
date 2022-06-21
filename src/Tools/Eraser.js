@@ -32,7 +32,7 @@ export default class Eraser {
     }
 
     pointerUp(event) {
-        this.cancel()
+        return this.cancel()
     }
 
     cancel() {
@@ -41,7 +41,10 @@ export default class Eraser {
 
         p = null
         ctx = null
-        this.drawing = false
+        if (this.drawing) {
+            this.drawing = false
+            return true
+        }
     }
 
     changeColor(color) {

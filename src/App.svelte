@@ -49,8 +49,6 @@
   onMount(() => {
     layerManager = new LayerManager(baseCanvas, canvasContainer)
     History.setup(layerManager)
-    History.addStep({ name: 'edit-layer' })
-    //History.addStep({ name: 'edit-layer', canvas: $currentContext.canvas })
     editingCtx = layerManager.getEditingContext()
 
     pointer = new Pointer(baseCanvas)
@@ -59,6 +57,7 @@
   function handlePointerDown(e) {
     pointer.set(e)
     drawing = true
+    History.addCacheIfNeeded()
     tool.pointerDown(e, pointer, getContextForTool(tool))
 
     layerManager.refreshMainCanvas()
@@ -76,17 +75,22 @@
   function handlePointerUp(e) {
     pointer.set(e)
     drawing = false
-    tool.pointerUp(e)
+    var saveStep = tool.pointerUp(e)
 
     layerManager.pushEditingLayer()
-    History.addStep({ name: 'edit-layer' })
+
+    if (saveStep)
+      History.addStep({ type: 'edit-layer' })
   }
 
   function handlePointerLost() {
     drawing = false
-    tool.cancel()
+    var saveStep = tool.cancel()
 
     layerManager.pushEditingLayer()
+
+    if (saveStep)
+      History.addStep({ type: 'edit-layer' })
   }
 
 
@@ -136,7 +140,7 @@
           break
       }
     }
-    
+
     else if (modifierKeys.equals(["Control"])) {   // pressing just shift
 
       switch(pressedKey) {
@@ -215,7 +219,7 @@
   on:pointerdown={handlePointerDown}
   on:pointermove={handlePointerMove}
   on:pointerup={handlePointerUp}
-  on:pointerleave={handlePointerUp}>
+  on:pointerleave={handlePointerLost}>
 
   <div bind:this={canvasContainer}>
     <canvas bind:this={baseCanvas} width={canvasSize.x} height={canvasSize.y}></canvas>

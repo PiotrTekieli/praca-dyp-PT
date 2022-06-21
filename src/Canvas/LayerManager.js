@@ -1,7 +1,6 @@
 import { get } from "svelte/store"
 import { Layer } from "./Layer"
 import { currentContext } from "../lib/stores"
-import History from "../Canvas/History"
 
 let selectedLayerIndex = 0
 

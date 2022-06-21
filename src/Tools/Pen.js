@@ -1,5 +1,4 @@
 import { Draw, Setup } from './SmoothDraw'
-import History from '../Canvas/History'
 
 var p
 var ctx
@@ -32,16 +31,19 @@ export default class Pen {
     }
 
     pointerUp(event) {
-        this.cancel()
+        return this.cancel()
     }
 
     cancel() {
         p?.clearPoints()
         ctx?.restore()
-        
+
         p = null
         ctx = null
-        this.drawing = false
+        if (this.drawing) {
+            this.drawing = false
+            return false
+        }
     }
 
     changeColor(color) {
