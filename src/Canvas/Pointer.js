@@ -42,7 +42,7 @@ export default class Pointer {
         position = new Point(newX, newY)
 
 
-        position.pressure = e.pressure;
+        position.pressure = e.pressure !== 0.5 ? e.pressure : 1;
         this.position = position;
 
 

@@ -18,11 +18,17 @@ export default class Eraser {
         p.startPointRecording()
 
         ctx.save();
-        ctx.lineCap = 'round'
         ctx.globalCompositeOperation = "destination-out"
-        ctx.fillStyle = this.color
 
-        Setup(this.strokeWidth, p, ctx)
+        var sourceCanvas = document.createElement('canvas')
+        sourceCanvas.width = this.strokeWidth
+        sourceCanvas.height = this.strokeWidth
+        var c = sourceCanvas.getContext('2d')
+        var radius = this.strokeWidth * 0.5
+        c.arc(radius, radius, radius, 0, 2 * Math.PI)
+        c.fill()
+
+        Setup(this.strokeWidth, p, ctx, sourceCanvas)
         this.drawing = true
     }
 
