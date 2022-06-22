@@ -18,8 +18,9 @@ export default class Pen {
         p.startPointRecording()
 
         ctx.save();
+        ctx.fillStyle = this.color
 
-        var sourceCanvas = document.createElement('canvas')
+        /*var sourceCanvas = document.createElement('canvas')
         sourceCanvas.width = this.strokeWidth
         sourceCanvas.height = this.strokeWidth
         var c = sourceCanvas.getContext('2d')
@@ -27,9 +28,9 @@ export default class Pen {
         c.arc(radius, radius, radius, 0, 2 * Math.PI)
 
         c.fillStyle = this.color
-        c.fill()
+        c.fill()*/
 
-        Setup(this.strokeWidth, p, ctx, sourceCanvas)
+        Setup(this.strokeWidth, p, ctx)
         this.drawing = true
     }
 

@@ -20,15 +20,15 @@ export default class Eraser {
         ctx.save();
         ctx.globalCompositeOperation = "destination-out"
 
-        var sourceCanvas = document.createElement('canvas')
+        /*var sourceCanvas = document.createElement('canvas')
         sourceCanvas.width = this.strokeWidth
         sourceCanvas.height = this.strokeWidth
         var c = sourceCanvas.getContext('2d')
         var radius = this.strokeWidth * 0.5
         c.arc(radius, radius, radius, 0, 2 * Math.PI)
-        c.fill()
+        c.fill()*/
 
-        Setup(this.strokeWidth, p, ctx, sourceCanvas)
+        Setup(this.strokeWidth, p, ctx)
         this.drawing = true
     }
 

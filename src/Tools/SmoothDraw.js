@@ -2,9 +2,9 @@ var beginPoint
 var strokeWidth
 var pointer
 var ctx
-var source
+//var source
 
-function drawSourceCanvas(position, pressure) {
+/*function drawSourceCanvas(position, pressure) {
     var size = strokeWidth * pressure
     var offset = -size / 2
 
@@ -13,19 +13,19 @@ function drawSourceCanvas(position, pressure) {
         y: position.y + offset
     }
     ctx.drawImage(source, center.x, center.y, size, size)
-}
+}*/
 
-export function Setup(width, p, context, sourceCanvas) {
+export function Setup(width, p, context) {
     strokeWidth = width
     pointer = p
     ctx = context
-    source = sourceCanvas
+    //source = sourceCanvas
 
     beginPoint = pointer.position
-    drawSourceCanvas(beginPoint, beginPoint.pressure)
-    /*ctx.beginPath()
-    ctx.arc(beginPoint.x, beginPoint.y, beginPoint.pressure * strokeWidth, 0, 2 * Math.PI)
-    ctx.fill()*/
+    //drawSourceCanvas(beginPoint, beginPoint.pressure)
+    ctx.beginPath()
+    ctx.arc(beginPoint.x, beginPoint.y, beginPoint.pressure * strokeWidth * 0.5, 0, 2 * Math.PI)
+    ctx.fill()
 }
 
 function _getQBezierValue(t, p1, p2, p3) {
@@ -58,11 +58,10 @@ export function Draw() {
 
         var progress = 0;
         ctx.beginPath()
-        console.log(lastPoint)
         while(progress < 1) {
             var position = getQuadraticCurvePoint(beginPoint.x, beginPoint.y, controlPoint.x, controlPoint.y, endPoint.x, endPoint.y, progress)
-            drawSourceCanvas(position, lerp(beginPoint.pressure, lastPoint.pressure, progress))
-            //ctx.arc(position.x, position.y, lerp(beginPoint.pressure, lastPoint.pressure, progress) * strokeWidth / 2, 0, 2 * Math.PI)
+            //drawSourceCanvas(position, lerp(beginPoint.pressure, lastPoint.pressure, progress))
+            ctx.arc(position.x, position.y, lerp(beginPoint.pressure, lastPoint.pressure, progress) * strokeWidth * 0.5, 0, 2 * Math.PI)
             progress += 1 / mag
         }
 
