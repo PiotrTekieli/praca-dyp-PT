@@ -21,13 +21,18 @@ function createToolStore() {
             set(tool)
             selected = tool
         },
+        hasTempTool: () => {
+            return temporary != null
+        },
         setTemp: (tool) => {
             set(tool)
             temporary = tool
         },
         clearTemp: () => {
-            set(selected)
-            temporary = null
+            if (temporary) {
+                set(selected)
+                temporary = null
+            }
         }
     }
 }

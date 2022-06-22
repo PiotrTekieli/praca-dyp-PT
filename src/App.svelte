@@ -36,7 +36,7 @@
   function handleTempTools() {
     console.log($modifierKeys)
 
-    if (!$modifierKeys.length)
+    if (currentTool.hasTempTool() && !$modifierKeys.length)
       toolManager.clearTempTool()
     else if (modifierKeys.equals(["Shift"])) {    // pressing just shift
       toolManager.switchToolTemp("eraser")        // eraser for testing

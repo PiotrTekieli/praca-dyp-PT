@@ -59,15 +59,13 @@ export default class LayerManager {
         if (layerIndex > layerList.length - 1)
             layerIndex = layerList.length - 1
 
-        layerList.splice(layerIndex, 0, layerList[selectedLayerIndex])
-
-        if (layerIndex < selectedLayerIndex)
-            selectedLayerIndex++
-        else
-            layerIndex--
-
+        var layer = layerList[selectedLayerIndex]
         layerList.splice(selectedLayerIndex, 1)
 
+        if (layerIndex > selectedLayerIndex)
+            layerIndex--
+
+        layerList.splice(layerIndex, 0, layer)
         this.selectLayer(layerIndex)
     }
 
