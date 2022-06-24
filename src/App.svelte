@@ -5,7 +5,7 @@
   import ToolManager from "./Tools/ToolManager"
   import History from "./Canvas/History";
 
-  import { currentContext, currentTool, modifierKeys } from "./lib/stores"
+  import { canvasTranslation, currentContext, currentTool, modifierKeys } from "./lib/stores"
 
   import Pointer from './Canvas/Pointer'
 
@@ -122,6 +122,11 @@
         case 'KeyE':
           toolManager.switchTool("eraser")
           break
+
+        case 'KeyF':
+          canvasTranslation.set({top: Math.random() * 100, left: Math.random() * 300})
+          console.log($canvasTranslation)
+          break
       }
 
     }
@@ -206,6 +211,10 @@
 
   window.onbeforeunload = (event) => { event.preventDefault(); return event.returnValue = "Are you sure you want to leave? You have unsaved changes" }
 
+	$: cssCanvasTranslate = Object.entries($canvasTranslation)
+		.map(([key, value]) => `--${key}:${value}`)
+		.join(';');
+
 </script>
 
 <svelte:window
@@ -221,7 +230,7 @@
   on:pointerup={handlePointerUp}
   on:pointerleave={handlePointerLost}>
 
-  <div bind:this={canvasContainer}>
+  <div bind:this={canvasContainer} style={cssCanvasTranslate}>
     <canvas bind:this={baseCanvas} width={canvasSize.x} height={canvasSize.y}></canvas>
   </div>
 
@@ -237,7 +246,8 @@
     background-color: white;
     width: 600px;
     height: 600px;
-    left: 200px;
+    top: calc(var(--top) * 1px);
+    left: calc(var(--left) * 1px);
     position: fixed;
   }
 

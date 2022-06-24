@@ -1,5 +1,31 @@
 import { writable } from "svelte/store";
 
+function createCanvasTranslationStore() {
+    var currentState = {
+        top: 0,
+        left: 100,
+        scale: 1,
+        flip: false,
+        rotation: 0
+    }
+    const { subscribe, set } = writable(currentState)
+
+    return {
+        subscribe,
+        set(value) {
+            currentState.top = value?.top ?? currentState.top
+            currentState.left = value?.left ?? currentState.left
+            currentState.scale = value?.scale ?? currentState.scale
+            currentState.flip = value?.flip ?? currentState.flip
+            currentState.rotation = value?.rotation ?? currentState.rotation
+
+            set(currentState)
+        }
+    }
+}
+
+export const canvasTranslation = createCanvasTranslationStore()
+
 function createSetStore() {
     const { subscribe, set } = writable();
 
