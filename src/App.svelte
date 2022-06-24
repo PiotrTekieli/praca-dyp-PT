@@ -26,7 +26,6 @@
   let drawing = false
   let pressedKey = ''
 
-  $: $currentContext, console.log($currentContext)
   $: drawing, console.log("Drawing: ", drawing)
   $: tool = $currentTool
 
@@ -34,7 +33,8 @@
   $: $modifierKeys, handleTempTools()
 
   function handleTempTools() {
-    console.log($modifierKeys)
+    if ($modifierKeys.length)
+      console.log($modifierKeys)
 
     if (currentTool.hasTempTool() && !$modifierKeys.length)
       toolManager.clearTempTool()
@@ -130,7 +130,7 @@
 
       switch(pressedKey) {
         case 'KeyW':
-          layerManager.addLayer()
+          layerManager.newLayer()
           break
         case 'KeyR':
           layerManager.selectLayerAbove()
@@ -146,8 +146,28 @@
       switch(pressedKey) {
         case 'KeyZ':
           History.undo()
+          break
+        case 'KeyY':
+          History.redo()
       }
 
+    }
+
+    if (e.key == 'w') {
+      tool.changeColor("#" + Math.round((Math.random() * 900000 + 100000)).toString())
+    }
+
+    if (e.key == '2') {
+      layerManager.putSelectedLayerAbove(3)
+    }
+    if (e.key == '3') {
+      layerManager.putSelectedLayerAbove(5)
+    }
+    if (e.key == '4') {
+      layerManager.putSelectedLayerAbove(-1)
+    }
+    if (e.key == '5') {
+      layerManager.putSelectedLayerAbove(8)
     }
     /*if (e.key == 'w') {
       editingCtx.fillStyle = "#" + Math.round((Math.random() * 900000 + 100000)).toString();
