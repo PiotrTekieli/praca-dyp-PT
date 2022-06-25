@@ -43,6 +43,8 @@ export default class LayerManager {
     }
 
     addLayerAbove(index) {
+        History.addStep({ type: 'new-layer', index: index })
+
         let layer = new Layer(canvasSize)
         layer.canvas.id = layerList.length.toString()
 
@@ -58,21 +60,20 @@ export default class LayerManager {
         return layer
     }
 
+    removeLayer(layerIndex) {
+        layerList.splice(layerIndex, 1)
+
+        if (layerIndex == selectedLayerIndex)
+            if (layerIndex < layerList.length)
+                this.selectLayer(layerIndex)
+            else
+                this.selectLayer(layerList.length - 1)
+        else if (layerIndex < selectedLayerIndex)
+            this.selectLayer(selectedLayerIndex - 1)
+    }
+
     putSelectedLayerAbove(layerIndex) {
         this.putLayerAbove(selectedLayerIndex, layerIndex)
-        /*layerIndex += 1
-
-        if (layerIndex > layerList.length - 1)
-            layerIndex = layerList.length - 1
-
-        var layer = layerList[selectedLayerIndex]
-        layerList.splice(selectedLayerIndex, 1)
-
-        if (layerIndex > selectedLayerIndex)
-            layerIndex--
-
-        layerList.splice(layerIndex, 0, layer)
-        this.selectLayer(layerIndex)*/
     }
 
     putLayerAbove(source, destination) {

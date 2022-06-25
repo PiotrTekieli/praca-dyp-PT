@@ -71,6 +71,10 @@ export default {
                 layerManager.replaceLayer(previousStep.layerId, previousStep.canvas)
                 break
             }
+            case 'new-layer': {
+                layerManager.removeLayer(currentStep.index + 1)
+                break
+            }
             case 'layer-order': {
                 revertOrderChange(currentStep.source, currentStep.destination)
                 break
@@ -96,6 +100,10 @@ export default {
         switch(nextStep.type) {
             case 'edit-layer': {
                 layerManager.replaceLayer(nextStep.layerId, nextStep.canvas)
+                break
+            }
+            case 'new-layer': {
+                layerManager.addLayerAbove(nextStep.index)
                 break
             }
             case 'layer-order': {
