@@ -142,9 +142,17 @@
         case 'KeyG':
           var rad = $canvasTranslation.rotation / 180 * Math.PI
           var rotationCorrection = Math.cos(rad) * canvasSize.x - Math.sin(rad) * canvasSize.y
-          rotationCorrection *= $canvasTranslation.flip
+          rotationCorrection *= $canvasTranslation.flip * $canvasTranslation.scale
+
+          var rect = baseCanvas.getBoundingClientRect();
+          var left = $canvasTranslation.left
+          var centerOffset = (rect.left + (rect.right - rect.left) / 2) - left
+          var centerX = left + centerOffset
+          var newPosX = window.innerWidth - centerX
+          newPosX -= centerOffset
+
           canvasTranslation.flip()
-          canvasTranslation.set({ left: $canvasTranslation.left + rotationCorrection })
+          canvasTranslation.set({ left: newPosX + rotationCorrection })
           break
         case 'KeyT':
           canvasTranslation.set({scale: 2 * Math.random()})
