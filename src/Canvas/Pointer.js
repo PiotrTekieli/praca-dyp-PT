@@ -48,11 +48,11 @@ export default class Pointer {
         console.log(newX, newY)
 
 
-        if (canvasState.flip < 0)
-            newX = canvasSize.x - newX
 
         position = new Point(newX, newY)
         position = position.Multiply(1 / canvasState.scale)
+        if (canvasState.flip < 0)
+            position.x = canvasSize.x - position.x
         //position = new Point(100, 100)
 
         position.pressure = e.pressure !== 0.5 ? e.pressure : 1;

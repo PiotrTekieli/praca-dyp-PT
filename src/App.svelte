@@ -135,12 +135,16 @@
           break
 
         case 'KeyF':
-          canvasTranslation.set({top: 300 * Math.random(), left: 500 * Math.random(), rotation: 360 * Math.random()})
+          canvasTranslation.set({top: 300 * Math.random(), left: 1000 * Math.random(), rotation: 360 * Math.random()})
           console.log($canvasTranslation)
           break
 
         case 'KeyG':
-          canvasTranslation.set({flip: -$canvasTranslation.flip})
+          var rad = $canvasTranslation.rotation / 180 * Math.PI
+          var rotationCorrection = Math.cos(rad) * canvasSize.x - Math.sin(rad) * canvasSize.y
+          rotationCorrection *= $canvasTranslation.flip
+          canvasTranslation.flip()
+          canvasTranslation.set({ left: $canvasTranslation.left + rotationCorrection })
           break
         case 'KeyT':
           canvasTranslation.set({scale: 2 * Math.random()})
@@ -278,6 +282,7 @@
     height: calc(var(--sizeY) * 1px);
     top: calc(var(--top) * 1px);
     left: calc(var(--left) * 1px);
+    transform-origin: top left;
     transform: rotate(calc(var(--rotation) * 1deg * var(--flip))) scale(var(--scale)) scale(var(--flip), 1);
     position: fixed;
   }

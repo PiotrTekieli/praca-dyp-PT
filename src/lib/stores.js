@@ -12,13 +12,17 @@ function createCanvasTranslationStore() {
 
     return {
         subscribe,
-        set(value) {
+        set: (value) => {
             currentState.top = value?.top ?? currentState.top
             currentState.left = value?.left ?? currentState.left
             currentState.scale = value?.scale ?? currentState.scale
-            currentState.flip = value?.flip ?? currentState.flip
+            //currentState.flip = value?.flip ?? currentState.flip
             currentState.rotation = value?.rotation ?? currentState.rotation
 
+            set(currentState)
+        },
+        flip: () => {
+            currentState.flip = -currentState.flip
             set(currentState)
         }
     }
