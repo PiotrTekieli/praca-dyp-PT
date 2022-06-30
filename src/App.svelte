@@ -11,7 +11,7 @@
 
   let canvasSize = {
     x: 600,
-    y: 600
+    y: 500
   }
 
   let canvasContainer
@@ -51,7 +51,7 @@
     History.setup(layerManager)
     editingCtx = layerManager.getEditingContext()
 
-    pointer = new Pointer(baseCanvas)
+    pointer = new Pointer(baseCanvas, canvasSize)
   })
 
   function handlePointerDown(e) {
@@ -135,8 +135,15 @@
           break
 
         case 'KeyF':
-          canvasTranslation.set({top: Math.random() * 100, left: Math.random() * 300})
+          canvasTranslation.set({top: 300 * Math.random(), left: 500 * Math.random(), rotation: 360 * Math.random()})
           console.log($canvasTranslation)
+          break
+
+        case 'KeyG':
+          canvasTranslation.set({flip: -$canvasTranslation.flip})
+          break
+        case 'KeyT':
+          canvasTranslation.set({scale: 2 * Math.random()})
           break
       }
 
@@ -236,7 +243,7 @@
 
 	$: cssCanvasTranslate = Object.entries($canvasTranslation)
 		.map(([key, value]) => `--${key}:${value}`)
-		.join(';');
+		.join(';') + `; --sizeX: ${canvasSize.x}; --sizeY: ${canvasSize.y}`;
 
 </script>
 
@@ -254,7 +261,7 @@
   on:pointerleave={handlePointerLost}>
 
   <div bind:this={canvasContainer} style={cssCanvasTranslate}>
-    <canvas bind:this={baseCanvas} width={canvasSize.x} height={canvasSize.y}></canvas>
+    <canvas class="{$canvasTranslation.scale > 1.25 ? 'zoom' : 'no-zoom'}" bind:this={baseCanvas} width={canvasSize.x} height={canvasSize.y}></canvas>
   </div>
 
 </main>
@@ -267,10 +274,11 @@
 
   div {
     background-color: white;
-    width: 600px;
-    height: 600px;
+    width: calc(var(--sizeX) * 1px);
+    height: calc(var(--sizeY) * 1px);
     top: calc(var(--top) * 1px);
     left: calc(var(--left) * 1px);
+    transform: rotate(calc(var(--rotation) * 1deg * var(--flip))) scale(var(--scale)) scale(var(--flip), 1);
     position: fixed;
   }
 
@@ -285,7 +293,13 @@
 
   canvas {
     position: absolute;
+  }
+
+  .no-zoom {
     image-rendering: crisp-edges;
     image-rendering: -webkit-optimize-contrast;
+  }
+  .zoom {
+    image-rendering: pixelated;
   }
 </style>

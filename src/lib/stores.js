@@ -5,7 +5,7 @@ function createCanvasTranslationStore() {
         top: 0,
         left: 100,
         scale: 1,
-        flip: false,
+        flip: 1,
         rotation: 0
     }
     const { subscribe, set } = writable(currentState)
