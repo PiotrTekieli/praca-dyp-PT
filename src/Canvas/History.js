@@ -1,9 +1,11 @@
-const MAX_STEP_COUNT = 50
+const MAX_STEP_COUNT = 51
 
 let stepIndex
 let historyStepList = []
 let layerManager
 let disableHistory = false
+
+let layerCache
 
 function historyAdd(step) {
     if (!disableHistory) {
@@ -13,16 +15,16 @@ function historyAdd(step) {
 
             console.log(step)
 
-            var lastStep = historyStepList?.[historyStepList.length - 1]
-
-            if (step.type == 'edit-layer' || step.type == 'layer-cache') {
+            if (step.type == 'edit-layer') {
                 step.layerId = layerManager.getSelectedLayerIndex()
                 step.canvas = layerManager.cloneSelectedCanvas()
-            }
 
-            if (step.type != 'edit-layer') {
-                if (lastStep?.type == 'layer-cache')
-                    historyStepList.splice(historyStepList.length - 1, 1)
+                if (layerCache) {
+                    step.cache = layerCache
+                    step.type = 'first-edit-layer'
+
+                    layerCache = null
+                }
             }
 
             historyStepList.push(step)                                  //add step
@@ -40,32 +42,32 @@ function historyAdd(step) {
 export default {
     setup: (LayerManager) => {
         layerManager = LayerManager
+        historyAdd({ type: 'initialize' })
     },
     addStep: (step) => {
         historyAdd(step)
     },
     addCacheIfNeeded: () => {
         if (historyStepList[stepIndex]?.layerId != layerManager.getSelectedLayerIndex()) {
-            historyAdd({ type: 'layer-cache' })
+            layerCache = {
+                canvas: layerManager.cloneSelectedCanvas()
+            }
         }
     },
     undo: () => {
         var currentStep = historyStepList[stepIndex]
 
-        if (stepIndex < 0)
+        if (stepIndex == 0)
             return
-
-        if (stepIndex == 0 && (currentStep.type == 'edit-layer' || currentStep.type == 'layer-cache'))
-            return
-
-        if (currentStep.type == 'layer-cache')
-            currentStep = historyStepList[--stepIndex]
-
 
         console.log("Undoing: " + currentStep.type)
 
         disableHistory = true
         switch(currentStep.type) {
+            case 'first-edit-layer': {
+                layerManager.replaceLayer(currentStep.layerId, currentStep.cache.canvas)
+                break
+            }
             case 'edit-layer': {
                 var previousStep = historyStepList[stepIndex - 1]
                 layerManager.replaceLayer(previousStep.layerId, previousStep.canvas)
@@ -90,14 +92,12 @@ export default {
 
         var nextStep = historyStepList[++stepIndex]
 
-        if (nextStep.type == 'layer-cache') {
-            nextStep = historyStepList[++stepIndex]
-        }
 
         console.log("Redoing: " + nextStep.type)
 
         disableHistory = true
         switch(nextStep.type) {
+            case 'first-edit-layer':
             case 'edit-layer': {
                 layerManager.replaceLayer(nextStep.layerId, nextStep.canvas)
                 break

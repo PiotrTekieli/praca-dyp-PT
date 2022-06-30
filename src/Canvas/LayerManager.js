@@ -64,10 +64,7 @@ export default class LayerManager {
         layerList.splice(layerIndex, 1)
 
         if (layerIndex == selectedLayerIndex)
-            if (layerIndex < layerList.length)
-                this.selectLayer(layerIndex)
-            else
-                this.selectLayer(layerList.length - 1)
+                this.selectLayer(Math.max(layerIndex - 1, 0))
         else if (layerIndex < selectedLayerIndex)
             this.selectLayer(selectedLayerIndex - 1)
     }

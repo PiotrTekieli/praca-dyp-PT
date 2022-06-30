@@ -101,6 +101,17 @@
     if (drawing)
       return
 
+      if (modifierKeys.equals(["Control"]) && (pressedKey == e.code || !pressedKey) ) {
+        switch(e.code) {
+          case 'KeyZ':
+            History.undo()
+            break
+          case 'KeyY':
+            History.redo()
+        }
+      }
+
+
     if (modifierKeyNames.includes(e.key)) {
       modifierKeys.add(e.key)
       return
@@ -141,15 +152,7 @@
       }
     }
 
-    else if (modifierKeys.equals(["Control"])) {   // pressing just shift
-
-      switch(pressedKey) {
-        case 'KeyZ':
-          History.undo()
-          break
-        case 'KeyY':
-          History.redo()
-      }
+    else if (modifierKeys.equals(["Control"])) {   // pressing just ctrl
 
     }
 
