@@ -18,8 +18,17 @@ export default class Pen {
         p.startPointRecording()
 
         ctx.save();
-        ctx.lineCap = 'round'
-        //ctx.fillStyle = this.color
+        ctx.fillStyle = this.color
+
+        /*var sourceCanvas = document.createElement('canvas')
+        sourceCanvas.width = this.strokeWidth
+        sourceCanvas.height = this.strokeWidth
+        var c = sourceCanvas.getContext('2d')
+        var radius = this.strokeWidth * 0.5
+        c.arc(radius, radius, radius, 0, 2 * Math.PI)
+
+        c.fillStyle = this.color
+        c.fill()*/
 
         Setup(this.strokeWidth, p, ctx)
         this.drawing = true
@@ -31,7 +40,7 @@ export default class Pen {
     }
 
     pointerUp(event) {
-        this.cancel()
+        return this.cancel()
     }
 
     cancel() {
@@ -40,7 +49,10 @@ export default class Pen {
 
         p = null
         ctx = null
-        this.drawing = false
+        if (this.drawing) {
+            this.drawing = false
+            return true
+        }
     }
 
     changeColor(color) {

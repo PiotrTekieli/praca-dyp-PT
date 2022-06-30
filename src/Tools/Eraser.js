@@ -18,9 +18,15 @@ export default class Eraser {
         p.startPointRecording()
 
         ctx.save();
-        ctx.lineCap = 'round'
         ctx.globalCompositeOperation = "destination-out"
-        ctx.fillStyle = this.color
+
+        /*var sourceCanvas = document.createElement('canvas')
+        sourceCanvas.width = this.strokeWidth
+        sourceCanvas.height = this.strokeWidth
+        var c = sourceCanvas.getContext('2d')
+        var radius = this.strokeWidth * 0.5
+        c.arc(radius, radius, radius, 0, 2 * Math.PI)
+        c.fill()*/
 
         Setup(this.strokeWidth, p, ctx)
         this.drawing = true
@@ -32,7 +38,7 @@ export default class Eraser {
     }
 
     pointerUp(event) {
-        this.cancel()
+        return this.cancel()
     }
 
     cancel() {
@@ -41,7 +47,10 @@ export default class Eraser {
 
         p = null
         ctx = null
-        this.drawing = false
+        if (this.drawing) {
+            this.drawing = false
+            return true
+        }
     }
 
     changeColor(color) {

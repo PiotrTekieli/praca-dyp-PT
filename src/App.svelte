@@ -3,12 +3,11 @@
 
   import LayerManager from './Canvas/LayerManager'
   import ToolManager from "./Tools/ToolManager"
+  import History from "./Canvas/History";
 
   import { currentContext, currentTool, modifierKeys } from "./lib/stores"
 
   import Pointer from './Canvas/Pointer'
-  import Pen from './Tools/Pen'
-  import Eraser from './Tools/Eraser'
 
   let canvasSize = {
     x: 600,
@@ -27,7 +26,6 @@
   let drawing = false
   let pressedKey = ''
 
-  $: $currentContext, console.log($currentContext)
   $: drawing, console.log("Drawing: ", drawing)
   $: tool = $currentTool
 
@@ -35,9 +33,10 @@
   $: $modifierKeys, handleTempTools()
 
   function handleTempTools() {
-    console.log($modifierKeys)
+    if ($modifierKeys.length)
+      console.log($modifierKeys)
 
-    if (!$modifierKeys.length)
+    if (currentTool.hasTempTool() && !$modifierKeys.length)
       toolManager.clearTempTool()
     else if (modifierKeys.equals(["Shift"])) {    // pressing just shift
       toolManager.switchToolTemp("eraser")        // eraser for testing
@@ -49,6 +48,7 @@
 
   onMount(() => {
     layerManager = new LayerManager(baseCanvas, canvasContainer)
+    History.setup(layerManager)
     editingCtx = layerManager.getEditingContext()
 
     pointer = new Pointer(baseCanvas)
@@ -57,6 +57,7 @@
   function handlePointerDown(e) {
     pointer.set(e)
     drawing = true
+    History.addCacheIfNeeded()
     tool.pointerDown(e, pointer, getContextForTool(tool))
 
     layerManager.refreshMainCanvas()
@@ -74,16 +75,22 @@
   function handlePointerUp(e) {
     pointer.set(e)
     drawing = false
-    tool.pointerUp(e)
+    var saveStep = tool.pointerUp(e)
 
     layerManager.pushEditingLayer()
+
+    if (saveStep)
+      History.addStep({ type: 'edit-layer' })
   }
 
   function handlePointerLost() {
     drawing = false
-    tool.cancel()
+    var saveStep = tool.cancel()
 
     layerManager.pushEditingLayer()
+
+    if (saveStep)
+      History.addStep({ type: 'edit-layer' })
   }
 
 
@@ -93,6 +100,17 @@
 
     if (drawing)
       return
+
+      if (modifierKeys.equals(["Control"]) && (pressedKey == e.code || !pressedKey) ) {
+        switch(e.code) {
+          case 'KeyZ':
+            History.undo()
+            break
+          case 'KeyY':
+            History.redo()
+        }
+      }
+
 
     if (modifierKeyNames.includes(e.key)) {
       modifierKeys.add(e.key)
@@ -123,7 +141,7 @@
 
       switch(pressedKey) {
         case 'KeyW':
-          layerManager.addLayer()
+          layerManager.newLayer()
           break
         case 'KeyR':
           layerManager.selectLayerAbove()
@@ -132,6 +150,27 @@
           layerManager.selectLayerBelow()
           break
       }
+    }
+
+    else if (modifierKeys.equals(["Control"])) {   // pressing just ctrl
+
+    }
+
+    if (e.key == 'w') {
+      tool.changeColor("#" + Math.round((Math.random() * 900000 + 100000)).toString())
+    }
+
+    if (e.key == '2') {
+      layerManager.putSelectedLayerAbove(3)
+    }
+    if (e.key == '3') {
+      layerManager.putSelectedLayerAbove(5)
+    }
+    if (e.key == '4') {
+      layerManager.putSelectedLayerAbove(-1)
+    }
+    if (e.key == '5') {
+      layerManager.putSelectedLayerAbove(8)
     }
     /*if (e.key == 'w') {
       editingCtx.fillStyle = "#" + Math.round((Math.random() * 900000 + 100000)).toString();
@@ -203,7 +242,7 @@
   on:pointerdown={handlePointerDown}
   on:pointermove={handlePointerMove}
   on:pointerup={handlePointerUp}
-  on:pointerleave={handlePointerUp}>
+  on:pointerleave={handlePointerLost}>
 
   <div bind:this={canvasContainer}>
     <canvas bind:this={baseCanvas} width={canvasSize.x} height={canvasSize.y}></canvas>

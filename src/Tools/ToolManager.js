@@ -1,4 +1,5 @@
 import { currentTool } from "../lib/stores"
+import History from "../Canvas/History"
 
 import Pen from "./Pen"
 import Eraser from "./Eraser"
@@ -30,7 +31,8 @@ export default class ToolManager {
     }
 
     clearTempTool() {
-        get(currentTool).cancel()
+        if (get(currentTool).cancel())
+            History.addStep({ type: 'edit-layer' })
         console.log("Tool cleared")
         currentTool.clearTemp()
     }

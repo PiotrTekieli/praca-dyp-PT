@@ -1,6 +1,7 @@
 import { get } from "svelte/store"
 import { Layer } from "./Layer"
 import { currentContext } from "../lib/stores"
+import History from './History'
 
 let selectedLayerIndex = 0
 
@@ -34,10 +35,16 @@ export default class LayerManager {
 
         editingLayer = new Layer(canvasSize)
 
-        this.addLayer()
+        this.newLayer()
     }
 
-    addLayer() {
+    newLayer() {
+        this.addLayerAbove(selectedLayerIndex)
+    }
+
+    addLayerAbove(index) {
+        History.addStep({ type: 'new-layer', index: index })
+
         let layer = new Layer(canvasSize)
         layer.canvas.id = layerList.length.toString()
 
@@ -47,28 +54,43 @@ export default class LayerManager {
             return layer
         }
 
-        layerList.splice(selectedLayerIndex+1, 0, layer)    // add above selected
+        layerList.splice(index+1, 0, layer)                 // add above index
 
-        this.selectLayer(selectedLayerIndex+1)              // and select it
+        this.selectLayer(index+1)                           // and select it
         return layer
     }
 
+    removeLayer(layerIndex) {
+        layerList.splice(layerIndex, 1)
+
+        if (layerIndex == selectedLayerIndex)
+                this.selectLayer(Math.max(layerIndex - 1, 0))
+        else if (layerIndex < selectedLayerIndex)
+            this.selectLayer(selectedLayerIndex - 1)
+    }
+
     putSelectedLayerAbove(layerIndex) {
-        layerIndex += 1
+        this.putLayerAbove(selectedLayerIndex, layerIndex)
+    }
 
-        if (layerIndex > layerList.length - 1)
-            layerIndex = layerList.length - 1
+    putLayerAbove(source, destination) {
+        History.addStep({ type: 'layer-order', source: source, destination: destination })
 
-        layerList.splice(layerIndex, 0, layerList[selectedLayerIndex])
+        destination += 1
 
-        if (layerIndex < selectedLayerIndex)
-            selectedLayerIndex++
-        else
-            layerIndex--
+        source = clamp(source, 0, layerList.length - 1)
+        destination = clamp(destination, 0, layerList.length)
 
-        layerList.splice(selectedLayerIndex, 1)
+        var layer = layerList[source]
+        layerList.splice(source, 1)
 
-        this.selectLayer(layerIndex)
+
+        if (destination > source)
+            destination--
+
+        layerList.splice(destination, 0, layer)
+
+        this.selectLayer(destination)
     }
 
     selectLayer(index) {
@@ -106,7 +128,7 @@ export default class LayerManager {
 
     updateCaches() {                // on change order, switch selected layer or background color change
         console.log(layerList)
-        console.log("Selected layer: ", selectedLayerIndex)
+        //console.log("Selected layer: ", selectedLayerIndex)
 
         backCacheLayer.context.fillStyle = backgroundColor
         backCacheLayer.context.fillRect(0, 0, canvasSize.x, canvasSize.y)
@@ -143,14 +165,42 @@ export default class LayerManager {
         return editingLayer.context
     }
 
+    getSelectedLayerIndex() {
+        return selectedLayerIndex
+    }
+
     pushEditingLayer() {
         var ctx = get(currentContext)
         ctx.drawImage(editingLayer.canvas, 0, 0)
         clear(editingLayer.context)
         this.refreshMainCanvas()
     }
+
+    replaceLayer(layerId, canvas) {
+        layerList[layerId].context.save()
+        //layerList[layerId].context.globalCompositeOperation = 'copy'
+        clear(layerList[layerId].context)
+        layerList[layerId].context.drawImage(canvas, 0, 0)
+        layerList[layerId].context.restore()
+
+        this.updateCaches()
+    }
+
+    cloneSelectedCanvas() {
+        var original = layerList[selectedLayerIndex].canvas
+        var canvas = document.createElement("canvas")
+        canvas.width = canvasSize.x
+        canvas.height = canvasSize.y
+        canvas.getContext('2d').drawImage(original, 0, 0)
+        return canvas
+    }
+
 }
 
 function clear(ctx) {
     ctx.clearRect(0, 0, canvasSize.x, canvasSize.y);
+}
+
+function clamp(x, a, b) {
+    return Math.max( a, Math.min(x, b) )
 }
