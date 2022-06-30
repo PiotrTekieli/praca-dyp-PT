@@ -1,12 +1,17 @@
 import { Point } from "./Point";
+import { canvasTranslation } from "../lib/stores";
+import { get } from "svelte/store";
 
 var points = []
 var pointRecording = false
 var ctx
 
+var canvasSize
+
 export default class Pointer {
-    constructor(canvas) {
+    constructor(canvas, size) {
         ctx = canvas.getContext('2d')
+        canvasSize = size
     }
     oldPos = {  // not needed
         x: 0,
@@ -24,23 +29,31 @@ export default class Pointer {
             e.pageY - rect.top
         )
 
-        var canvasSize = {
+        var canvasRectSize = {
             x: (rect.right - rect.left) / 2,
             y: (rect.bottom - rect.top) / 2
         }
 
-        var degrees = -0
+        var canvasState = get(canvasTranslation)
+
+        var degrees = -canvasState.rotation * canvasState.flip
         var x = degrees * (Math.PI/180);
 
-        var newX = canvasSize.x + (position.x - canvasSize.x) * Math.cos(x) - (position.y - canvasSize.y)*Math.sin(x)
-        newX = newX - (canvasSize.x - 300)
-        var newY =  canvasSize.y + (position.x- canvasSize.x) * Math.sin(x) + (position.y- canvasSize.y)*Math.cos(x);
-        newY = newY - (canvasSize.y - 300)
+        var newX = canvasRectSize.x + (position.x - canvasRectSize.x) * Math.cos(x) - (position.y - canvasRectSize.y) * Math.sin(x)
+        var newY =  canvasRectSize.y + (position.x- canvasRectSize.x) * Math.sin(x) + (position.y- canvasRectSize.y) * Math.cos(x);
 
-        //console.log("Translated: ", newX, newY)
+        newX = newX - (canvasRectSize.x - canvasSize.x * 0.5 * canvasState.scale)
+        newY = newY - (canvasRectSize.y - canvasSize.y * 0.5 * canvasState.scale)
+
+        console.log(newX, newY)
+
+
+        if (canvasState.flip < 0)
+            newX = canvasSize.x - newX
 
         position = new Point(newX, newY)
-
+        position = position.Multiply(1 / canvasState.scale)
+        //position = new Point(100, 100)
 
         position.pressure = e.pressure !== 0.5 ? e.pressure : 1;
         this.position = position;
