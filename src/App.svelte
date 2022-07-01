@@ -36,7 +36,6 @@
   }
 
   function cursorChange() {
-    console.log(tool?.cursor)
     cursorCss = `--cursor: ${tool?.cursor ?? 'auto'}`
   }
 

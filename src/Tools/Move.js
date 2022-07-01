@@ -4,21 +4,21 @@ import { Point } from "..//Canvas/Point"
 
 var p
 var startPosition
+var dragging = false
 
 export default class Move {
     cursor = 'grab'
-    dragging = false
 
     pointerDown(event, pointer, context) {
         p = pointer
 
         this.cursor = 'grabbing'
-        this.dragging = true
+        dragging = true
         startPosition = getScreenPosition(event)
     }
 
     pointerMove(event) {
-        if (this.dragging) {
+        if (dragging) {
             var difference = getScreenPosition(event).Subtract(startPosition)
             var canvasState = get(canvasTranslation)
 
@@ -37,7 +37,7 @@ export default class Move {
         p = null
         startPosition = null
 
-        this.dragging = false
+        dragging = false
         return false
     }
 

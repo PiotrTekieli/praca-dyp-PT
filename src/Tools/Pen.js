@@ -2,9 +2,9 @@ import { Draw, Setup } from './SmoothDraw'
 
 var p
 var ctx
+var drawing = false
 
 export default class Pen {
-    drawing = false
     useEditingLayer = true;
     strokeWidth = 20
     pressure = true
@@ -20,22 +20,12 @@ export default class Pen {
         ctx.save();
         ctx.fillStyle = this.color
 
-        /*var sourceCanvas = document.createElement('canvas')
-        sourceCanvas.width = this.strokeWidth
-        sourceCanvas.height = this.strokeWidth
-        var c = sourceCanvas.getContext('2d')
-        var radius = this.strokeWidth * 0.5
-        c.arc(radius, radius, radius, 0, 2 * Math.PI)
-
-        c.fillStyle = this.color
-        c.fill()*/
-
         Setup(this.strokeWidth, p, ctx)
-        this.drawing = true
+        drawing = true
     }
 
     pointerMove(event) {
-        if (this.drawing)
+        if (drawing)
             Draw()
     }
 
@@ -49,8 +39,8 @@ export default class Pen {
 
         p = null
         ctx = null
-        if (this.drawing) {
-            this.drawing = false
+        if (drawing) {
+            drawing = false
             return true
         }
     }
