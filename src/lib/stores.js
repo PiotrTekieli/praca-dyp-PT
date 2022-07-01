@@ -47,12 +47,13 @@ function createToolStore() {
 
     return {
         subscribe,
-        set: (tool) => {
+        set: (tool, temp) => {
             set(tool)
-            selected = tool
+            if (!temp)
+                selected = tool
         },
         hasTempTool: () => {
-            return temporary != null
+            return (temporary != null)
         },
         setTemp: (tool) => {
             set(tool)

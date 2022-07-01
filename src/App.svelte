@@ -22,12 +22,23 @@
 
   let pointer
   let toolManager = new ToolManager()
+  let tool
 
   let drawing = false
   let pressedKey = ''
 
+  let cursorCss
+
   $: drawing, console.log("Drawing: ", drawing)
-  $: tool = $currentTool
+  $: {
+    tool = $currentTool
+    cursorChange()
+  }
+
+  function cursorChange() {
+    console.log(tool?.cursor)
+    cursorCss = `--cursor: ${tool?.cursor ?? 'auto'}`
+  }
 
   const modifierKeyNames = ["Alt", "Control", "Shift", " "]
   $: $modifierKeys, handleTempTools()
@@ -38,11 +49,12 @@
 
     if (currentTool.hasTempTool() && !$modifierKeys.length)
       toolManager.clearTempTool()
-    else if (modifierKeys.equals(["Shift"])) {    // pressing just shift
-      toolManager.switchToolTemp("eraser")        // eraser for testing
+    else if (modifierKeys.equals([" "])) {    // pressing just shift
+      toolManager.switchToolTemp("move")        // eraser for testing
     }
 
     tool = $currentTool
+    cursorChange()
   }
 
 
@@ -54,11 +66,15 @@
     pointer = new Pointer(baseCanvas, canvasSize)
   })
 
+
+
   function handlePointerDown(e) {
     pointer.set(e)
     drawing = true
     History.addCacheIfNeeded()
     tool.pointerDown(e, pointer, getContextForTool(tool))
+
+    cursorChange()
 
     layerManager.refreshMainCanvas()
   }
@@ -67,6 +83,9 @@
     if (drawing) {
       pointer.set(e)
       tool.pointerMove(e)
+
+      cursorChange()
+
 
       layerManager.refreshMainCanvas()
     }
@@ -79,6 +98,8 @@
 
     layerManager.pushEditingLayer()
 
+    cursorChange()
+
     if (saveStep)
       History.addStep({ type: 'edit-layer' })
   }
@@ -89,9 +110,13 @@
 
     layerManager.pushEditingLayer()
 
+    cursorChange()
+
     if (saveStep)
       History.addStep({ type: 'edit-layer' })
   }
+
+
 
 
 
@@ -140,16 +165,16 @@
           break
 
         case 'KeyG':
-          var rad = $canvasTranslation.rotation / 180 * Math.PI
-          var rotationCorrection = Math.cos(rad) * canvasSize.x - Math.sin(rad) * canvasSize.y
-          rotationCorrection *= $canvasTranslation.flip * $canvasTranslation.scale
+          let canvasState = $canvasTranslation
 
-          var rect = baseCanvas.getBoundingClientRect();
-          var left = $canvasTranslation.left
-          var centerOffset = (rect.left + (rect.right - rect.left) / 2) - left
-          var centerX = left + centerOffset
-          var newPosX = window.innerWidth - centerX
-          newPosX -= centerOffset
+          let rad = canvasState.rotation / 180 * Math.PI
+          let rotationCorrection = Math.cos(rad) * canvasSize.x - Math.sin(rad) * canvasSize.y
+          rotationCorrection *= canvasState.flip * canvasState.scale
+
+          let rect = baseCanvas.getBoundingClientRect();
+          let centerOffset = (rect.left + (rect.right - rect.left) / 2) - canvasState.left
+          let centerX = canvasState.left + centerOffset
+          let newPosX = window.innerWidth - centerX - centerOffset
 
           canvasTranslation.flip()
           canvasTranslation.set({ left: newPosX + rotationCorrection })
@@ -181,7 +206,7 @@
     }
 
     if (e.key == 'w') {
-      tool.changeColor("#" + Math.round((Math.random() * 900000 + 100000)).toString())
+      tool.changeColor?.("#" + Math.round((Math.random() * 900000 + 100000)).toString())
     }
 
     if (e.key == '2') {
@@ -196,39 +221,6 @@
     if (e.key == '5') {
       layerManager.putSelectedLayerAbove(8)
     }
-    /*if (e.key == 'w') {
-      editingCtx.fillStyle = "#" + Math.round((Math.random() * 900000 + 100000)).toString();
-    }
-    if (e.key == 'f') {
-      layerManager.addLayer()
-    }
-
-    if (e.key == 'r') {
-      console.log()
-      editingCtx.fillStyle = '#444999'
-      editingCtx.globalAlpha = '0.5'
-      editingCtx.globalCompositeOperation = 'xor'
-    }
-
-    if (e.key == 'e') {
-      toolManager.switchToolTemp("eraser")
-    }
-    if (e.key == 'r') {
-      toolManager.clearTempTool()
-    }
-
-    if (e.key == '2') {
-      layerManager.putSelectedLayerAbove(3)
-    }
-    if (e.key == '3') {
-      layerManager.putSelectedLayerAbove(5)
-    }
-    if (e.key == '4') {
-      layerManager.putSelectedLayerAbove(0)
-    }
-    if (e.key == '5') {
-      layerManager.putSelectedLayerAbove(8)
-    }*/
   }
 
   function handleKeyUp(e) {
@@ -255,7 +247,7 @@
 
 	$: cssCanvasTranslate = Object.entries($canvasTranslation)
 		.map(([key, value]) => `--${key}:${value}`)
-		.join(';') + `; --sizeX: ${canvasSize.x}; --sizeY: ${canvasSize.y}`;
+		.join(';') + `; --sizeX: ${canvasSize.x}; --sizeY: ${canvasSize.y};`
 
 </script>
 
@@ -266,7 +258,7 @@
 ></svelte:window>
 
 
-<main
+<main style={cursorCss}
   on:pointerdown={handlePointerDown}
   on:pointermove={handlePointerMove}
   on:pointerup={handlePointerUp}
@@ -302,6 +294,7 @@
     position: fixed;
     top: 0;
     left: 0;
+    cursor: var(--cursor)
   }
 
   canvas {

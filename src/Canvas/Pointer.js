@@ -45,15 +45,11 @@ export default class Pointer {
         newX = newX - (canvasRectSize.x - canvasSize.x * 0.5 * canvasState.scale)
         newY = newY - (canvasRectSize.y - canvasSize.y * 0.5 * canvasState.scale)
 
-        console.log(newX, newY)
-
-
 
         position = new Point(newX, newY)
         position = position.Multiply(1 / canvasState.scale)
         if (canvasState.flip < 0)
             position.x = canvasSize.x - position.x
-        //position = new Point(100, 100)
 
         position.pressure = e.pressure !== 0.5 ? e.pressure : 1;
         this.position = position;
