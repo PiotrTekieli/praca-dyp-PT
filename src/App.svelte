@@ -163,7 +163,11 @@
           console.log($canvasTranslation)
           break
 
-        case 'KeyG':
+        case 'KeyT':
+          canvasTranslation.set({scale: 2 * Math.random()})
+          break
+
+        case 'Digit2':
           let canvasState = $canvasTranslation
 
           let rad = canvasState.rotation / 180 * Math.PI
@@ -177,9 +181,6 @@
 
           canvasTranslation.flip()
           canvasTranslation.set({ left: newPosX + rotationCorrection })
-          break
-        case 'KeyT':
-          canvasTranslation.set({scale: 2 * Math.random()})
           break
       }
 
