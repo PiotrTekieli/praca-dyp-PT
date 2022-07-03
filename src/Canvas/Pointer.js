@@ -37,10 +37,10 @@ export default class Pointer {
         var canvasState = get(canvasTranslation)
 
         var degrees = -canvasState.rotation * canvasState.flip
-        var x = degrees * (Math.PI/180);
+        var rad = degrees * (Math.PI/180);
 
-        var newX = canvasRectSize.x + (position.x - canvasRectSize.x) * Math.cos(x) - (position.y - canvasRectSize.y) * Math.sin(x)
-        var newY =  canvasRectSize.y + (position.x- canvasRectSize.x) * Math.sin(x) + (position.y- canvasRectSize.y) * Math.cos(x);
+        var newX = canvasRectSize.x + (position.x - canvasRectSize.x) * Math.cos(rad) - (position.y - canvasRectSize.y) * Math.sin(rad)
+        var newY =  canvasRectSize.y + (position.x- canvasRectSize.x) * Math.sin(rad) + (position.y- canvasRectSize.y) * Math.cos(rad);
 
         newX = newX - (canvasRectSize.x - canvasSize.x * 0.5 * canvasState.scale)
         newY = newY - (canvasRectSize.y - canvasSize.y * 0.5 * canvasState.scale)

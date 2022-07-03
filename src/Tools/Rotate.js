@@ -6,7 +6,7 @@ var p
 var startPosition
 var dragging = false
 
-export default class Move {
+export default class Rotate {
     cursor = 'grab'
 
     pointerDown(event, pointer, context) {
@@ -15,20 +15,25 @@ export default class Move {
         this.cursor = 'grabbing'
         dragging = true
         startPosition = getScreenPosition(event)
+        //canvasTranslation.rotate(20)
+
     }
 
     pointerMove(event) {
         if (dragging) {
             var difference = getScreenPosition(event).Subtract(startPosition)
+            var canvasState = get(canvasTranslation)
 
-            canvasTranslation.move(difference.x, difference.y)//set({ left: canvasState.left + difference.x, top: canvasState.top + difference.y })
+            canvasTranslation.rotate(difference.x / 10)
 
             startPosition = getScreenPosition(event)
         }
     }
 
     pointerUp(event) {
+        //canvasTranslation.rotate(-20)
         return this.cancel()
+
     }
 
     cancel() {

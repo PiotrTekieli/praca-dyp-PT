@@ -4,6 +4,7 @@ import History from "../Canvas/History"
 import Pen from "./Pen"
 import Eraser from "./Eraser"
 import Move from "./Move"
+import Rotate from "./Rotate"
 import { get } from "svelte/store"
 
 let toolList
@@ -13,7 +14,8 @@ export default class ToolManager {
         toolList = {
             pen: new Pen(),
             eraser: new Eraser(),
-            move: new Move()
+            move: new Move(),
+            rotate: new Rotate(),
         }
 
         this.switchTool("pen")

@@ -48,9 +48,11 @@
 
     if (currentTool.hasTempTool() && !$modifierKeys.length)
       toolManager.clearTempTool()
-    else if (modifierKeys.equals([" "])) {    // pressing just shift
-      toolManager.switchToolTemp("move")        // eraser for testing
-    }
+    else if (modifierKeys.equals([" "]))        // pressing just space
+      toolManager.switchToolTemp("move")
+    else if (modifierKeys.equals([" ", "Shift"]))
+      toolManager.switchToolTemp("rotate")
+
 
     tool = $currentTool
     cursorChange()
@@ -63,6 +65,8 @@
     editingCtx = layerManager.getEditingContext()
 
     pointer = new Pointer(baseCanvas, canvasSize)
+
+    canvasTranslation.setup(baseCanvas)
   })
 
 
@@ -168,19 +172,7 @@
           break
 
         case 'Digit2':
-          let canvasState = $canvasTranslation
-
-          let rad = canvasState.rotation / 180 * Math.PI
-          let rotationCorrection = Math.cos(rad) * canvasSize.x - Math.sin(rad) * canvasSize.y
-          rotationCorrection *= canvasState.flip * canvasState.scale
-
-          let rect = baseCanvas.getBoundingClientRect();
-          let centerOffset = (rect.left + (rect.right - rect.left) / 2) - canvasState.left
-          let centerX = canvasState.left + centerOffset
-          let newPosX = window.innerWidth - centerX - centerOffset
-
           canvasTranslation.flip()
-          canvasTranslation.set({ left: newPosX + rotationCorrection })
           break
       }
 
@@ -207,19 +199,6 @@
 
     if (e.key == 'w') {
       tool.changeColor?.("#" + Math.round((Math.random() * 900000 + 100000)).toString())
-    }
-
-    if (e.key == '2') {
-      layerManager.putSelectedLayerAbove(3)
-    }
-    if (e.key == '3') {
-      layerManager.putSelectedLayerAbove(5)
-    }
-    if (e.key == '4') {
-      layerManager.putSelectedLayerAbove(-1)
-    }
-    if (e.key == '5') {
-      layerManager.putSelectedLayerAbove(8)
     }
   }
 
