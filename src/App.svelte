@@ -262,7 +262,7 @@
     top: calc(var(--top) * 1px);
     left: calc(var(--left) * 1px);
     transform-origin: top left;
-    transform: rotate(calc(var(--rotation) * 1deg * var(--flip))) scale(var(--scale)) scale(var(--flip), 1);
+    transform: rotate(calc(var(--rotation) * 1rad * var(--flip))) scale(var(--scale)) scale(var(--flip), 1);
     position: fixed;
   }
 

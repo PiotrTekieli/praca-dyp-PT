@@ -1,5 +1,68 @@
 import { writable } from "svelte/store";
 
+function getCurrentBoundingBox(currentState, baseCanvas) {
+    var points = [{x: 0, y: 0}]     // 0
+
+    var cos = Math.cos(currentState.rotation)
+    var sin = Math.sin(currentState.rotation)
+
+    points.push({                   // 1
+        x: baseCanvas.width * cos,
+        y: baseCanvas.width * sin
+    })
+
+    points.push({                   // 2
+        x: -baseCanvas.height * sin,
+        y: baseCanvas.height * cos
+    })
+
+    points.push({                   // 3
+        x: points[1].x + points[2].x,
+        y: points[1].y + points[2].y
+    })
+
+    var maxX = 0, minX = 0, maxY = 0, minY = 0
+
+    points.forEach(point => {
+        maxX = Math.max(maxX, point.x)
+        minX = Math.min(minX, point.x)
+
+        maxY = Math.max(maxY, point.y)
+        minY = Math.min(minY, point.y)
+    })
+
+
+    return {
+        currentState: currentState,
+        left: minX + currentState.left,
+        right: maxX + currentState.left,
+        top: minY + currentState.top,
+        bottom: maxY + currentState.top
+    }
+}
+
+function clampToScreen(boundingBox) {
+    const offset = 100
+    var currentState = boundingBox.currentState
+
+    console.log(boundingBox)
+
+    if (boundingBox.left > window.innerWidth - offset) {
+        currentState.left -= boundingBox.left - window.innerWidth + offset
+        console.log(window.innerWidth)
+    }
+    if (boundingBox.right < 0 + offset) {
+        currentState.left -= boundingBox.right - offset
+    }
+    if (boundingBox.top > window.innerHeight - offset) {
+        currentState.top -= boundingBox.top - window.innerHeight + offset
+    }
+    if (boundingBox.bottom < 0 + offset) {
+        currentState.top -= boundingBox.bottom - offset
+    }
+    return currentState
+}
+
 function createCanvasTranslationStore() {
     var currentState = {
         top: 0,
@@ -26,18 +89,16 @@ function createCanvasTranslationStore() {
             currentState.left += x
             currentState.top += y
 
-            set(currentState)
+            set(clampToScreen(getCurrentBoundingBox(currentState, baseCanvas)))
         },
-        rotate: (deg) => {
+        rotate: (rad) => {
             var windowCenter = {
                 x: window.innerWidth * 0.5,
                 y: window.innerHeight * 0.5
             }
 
-            var angle = deg * (Math.PI / 180)
-            var sin = Math.sin(angle)
-            var cos = Math.cos(angle)
-
+            var sin = Math.sin(rad)
+            var cos = Math.cos(rad)
 
             // rotate center around left corner
             var xnew = currentState.left + (windowCenter.x - currentState.left) * cos - (windowCenter.y - currentState.top) * sin
@@ -49,15 +110,18 @@ function createCanvasTranslationStore() {
             }
 
             // move canvas by the difference
-            currentState.rotation += deg * currentState.flip
+            currentState.rotation += rad * currentState.flip
             currentState.left -= difference.x
             currentState.top -= difference.y
 
 
-            set(currentState)
+            set(clampToScreen(getCurrentBoundingBox(currentState, baseCanvas)))
+
+            console.log(currentState.left, getCurrentBoundingBox(currentState, baseCanvas).bottom)
+
         },
         flip: () => {
-            let rad = currentState.rotation / 180 * Math.PI
+            let rad = currentState.rotation
             let rotationCorrection = Math.cos(rad) * canvasSize.x - Math.sin(rad) * canvasSize.y
             rotationCorrection *= currentState.flip * currentState.scale
 
@@ -77,7 +141,7 @@ function createCanvasTranslationStore() {
             //currentState.flip = value?.flip ?? currentState.flip
             currentState.rotation = value?.rotation ?? currentState.rotation
 
-            set(currentState)
+            set(clampToScreen(getCurrentBoundingBox(currentState, baseCanvas)))
         }
     }
 }

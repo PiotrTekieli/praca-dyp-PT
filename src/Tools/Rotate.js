@@ -3,7 +3,8 @@ import { get } from "svelte/store"
 import { Point } from "../Canvas/Point"
 
 var p
-var startPosition
+var screenCenter
+var angle
 var dragging = false
 
 export default class Rotate {
@@ -14,19 +15,18 @@ export default class Rotate {
 
         this.cursor = 'grabbing'
         dragging = true
-        startPosition = getScreenPosition(event)
-        //canvasTranslation.rotate(20)
-
+        screenCenter = new Point(window.innerWidth * 0.5, window.innerHeight * 0.5)
+        var difference = getScreenPosition(event).Subtract(screenCenter)
+        angle = Math.atan2(difference.y, difference.x)
     }
 
     pointerMove(event) {
         if (dragging) {
-            var difference = getScreenPosition(event).Subtract(startPosition)
-            var canvasState = get(canvasTranslation)
+            var difference = getScreenPosition(event).Subtract(screenCenter)
+            var angleDiff = Math.atan2(difference.y, difference.x) - angle
 
-            canvasTranslation.rotate(difference.x / 10)
-
-            startPosition = getScreenPosition(event)
+            canvasTranslation.rotate(angleDiff)
+            angle += angleDiff
         }
     }
 
@@ -39,7 +39,6 @@ export default class Rotate {
     cancel() {
         this.cursor = 'grab'
         p = null
-        startPosition = null
 
         dragging = false
         return false
