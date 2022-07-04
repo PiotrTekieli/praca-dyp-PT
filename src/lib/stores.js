@@ -55,7 +55,6 @@ function clampToScreen(boundingBox) {
 
     if (boundingBox.left > window.innerWidth - screenOffset) {
         currentState.left -= boundingBox.left - window.innerWidth + screenOffset
-        console.log(window.innerWidth)
     }
     if (boundingBox.right < 0 + screenOffset) {
         currentState.left -= boundingBox.right - screenOffset
@@ -124,9 +123,6 @@ function createCanvasTranslationStore() {
 
 
             set(clampToScreen(getCurrentBoundingBox(currentState, baseCanvas)))
-
-            console.log(currentState.left, getCurrentBoundingBox(currentState, baseCanvas).bottom)
-
         },
         zoom: (amount, origin) => {
             if (currentState.scale >= maxScale && amount > 0)
@@ -140,7 +136,6 @@ function createCanvasTranslationStore() {
             var differenceFromOrigin = origin.Subtract(new Point(currentState.left, currentState.top))
 
             differenceFromOrigin = differenceFromOrigin.Multiply(zoom)
-            console.log(differenceFromOrigin)
 
             currentState.left = origin.x - differenceFromOrigin.x
             currentState.top = origin.y - differenceFromOrigin.y

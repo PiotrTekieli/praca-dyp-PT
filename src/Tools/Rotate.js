@@ -7,12 +7,11 @@ var angle
 var dragging = false
 
 export default class Rotate {
-    cursor = 'grab'
+    cursor = 'ew-resize'
 
     pointerDown(event, pointer, context) {
         p = pointer
 
-        this.cursor = 'grabbing'
         dragging = true
         screenCenter = new Point(window.innerWidth * 0.5, window.innerHeight * 0.5)
         var difference = getScreenPosition(event).Subtract(screenCenter)
@@ -30,13 +29,10 @@ export default class Rotate {
     }
 
     pointerUp(event) {
-        //canvasTranslation.rotate(-20)
         return this.cancel()
-
     }
 
     cancel() {
-        this.cursor = 'grab'
         p = null
 
         dragging = false
