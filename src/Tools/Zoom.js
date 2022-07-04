@@ -3,35 +3,37 @@ import { Point } from "../Canvas/Point"
 
 var p
 var startPosition
+var comparePosition
 var dragging = false
 
-export default class Move {
-    cursor = 'grab'
+export default class Zoom {
+    cursor = 'zoom-in'
 
     pointerDown(event, pointer, context) {
         p = pointer
 
-        this.cursor = 'grabbing'
         dragging = true
         startPosition = getScreenPosition(event)
+        comparePosition = startPosition
     }
 
     pointerMove(event) {
         if (dragging) {
-            var difference = getScreenPosition(event).Subtract(startPosition)
+            var difference = getScreenPosition(event).Subtract(comparePosition)
 
-            canvasTranslation.move(difference.x, difference.y)//set({ left: canvasState.left + difference.x, top: canvasState.top + difference.y })
+            canvasTranslation.zoom(difference.x, startPosition)
 
-            startPosition = getScreenPosition(event)
+            comparePosition = getScreenPosition(event)
         }
     }
 
     pointerUp(event) {
+        //canvasTranslation.rotate(-20)
         return this.cancel()
+
     }
 
     cancel() {
-        this.cursor = 'grab'
         p = null
         startPosition = null
 

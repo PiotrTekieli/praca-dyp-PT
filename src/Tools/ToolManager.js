@@ -5,6 +5,7 @@ import Pen from "./Pen"
 import Eraser from "./Eraser"
 import Move from "./Move"
 import Rotate from "./Rotate"
+import Zoom from "./Zoom"
 import { get } from "svelte/store"
 
 let toolList
@@ -16,6 +17,7 @@ export default class ToolManager {
             eraser: new Eraser(),
             move: new Move(),
             rotate: new Rotate(),
+            zoom: new Zoom(),
         }
 
         this.switchTool("pen")

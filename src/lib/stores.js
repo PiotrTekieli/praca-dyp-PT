@@ -1,19 +1,28 @@
+import { Point } from "../Canvas/Point";
 import { writable } from "svelte/store";
+
+const scaleSpeed = 1.005
+const maxScale = 32
+const minScale = 0.1
+const screenOffset = 100
 
 function getCurrentBoundingBox(currentState, baseCanvas) {
     var points = [{x: 0, y: 0}]     // 0
-
+    var canvasSize = {
+        x: baseCanvas.width * currentState.scale * currentState.flip,
+        y: baseCanvas.height * currentState.scale
+    }
     var cos = Math.cos(currentState.rotation)
     var sin = Math.sin(currentState.rotation)
 
     points.push({                   // 1
-        x: baseCanvas.width * cos,
-        y: baseCanvas.width * sin
+        x: canvasSize.x * cos,
+        y: canvasSize.x * sin
     })
 
     points.push({                   // 2
-        x: -baseCanvas.height * sin,
-        y: baseCanvas.height * cos
+        x: -canvasSize.y * sin,
+        y: canvasSize.y * cos
     })
 
     points.push({                   // 3
@@ -42,24 +51,23 @@ function getCurrentBoundingBox(currentState, baseCanvas) {
 }
 
 function clampToScreen(boundingBox) {
-    const offset = 100
     var currentState = boundingBox.currentState
 
-    console.log(boundingBox)
-
-    if (boundingBox.left > window.innerWidth - offset) {
-        currentState.left -= boundingBox.left - window.innerWidth + offset
+    if (boundingBox.left > window.innerWidth - screenOffset) {
+        currentState.left -= boundingBox.left - window.innerWidth + screenOffset
         console.log(window.innerWidth)
     }
-    if (boundingBox.right < 0 + offset) {
-        currentState.left -= boundingBox.right - offset
+    if (boundingBox.right < 0 + screenOffset) {
+        currentState.left -= boundingBox.right - screenOffset
     }
-    if (boundingBox.top > window.innerHeight - offset) {
-        currentState.top -= boundingBox.top - window.innerHeight + offset
+    if (boundingBox.top > window.innerHeight - screenOffset) {
+        currentState.top -= boundingBox.top - window.innerHeight + screenOffset
     }
-    if (boundingBox.bottom < 0 + offset) {
-        currentState.top -= boundingBox.bottom - offset
+    if (boundingBox.bottom < 0 + screenOffset) {
+        currentState.top -= boundingBox.bottom - screenOffset
     }
+    currentState.scale = Math.max(minScale, Math.min(maxScale, currentState.scale))
+
     return currentState
 }
 
@@ -119,6 +127,25 @@ function createCanvasTranslationStore() {
 
             console.log(currentState.left, getCurrentBoundingBox(currentState, baseCanvas).bottom)
 
+        },
+        zoom: (amount, origin) => {
+            if (currentState.scale >= maxScale && amount > 0)
+                return
+            else if (currentState.scale <= minScale && amount < 0)
+                return
+
+            var zoom = Math.pow(scaleSpeed, amount)
+            currentState.scale *= zoom
+
+            var differenceFromOrigin = origin.Subtract(new Point(currentState.left, currentState.top))
+
+            differenceFromOrigin = differenceFromOrigin.Multiply(zoom)
+            console.log(differenceFromOrigin)
+
+            currentState.left = origin.x - differenceFromOrigin.x
+            currentState.top = origin.y - differenceFromOrigin.y
+
+            set(clampToScreen(getCurrentBoundingBox(currentState, baseCanvas)))
         },
         flip: () => {
             let rad = currentState.rotation

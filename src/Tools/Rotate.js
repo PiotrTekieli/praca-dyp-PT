@@ -1,5 +1,4 @@
 import { canvasTranslation } from "../lib/stores"
-import { get } from "svelte/store"
 import { Point } from "../Canvas/Point"
 
 var p

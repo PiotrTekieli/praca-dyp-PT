@@ -52,6 +52,8 @@
       toolManager.switchToolTemp("move")
     else if (modifierKeys.equals([" ", "Shift"]))
       toolManager.switchToolTemp("rotate")
+    else if (modifierKeys.equals([" ", "Control"]))
+      toolManager.switchToolTemp("zoom")
 
 
     tool = $currentTool
