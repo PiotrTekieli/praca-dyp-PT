@@ -8,6 +8,7 @@
   import { canvasTranslation, currentContext, currentTool, modifierKeys } from "./lib/stores"
 
   import Pointer from './Canvas/Pointer'
+import ToolSidebar from "./Tools/ToolSidebar.svelte";
 
   let canvasSize = {
     x: 600,
@@ -238,7 +239,7 @@
   on:blur={handleOnFocus}
 ></svelte:window>
 
-
+<ToolSidebar {toolManager}></ToolSidebar>
 <main style={cursorCss}
   on:pointerdown={handlePointerDown}
   on:pointermove={handlePointerMove}
@@ -252,6 +253,9 @@
 </main>
 
 <style>
+  :global(body) {
+    margin: 0;
+  }
   :root {
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen,
       Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;

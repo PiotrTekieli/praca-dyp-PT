@@ -6,6 +6,8 @@ var startPosition
 var dragging = false
 
 export default class Move {
+    name = 'move'
+    icon = 'favicon.ico'
     cursor = 'grab'
 
     pointerDown(event, pointer, context) {

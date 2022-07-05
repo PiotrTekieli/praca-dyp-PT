@@ -5,6 +5,8 @@ var ctx
 var drawing = false
 
 export default class Eraser {
+    name = 'eraser'
+    icon = 'favicon.ico'
     useEditingLayer = false;
     strokeWidth = 50
     pressure = true

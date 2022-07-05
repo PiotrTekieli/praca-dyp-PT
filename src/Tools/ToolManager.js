@@ -23,6 +23,10 @@ export default class ToolManager {
         this.switchTool("pen")
     }
 
+    getToolList() {
+        return toolList
+    }
+
     switchTool(toolName) {
         console.log("Tool switched to: ", toolName)
         if (get(currentTool))

@@ -7,6 +7,8 @@ var comparePosition
 var dragging = false
 
 export default class Zoom {
+    name = 'zoom'
+    icon = 'favicon.ico'
     cursor = 'zoom-in'
 
     pointerDown(event, pointer, context) {

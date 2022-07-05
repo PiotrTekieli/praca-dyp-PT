@@ -5,6 +5,8 @@ var ctx
 var drawing = false
 
 export default class Pen {
+    name = 'pen'
+    icon = 'favicon.ico'
     useEditingLayer = true;
     strokeWidth = 20
     pressure = true

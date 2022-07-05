@@ -7,6 +7,8 @@ var angle
 var dragging = false
 
 export default class Rotate {
+    name = 'rotate'
+    icon = 'favicon.ico'
     cursor = 'ew-resize'
 
     pointerDown(event, pointer, context) {
