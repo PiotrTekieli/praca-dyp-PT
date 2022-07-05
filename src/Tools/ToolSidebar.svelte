@@ -1,10 +1,11 @@
 <script>
     import { currentTool } from "../lib/stores";
-import ToolButton from "./ToolButton.svelte";
+    import ToolButton from "./ToolButton.svelte";
 
     export let toolManager
+    let widthSlider
 
-    $: currentToolName = $currentTool.name
+    $: currentToolName = currentTool.hasTempTool() ? currentToolName : $currentTool.name
 
     let toolList = Object.values(toolManager.getToolList())
 
@@ -13,24 +14,47 @@ import ToolButton from "./ToolButton.svelte";
     }
 </script>
 
-<div>
-    {#each toolList as tool}
-        <ToolButton {tool} {currentToolName} on:switch-tool={switchTool}></ToolButton>
-    {/each}
+<div id="sidebarContainer">
+    <div id="toolsContainer">
+        {#each toolList as tool}
+            <ToolButton {tool} {currentToolName} on:switch-tool={switchTool}></ToolButton>
+        {/each}
+    </div>
+    <div id="toolOptions">
+        <input type="range" bind:this={widthSlider}>
+    </div>
 </div>
 
 <style>
     div {
-        height: 100%;
-        padding: 4px;
+        height: 100vh;
+        box-sizing: border-box;
+        position: relative;
+        z-index: 1;
+        user-select: none;
+        color: white;
+    }
+
+    #sidebarContainer {
+        width: 200px;
+        background-color: rgb(89, 87, 91);
         box-shadow: 1px 0px 4px #0005;
+        display: flex;
+        flex-direction: row;
+    }
+
+    #toolsContainer {
         background-color: rgb(65, 63, 68);
-        position: fixed;
+        box-shadow: 1px 0px 4px #0005;
+        padding: 4px;
         display: flex;
         flex-direction: column;
         gap: 5px;
-        z-index: 1;
-        user-select: none;
     }
+
+    #toolOptions {
+        width: 100%;
+    }
+
 
 </style>

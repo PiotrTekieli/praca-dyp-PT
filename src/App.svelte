@@ -3,12 +3,13 @@
 
   import LayerManager from './Canvas/LayerManager'
   import ToolManager from "./Tools/ToolManager"
-  import History from "./Canvas/History";
+  import History from "./Canvas/History"
 
   import { canvasTranslation, currentContext, currentTool, modifierKeys } from "./lib/stores"
 
+  import { Point } from "./Canvas/Point"
   import Pointer from './Canvas/Pointer'
-import ToolSidebar from "./Tools/ToolSidebar.svelte";
+  import ToolSidebar from "./Tools/ToolSidebar.svelte"
 
   let canvasSize = {
     x: 600,
@@ -122,7 +123,10 @@ import ToolSidebar from "./Tools/ToolSidebar.svelte";
       History.addStep({ type: 'edit-layer' })
   }
 
-
+  function handleMouseWheel(e) {
+    e.preventDefault()
+    canvasTranslation.zoom(-e.deltaY / 3, new Point(e.pageX, e.pageY))
+  }
 
 
 
@@ -244,7 +248,9 @@ import ToolSidebar from "./Tools/ToolSidebar.svelte";
   on:pointerdown={handlePointerDown}
   on:pointermove={handlePointerMove}
   on:pointerup={handlePointerUp}
-  on:pointerleave={handlePointerLost}>
+  on:pointerleave={handlePointerLost}
+
+  on:wheel={handleMouseWheel}>
 
   <div bind:this={canvasContainer} style={cssCanvasTranslate}>
     <canvas class="{$canvasTranslation.scale > 1.25 ? 'zoom' : 'no-zoom'}" bind:this={baseCanvas} width={canvasSize.x} height={canvasSize.y}></canvas>
