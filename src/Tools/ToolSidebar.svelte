@@ -1,11 +1,23 @@
 <script>
-    import { currentTool } from "../lib/stores";
+import { onMount } from "svelte";
+
+    import { currentTool, toolSettings } from "../lib/stores";
     import ToolButton from "./ToolButton.svelte";
 
     export let toolManager
     let widthSlider
 
     $: currentToolName = currentTool.hasTempTool() ? currentToolName : $currentTool.name
+    $: $toolSettings?.width, UpdateSlider()
+
+    function UpdateSlider() {
+        if (widthSlider)
+            widthSlider.value = $toolSettings?.width
+    }
+
+    onMount(() => {
+        UpdateSlider()
+    })
 
     let toolList = Object.values(toolManager.getToolList())
 
@@ -21,7 +33,8 @@
         {/each}
     </div>
     <div id="toolOptions">
-        <input type="range" bind:this={widthSlider}>
+        Stroke Width:
+        <input bind:this={widthSlider} type="range" min="1" max="150" on:input={() => {toolSettings.set({width: widthSlider.value})}}> {widthSlider?.value}
     </div>
 </div>
 

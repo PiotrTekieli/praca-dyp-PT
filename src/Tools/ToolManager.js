@@ -1,4 +1,4 @@
-import { currentTool } from "../lib/stores"
+import { currentTool, toolSettings } from "../lib/stores"
 import History from "../Canvas/History"
 
 import Pen from "./Pen"
@@ -32,6 +32,7 @@ export default class ToolManager {
         if (get(currentTool))
             get(currentTool).cancel()
         currentTool.set(toolList[toolName])
+        toolSettings.set({width: toolList[toolName]?.strokeWidth})
     }
 
     switchToolTemp(toolName) {

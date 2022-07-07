@@ -1,3 +1,5 @@
+import { toolSettings } from '../lib/stores'
+import { get } from 'svelte/store'
 import { Draw, Setup } from './SmoothDraw'
 
 var p
@@ -14,6 +16,8 @@ export default class Pen {
 
 
     pointerDown(event, pointer, context) {
+        this.strokeWidth = get(toolSettings).width
+
         p = pointer
         ctx = context
 

@@ -170,6 +170,10 @@ function createCanvasTranslationStore() {
 
 export const canvasTranslation = createCanvasTranslationStore()
 
+
+
+
+
 function createSetStore() {
     const { subscribe, set } = writable();
 
@@ -180,6 +184,10 @@ function createSetStore() {
 }
 
 export const currentContext = createSetStore()
+
+
+
+
 
 function createToolStore() {
     const { subscribe, set } = writable();
@@ -211,6 +219,10 @@ function createToolStore() {
 
 export const currentTool = createToolStore()
 
+
+
+
+
 function createModifierKeysStore() {
     const { subscribe, update, set } = writable([])
     var currentList = []
@@ -240,3 +252,29 @@ function createModifierKeysStore() {
 }
 
 export const modifierKeys = createModifierKeysStore()
+
+
+
+function createToolSettingsStore() {
+    const { subscribe, set } = writable()
+    let settings = {
+        width: 1,
+        colors: ["#000", "#FFF"],
+        opacity: 1
+    }
+
+    return {
+        subscribe,
+        set: (options) => {
+            settings.width = options?.width ?? settings.width
+            settings.opacity = options?.opacity ?? settings.opacity
+            set(settings)
+        },
+        setColor: (i, color) => {
+            settings.colors[i] = color
+            set(settings)
+        },
+    }
+}
+
+export const toolSettings = createToolSettingsStore()

@@ -20,16 +20,15 @@
 
 <style>
     button {
-        height: 30px;
-        width: 30px;
+        height: 28px;
+        width: 28px;
         padding: auto auto;
         background-position: center;
         background-repeat: no-repeat;
         background-size: 70%;
         background-color: transparent;
         border: none;
-        border-radius: 5px;
-        box-shadow: 1px 2px 3px #0006;
+        border-radius: 1px;
 
     }
 
@@ -42,6 +41,7 @@
     }
 
     .selected {
-        box-shadow: inset 3px 3px 3px #000C;
+        background-color: #FFF2;
+        border: solid 1px black;
     }
 </style>
