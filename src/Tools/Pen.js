@@ -17,6 +17,7 @@ export default class Pen {
 
     pointerDown(event, pointer, context) {
         this.strokeWidth = get(toolSettings).width
+        this.color = get(toolSettings).colors[get(toolSettings).selectedColor]
 
         p = pointer
         ctx = context

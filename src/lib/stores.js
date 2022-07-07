@@ -5,6 +5,7 @@ const scaleSpeed = 1.005
 const maxScale = 32
 const minScale = 0.1
 const screenOffset = 100
+const leftOffset = 236
 
 function getCurrentBoundingBox(currentState, baseCanvas) {
     var points = [{x: 0, y: 0}]     // 0
@@ -56,8 +57,8 @@ function clampToScreen(boundingBox) {
     if (boundingBox.left > window.innerWidth - screenOffset) {
         currentState.left -= boundingBox.left - window.innerWidth + screenOffset
     }
-    if (boundingBox.right < 0 + screenOffset) {
-        currentState.left -= boundingBox.right - screenOffset
+    if (boundingBox.right < 0 + screenOffset + leftOffset) {
+        currentState.left -= boundingBox.right - screenOffset - leftOffset
     }
     if (boundingBox.top > window.innerHeight - screenOffset) {
         currentState.top -= boundingBox.top - window.innerHeight + screenOffset
@@ -259,7 +260,8 @@ function createToolSettingsStore() {
     const { subscribe, set } = writable()
     let settings = {
         width: 1,
-        colors: ["#000", "#FFF"],
+        selectedColor: 0,
+        colors: ["#000000", "#FFFFFF"],
         opacity: 1
     }
 
@@ -270,10 +272,14 @@ function createToolSettingsStore() {
             settings.opacity = options?.opacity ?? settings.opacity
             set(settings)
         },
-        setColor: (i, color) => {
-            settings.colors[i] = color
+        setColor: (color) => {
+            settings.colors[settings.selectedColor] = color
             set(settings)
         },
+        switchColor: () => {
+            settings.selectedColor = 1 - settings.selectedColor
+            set(settings)
+        }
     }
 }
 

@@ -5,7 +5,7 @@
   import ToolManager from "./Tools/ToolManager"
   import History from "./Canvas/History"
 
-  import { canvasTranslation, currentContext, currentTool, modifierKeys } from "./lib/stores"
+  import { canvasTranslation, currentContext, currentTool, modifierKeys, toolSettings } from "./lib/stores"
 
   import { Point } from "./Canvas/Point"
   import Pointer from './Canvas/Pointer'
@@ -76,6 +76,8 @@
 
 
   function handlePointerDown(e) {
+    if (e.button != 0)
+      return
     pointer.set(e)
     drawing = true
     History.addCacheIfNeeded()
@@ -99,6 +101,8 @@
   }
 
   function handlePointerUp(e) {
+    if (e.button != 0)
+      return
     pointer.set(e)
     drawing = false
     var saveStep = tool.pointerUp(e)
@@ -125,7 +129,10 @@
 
   function handleMouseWheel(e) {
     e.preventDefault()
-    canvasTranslation.zoom(-e.deltaY / 3, new Point(e.pageX, e.pageY))
+    if (modifierKeys.equals(["Shift"]))
+      canvasTranslation.rotate(Math.sign(e.deltaY) * Math.PI / 180 * 15)
+    else
+      canvasTranslation.zoom(Math.sign(e.deltaY) * 30, new Point(e.pageX, e.pageY))
   }
 
 
@@ -180,6 +187,10 @@
 
         case 'Digit2':
           canvasTranslation.flip()
+          break
+
+        case 'KeyX':
+          toolSettings.switchColor()
           break
       }
 
