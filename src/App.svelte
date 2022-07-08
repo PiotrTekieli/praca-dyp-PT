@@ -214,10 +214,6 @@
     else if (modifierKeys.equals(["Control"])) {   // pressing just ctrl
 
     }
-
-    if (e.key == 'w') {
-      tool.changeColor?.("#" + Math.round((Math.random() * 900000 + 100000)).toString())
-    }
   }
 
   function handleKeyUp(e) {

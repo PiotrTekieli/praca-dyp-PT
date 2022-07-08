@@ -81,13 +81,13 @@
             {#if $toolSettings?.width}
                 Stroke Width:
                 <input bind:this={widthSlider} type="range" min="1" max="150" on:input={() => {addGradient(widthSlider); toolSettings.setWidth(widthSlider.value)}}>
-                <span class="rangeValue">{widthSlider?.value}</span>
+                <span class="rangeValue">{$toolSettings.width}</span>
             {/if}
 
             {#if $toolSettings?.opacity}
                 Opacity:
                 <input bind:this={opacitySlider} type="range" min="1" max="100" on:input={() => {addGradient(opacitySlider); toolSettings.setOpacity(opacitySlider.value / 100)}}>
-                <span class="rangeValue">{opacitySlider?.value}</span>
+                <span class="rangeValue">{$toolSettings.opacity}</span>
             {/if}
         </div>
 
@@ -152,7 +152,8 @@
     #toolOptions .rangeValue {
         text-align: right;
         width: 4ex;
-        display: inline-block;
+        float: right;
+        line-height: 30px;
     }
 
     #colorWheel {
@@ -187,76 +188,37 @@
     input[type=range] {
         width: calc(100% - 5ex);
         margin: 12px 0;
+        height: 6px;
         background-color: transparent;
         -webkit-appearance: none;
         outline: none;
     }
-    input[type=range]::-webkit-slider-runnable-track {
+    input[type=range]::-webkit-slider-runnable-track, input[type=range]::-moz-range-track {
         background: #0000;
         border: 0.2px solid #0006;
         width: 100%;
         height: 6px;
         cursor: pointer;
     }
+
     input[type=range]::-webkit-slider-thumb {
         width: 2px;
         height: 10px;
-        margin-top: -5px;
         background: #FFFF;
+        border: none;
         cursor: pointer;
         -webkit-appearance: none;
     }
-    input[type=range]::-moz-range-track {
-    background: #3071a9;
-    border: 0.2px solid #010101;
-    border-radius: 1.3px;
-    width: 100%;
-    height: 8.4px;
-    cursor: pointer;
-    }
+
     input[type=range]::-moz-range-thumb {
-    width: 16px;
-    height: 36px;
-    background: #ffffff;
-    border: 1px solid #000000;
-    border-radius: 3px;
-    cursor: pointer;
+        width: 2px;
+        height: 10px;
+        background: #FFFF;
+        border: none;
+        cursor: pointer;
     }
-    input[type=range]::-ms-track {
-    background: transparent;
-    border-color: transparent;
-    border-width: 14.8px 0;
-    color: transparent;
-    width: 100%;
-    height: 8.4px;
-    cursor: pointer;
-    }
-    input[type=range]::-ms-fill-lower {
-    background: #2a6495;
-    border: 0.2px solid #010101;
-    border-radius: 2.6px;
-    }
-    input[type=range]::-ms-fill-upper {
-    background: #3071a9;
-    border: 0.2px solid #010101;
-    border-radius: 2.6px;
-    }
-    input[type=range]::-ms-thumb {
-    width: 16px;
-    height: 36px;
-    background: #ffffff;
-    border: 1px solid #000000;
-    border-radius: 3px;
-    cursor: pointer;
-    margin-top: 0px;
-    /*Needed to keep the Edge thumb centred*/
-    }
-    input[type=range]:focus::-ms-fill-lower {
-    background: #3071a9;
-    }
-    input[type=range]:focus::-ms-fill-upper {
-    background: #367ebd;
-    }
+
+
 
 
 </style>

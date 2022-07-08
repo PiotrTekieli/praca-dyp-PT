@@ -28,9 +28,12 @@ export default class ToolManager {
     }
 
     switchTool(toolName) {
+
         console.log("Tool switched to: ", toolName)
-        if (get(currentTool))
+        if (get(currentTool)) {
             get(currentTool).cancel()
+            get(currentTool).saveSettings?.()
+        }
         currentTool.set(toolList[toolName])
         toolSettings.setWidth(toolList[toolName]?.strokeWidth)
         toolSettings.setOpacity(toolList[toolName]?.opacity)

@@ -16,7 +16,7 @@ export default class Eraser {
 
 
     pointerDown(event, pointer, context) {
-        this.strokeWidth = get(toolSettings).width
+        this.saveSettings()
 
         p = pointer
         ctx = context
@@ -49,5 +49,9 @@ export default class Eraser {
             drawing = false
             return true
         }
+    }
+
+    saveSettings() {
+        this.strokeWidth = get(toolSettings).width
     }
 }

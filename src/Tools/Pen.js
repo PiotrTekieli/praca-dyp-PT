@@ -17,8 +17,7 @@ export default class Pen {
 
 
     pointerDown(event, pointer, context) {
-        this.strokeWidth = get(toolSettings).width
-        this.opacity = get(toolSettings).opacity
+        this.saveSettings()
         this.color = get(toolSettings).colors[get(toolSettings).selectedColor]
 
         p = pointer
@@ -54,7 +53,8 @@ export default class Pen {
         }
     }
 
-    changeColor(color) {
-        this.color = color;
+    saveSettings() {
+        this.strokeWidth = get(toolSettings).width
+        this.opacity = get(toolSettings).opacity
     }
 }
