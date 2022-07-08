@@ -11,6 +11,7 @@ export default class Eraser {
     icon = 'favicon.ico'
     useEditingLayer = false;
     strokeWidth = 50
+
     pressure = true
 
 

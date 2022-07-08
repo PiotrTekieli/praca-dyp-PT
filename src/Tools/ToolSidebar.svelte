@@ -9,15 +9,28 @@
 
     export let toolManager
     let widthSlider
+    let opacitySlider
+
     let colorWheel
 
     $: currentToolName = currentTool.hasTempTool() ? currentToolName : $currentTool.name
-    $: $toolSettings?.width, UpdateSlider()
+    $: $currentTool.name, UpdateSliders()
     $: $toolSettings.selectedColor, UpdateWheel()
 
-    function UpdateSlider() {
-        if (widthSlider)
+    $: widthSlider, UpdateSliders()
+    $: opacitySlider, UpdateSliders()
+
+
+    function UpdateSliders() {
+        if (widthSlider) {
             widthSlider.value = $toolSettings?.width
+            addGradient(widthSlider)
+        }
+        if (opacitySlider) {
+            opacitySlider.value = $toolSettings?.opacity * 100
+            addGradient(opacitySlider)
+        }
+
     }
 
     function UpdateWheel() {
@@ -37,14 +50,23 @@
             }
         })
 
-
-        UpdateSlider()
+        UpdateSliders()
     })
 
     let toolList = Object.values(toolManager.getToolList())
 
     function switchTool(event) {
         toolManager.switchTool(event.detail.name)
+    }
+
+    function addGradient(o) {
+        if (!o)
+            return
+        const colorFill = "#aaa"
+        const colorRest = "#0006"
+
+        var value = o.value / o.max * 100
+        o.style.background = `linear-gradient(to right, ${colorFill} 0%, ${colorFill} ${value}%, ${colorRest} ${value}%, ${colorRest} 100%)`
     }
 </script>
 
@@ -55,41 +77,63 @@
         {/each}
     </div>
     <div id="toolOptions">
-        Stroke Width:
-        <input bind:this={widthSlider} type="range" min="1" max="150" on:input={() => {toolSettings.set({width: widthSlider.value})}}> {widthSlider?.value}
+        <div>
+            {#if $toolSettings?.width}
+                Stroke Width:
+                <input bind:this={widthSlider} type="range" min="1" max="150" on:input={() => {addGradient(widthSlider); toolSettings.setWidth(widthSlider.value)}}>
+                <span class="rangeValue">{widthSlider?.value}</span>
+            {/if}
+
+            {#if $toolSettings?.opacity}
+                Opacity:
+                <input bind:this={opacitySlider} type="range" min="1" max="100" on:input={() => {addGradient(opacitySlider); toolSettings.setOpacity(opacitySlider.value / 100)}}>
+                <span class="rangeValue">{opacitySlider?.value}</span>
+            {/if}
+        </div>
 
         <div id="colorWheel">
             <span style={`--color: ${$toolSettings.colors[$toolSettings.selectedColor]}`}>
+                <hr>
                 <div id="colorDisplay"></div>
                 {colorWheel?.rgb}
             </span>
         </div>
+
+        <hr>
     </div>
 </div>
 
 <style>
     div {
+        --gap: 8px;
+        --padding: 8px;
+        --lineWidth: 2px;
+        --lineColor: #0006;
+        --backgroundColor: rgb(65, 63, 68);
+
         height: 100vh;
         box-sizing: border-box;
         position: relative;
         z-index: 1;
         user-select: none;
         color: white;
+        overflow: hidden;
     }
 
     #sidebarContainer {
         width: calc(200px + 36px);
-        background-color: rgb(65, 63, 68);
+        background-color: var(--backgroundColor);
 
-        box-shadow: 1px 0px 4px #0005;
+        box-shadow: var(--lineWidth) 0px 4px var(--lineColor);
         display: flex;
         flex-direction: row;
     }
 
     #toolsContainer {
-        background-color: rgb(65, 63, 68);
-        box-shadow: 1px 0px 4px #0005;
+        background-color: var(--backgroundColor);
+        box-shadow: var(--lineWidth) 0px 4px var(--lineColor);
         padding: 4px;
+        width: 40px;
         display: flex;
         flex-direction: column;
         gap: 5px;
@@ -97,32 +141,121 @@
 
     #toolOptions {
         width: 100%;
+    }
 
+    #toolOptions div {
+        width: 100%;
+        height: auto;
+        padding: var(--padding);
+    }
+
+    #toolOptions .rangeValue {
+        text-align: right;
+        width: 4ex;
+        display: inline-block;
     }
 
     #colorWheel {
-        height: auto;
+        border-top: var(--lineWidth) var(--lineColor) solid;
         position: absolute;
-        bottom: 8px;
         display: flex;
         flex-direction: column-reverse;
+        bottom: var(--padding);
         gap: 5px;
         text-align: right;
     }
 
     #colorDisplay {
-        width: 12px;
-        height: 12px;
-        left: 4px;
-        bottom: 4px;
+        width: 0.8em !important;
+        height: 0.8em !important;
+        margin: 0.2em;
+        padding: 0 !important;
+        box-sizing: border-box;
+        right: calc(12 * 1ex);
+        bottom: var(--padding);
         position: absolute;
         display: inline-block;
         background-color: var(--color);
         border: 1px solid black;
     }
 
-    #colorWheel span {
-        border-top: 1px solid black;
+    hr {
+        border-color: var(--lineColor);
+        margin: var(--gap) -20px;
+    }
+
+    input[type=range] {
+        width: calc(100% - 5ex);
+        margin: 12px 0;
+        background-color: transparent;
+        -webkit-appearance: none;
+        outline: none;
+    }
+    input[type=range]::-webkit-slider-runnable-track {
+        background: #0000;
+        border: 0.2px solid #0006;
+        width: 100%;
+        height: 6px;
+        cursor: pointer;
+    }
+    input[type=range]::-webkit-slider-thumb {
+        width: 2px;
+        height: 10px;
+        margin-top: -5px;
+        background: #FFFF;
+        cursor: pointer;
+        -webkit-appearance: none;
+    }
+    input[type=range]::-moz-range-track {
+    background: #3071a9;
+    border: 0.2px solid #010101;
+    border-radius: 1.3px;
+    width: 100%;
+    height: 8.4px;
+    cursor: pointer;
+    }
+    input[type=range]::-moz-range-thumb {
+    width: 16px;
+    height: 36px;
+    background: #ffffff;
+    border: 1px solid #000000;
+    border-radius: 3px;
+    cursor: pointer;
+    }
+    input[type=range]::-ms-track {
+    background: transparent;
+    border-color: transparent;
+    border-width: 14.8px 0;
+    color: transparent;
+    width: 100%;
+    height: 8.4px;
+    cursor: pointer;
+    }
+    input[type=range]::-ms-fill-lower {
+    background: #2a6495;
+    border: 0.2px solid #010101;
+    border-radius: 2.6px;
+    }
+    input[type=range]::-ms-fill-upper {
+    background: #3071a9;
+    border: 0.2px solid #010101;
+    border-radius: 2.6px;
+    }
+    input[type=range]::-ms-thumb {
+    width: 16px;
+    height: 36px;
+    background: #ffffff;
+    border: 1px solid #000000;
+    border-radius: 3px;
+    cursor: pointer;
+    margin-top: 0px;
+    /*Needed to keep the Edge thumb centred*/
+    }
+    input[type=range]:focus::-ms-fill-lower {
+    background: #3071a9;
+    }
+    input[type=range]:focus::-ms-fill-upper {
+    background: #367ebd;
     }
 
 

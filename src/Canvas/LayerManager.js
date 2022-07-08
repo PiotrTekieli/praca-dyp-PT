@@ -1,6 +1,6 @@
 import { get } from "svelte/store"
 import { Layer } from "./Layer"
-import { currentContext } from "../lib/stores"
+import { currentContext, toolSettings } from "../lib/stores"
 import History from './History'
 
 let selectedLayerIndex = 0
@@ -113,7 +113,8 @@ export default class LayerManager {
     refreshMainCanvas() {           // on modifying the current canvas in any way (drawing, opacity or blend mode)
         clear(drawingLayer.context)
         this.drawLayerPlain(drawingLayer.context, layerList[selectedLayerIndex])
-        this.drawLayerPlain(drawingLayer.context, editingLayer)
+        editingLayer.opacity = get(toolSettings).opacity
+        this.drawLayer(drawingLayer.context, editingLayer)
         drawingLayer.opacity = layerList[selectedLayerIndex].opacity
         drawingLayer.blendMode = layerList[selectedLayerIndex].blendMode
 
@@ -171,7 +172,10 @@ export default class LayerManager {
 
     pushEditingLayer() {
         var ctx = get(currentContext)
+        ctx.save()
+        ctx.globalAlpha = editingLayer.opacity
         ctx.drawImage(editingLayer.canvas, 0, 0)
+        ctx.restore()
         clear(editingLayer.context)
         this.refreshMainCanvas()
     }

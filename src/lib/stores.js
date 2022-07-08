@@ -267,9 +267,12 @@ function createToolSettingsStore() {
 
     return {
         subscribe,
-        set: (options) => {
-            settings.width = options?.width ?? settings.width
-            settings.opacity = options?.opacity ?? settings.opacity
+        setWidth: (width) => {
+            settings.width = width
+            set(settings)
+        },
+        setOpacity: (opacity) => {
+            settings.opacity = opacity
             set(settings)
         },
         setColor: (color) => {

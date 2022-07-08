@@ -11,12 +11,14 @@ export default class Pen {
     icon = 'favicon.ico'
     useEditingLayer = true;
     strokeWidth = 20
+    opacity = 1
     pressure = true
     color = 'black'
 
 
     pointerDown(event, pointer, context) {
         this.strokeWidth = get(toolSettings).width
+        this.opacity = get(toolSettings).opacity
         this.color = get(toolSettings).colors[get(toolSettings).selectedColor]
 
         p = pointer
