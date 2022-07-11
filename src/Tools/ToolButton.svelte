@@ -14,7 +14,7 @@
 </script>
 
 
-<button on:click={() => switchTool(tool.name)} class={currentToolName == tool.name ? "selected" : ""} tabindex="-1"
+<button on:click={() => switchTool(tool.name)} class={currentToolName == tool.displayName ? "selected" : ""} tabindex="-1"
     style="background-image: url({tool?.icon})">
 </button>
 
@@ -29,7 +29,7 @@
         background-color: transparent;
         border: none;
         border-radius: 1px;
-
+        flex-shrink: 0;
     }
 
     button:hover {

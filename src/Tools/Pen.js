@@ -7,6 +7,7 @@ var ctx
 var drawing = false
 
 export default class Pen {
+    displayName = 'Hard Round Pen'
     name = 'pen'
     icon = 'favicon.ico'
     useEditingLayer = true;

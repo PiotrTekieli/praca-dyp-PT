@@ -7,6 +7,7 @@ var ctx
 var drawing = false
 
 export default class Eraser {
+    displayName = 'Hard Round Eraser'
     name = 'eraser'
     icon = 'favicon.ico'
     useEditingLayer = false;

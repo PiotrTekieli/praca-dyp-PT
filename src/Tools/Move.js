@@ -6,6 +6,7 @@ var startPosition
 var dragging = false
 
 export default class Move {
+    displayName = 'Move'
     name = 'move'
     icon = 'favicon.ico'
     cursor = 'grab'

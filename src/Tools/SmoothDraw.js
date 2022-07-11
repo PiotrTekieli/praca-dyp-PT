@@ -47,6 +47,14 @@ export function Draw() {
         while(progress < 1) {
             var position = getQuadraticCurvePoint(beginPoint.x, beginPoint.y, controlPoint.x, controlPoint.y, endPoint.x, endPoint.y, progress)
             ctx.arc(position.x, position.y, lerp(beginPoint.pressure, lastPoint.pressure, progress) * strokeWidth * 0.5, 0, 2 * Math.PI)
+
+            /*var gradient = ctx.createRadialGradient(position.x, position.y, 0, position.x, position.y, lerp(beginPoint.pressure, lastPoint.pressure, progress) * strokeWidth * 0.5)
+            gradient.addColorStop(0, '#0002')
+            gradient.addColorStop(0.3, '#0001')
+            gradient.addColorStop(1, '#0000')
+            ctx.fillStyle = gradient
+            ctx.fillRect(0, 0, 660, 600);*/
+
             progress += 1 / mag
         }
 

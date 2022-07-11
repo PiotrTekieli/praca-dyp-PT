@@ -7,6 +7,7 @@ var comparePosition
 var dragging = false
 
 export default class Zoom {
+    displayName = 'Zoom'
     name = 'zoom'
     icon = 'favicon.ico'
     cursor = 'zoom-in'

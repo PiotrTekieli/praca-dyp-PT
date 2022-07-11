@@ -13,7 +13,7 @@
 
     let colorWheel
 
-    $: currentToolName = currentTool.hasTempTool() ? currentToolName : $currentTool.name
+    $: currentToolName = currentTool.hasTempTool() ? currentToolName : $currentTool.displayName
     $: $currentTool.name, UpdateSliders()
     $: $toolSettings.selectedColor, UpdateWheel()
 
@@ -22,6 +22,9 @@
 
 
     function UpdateSliders() {
+        if (currentTool.hasTempTool())
+            return
+
         if (widthSlider) {
             widthSlider.value = $toolSettings?.width
             addGradient(widthSlider)
@@ -59,6 +62,11 @@
         toolManager.switchTool(event.detail.name)
     }
 
+    function switchColor(index) {
+        if ($toolSettings.selectedColor != index)
+            toolSettings.switchColor()
+    }
+
     function addGradient(o) {
         if (!o)
             return
@@ -74,13 +82,25 @@
     <div id="toolsContainer">
         {#each toolList as tool}
             <ToolButton {tool} {currentToolName} on:switch-tool={switchTool}></ToolButton>
+            {#if tool.name == 'eraser'}
+            <hr>
+            {/if}
         {/each}
+        <hr>
+        <div id="colors" style='--color1: {$toolSettings.colors[0]}; --color2: {$toolSettings.colors[1]}'>
+            <div id="color1" class={$toolSettings.selectedColor == 0 ? 'selected' : ''} on:click={() => switchColor(0)}></div>
+            <div id="color2" class={$toolSettings.selectedColor == 1 ? 'selected' : ''} on:click={() => switchColor(1)}></div>
+        </div>
     </div>
     <div id="toolOptions">
         <div>
+            <div>
+                {currentToolName}
+            </div>
+            <hr>
             {#if $toolSettings?.width}
                 Stroke Width:
-                <input bind:this={widthSlider} type="range" min="1" max="150" on:input={() => {addGradient(widthSlider); toolSettings.setWidth(widthSlider.value)}}>
+                <input bind:this={widthSlider} type="range" min="1" max="150" step="0.1" on:input={() => {addGradient(widthSlider); toolSettings.setWidth(widthSlider.value)}}>
                 <span class="rangeValue">{$toolSettings.width}</span>
             {/if}
 
@@ -99,7 +119,6 @@
             </span>
         </div>
 
-        <hr>
     </div>
 </div>
 
@@ -108,7 +127,7 @@
         --gap: 8px;
         --padding: 8px;
         --lineWidth: 2px;
-        --lineColor: #0006;
+        --lineColor: #262729;
         --backgroundColor: rgb(65, 63, 68);
 
         height: 100vh;
@@ -139,6 +158,11 @@
         gap: 5px;
     }
 
+    #toolsContainer hr {
+        margin: 0px 0px;
+
+    }
+
     #toolOptions {
         width: 100%;
     }
@@ -151,7 +175,7 @@
 
     #toolOptions .rangeValue {
         text-align: right;
-        width: 4ex;
+        width: 5.8ex;
         float: right;
         line-height: 30px;
     }
@@ -166,6 +190,40 @@
         text-align: right;
     }
 
+    #colors {
+        width: 27px;
+        margin: 0px auto;
+
+        overflow: visible;
+    }
+
+    #colors #color1, #colors #color2 {
+        position: absolute;
+        width: 18px;
+        height: 18px;
+        border: 1px solid black;
+    }
+
+    #colors #color1:hover:not(.selected), #colors #color2:hover:not(.selected) {
+        border-color: #CCC
+    }
+
+
+    #colors #color1 {
+        background-color: var(--color1);
+    }
+
+    #colors #color2 {
+        left: 9px;
+        top: 9px;
+
+        background-color: var(--color2);
+    }
+
+    #color1.selected, #color2.selected {
+        z-index: 2;
+        box-shadow: 0 0 0 1px white;
+    }
     #colorDisplay {
         width: 0.8em !important;
         height: 0.8em !important;
@@ -186,7 +244,7 @@
     }
 
     input[type=range] {
-        width: calc(100% - 5ex);
+        width: calc(100% - 6ex);
         margin: 12px 0;
         height: 6px;
         background-color: transparent;

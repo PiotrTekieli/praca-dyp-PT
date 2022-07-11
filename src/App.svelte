@@ -16,6 +16,7 @@
     y: 500
   }
 
+  let mainContainer
   let canvasContainer
   let baseCanvas
 
@@ -70,7 +71,8 @@
 
     pointer = new Pointer(baseCanvas, canvasSize)
 
-    canvasTranslation.setup(baseCanvas)
+    canvasTranslation.setup(baseCanvas, mainContainer)
+    canvasTranslation.centerView()
   })
 
 
@@ -250,20 +252,23 @@
   on:blur={handleOnFocus}
 ></svelte:window>
 
-<ToolSidebar {toolManager}></ToolSidebar>
-<main style={cursorCss}
-  on:pointerdown={handlePointerDown}
-  on:pointermove={handlePointerMove}
-  on:pointerup={handlePointerUp}
-  on:pointerleave={handlePointerLost}
+<main>
+  <ToolSidebar {toolManager}></ToolSidebar>
+  <div id="mainContainter" bind:this={mainContainer} style={cursorCss}
+    on:pointerdown={handlePointerDown}
+    on:pointermove={handlePointerMove}
+    on:pointerup={handlePointerUp}
+    on:pointerleave={handlePointerLost}
 
-  on:wheel={handleMouseWheel}>
+    on:wheel={handleMouseWheel}>
 
-  <div bind:this={canvasContainer} style={cssCanvasTranslate}>
-    <canvas class="{$canvasTranslation.scale > 1.25 ? 'zoom' : 'no-zoom'}" bind:this={baseCanvas} width={canvasSize.x} height={canvasSize.y}></canvas>
+    <div id="canvasContainer" bind:this={canvasContainer} style={cssCanvasTranslate}>
+      <canvas class="{$canvasTranslation.scale > 1.25 ? 'zoom' : 'no-zoom'}" bind:this={baseCanvas} width={canvasSize.x} height={canvasSize.y}></canvas>
+    </div>
+
   </div>
-
 </main>
+
 
 <style>
   :global(body) {
@@ -273,7 +278,7 @@
     font-size: 14px;
   }
 
-  div {
+  #canvasContainer {
     background-color: white;
     width: calc(var(--sizeX) * 1px);
     height: calc(var(--sizeY) * 1px);
@@ -285,12 +290,18 @@
   }
 
   main {
-    width: 100vw;
-    height: 100vh;
+    --leftUIoffset: 236px;
+    --rightUIoffset: 0px;
+
     background-color: gray;
+  }
+
+  #mainContainter {
+    width: calc(100vw - var(--leftUIoffset) - var(--rightUIoffset));
+    height: 100vh;
     position: fixed;
     top: 0;
-    left: 0;
+    left: var(--leftUIoffset);
     cursor: var(--cursor)
   }
 
