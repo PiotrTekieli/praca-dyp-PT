@@ -7,6 +7,7 @@ var strokeWidth
 var pointer
 var ctx
 var penTip
+var progress = 0
 
 export function Setup(width, p, context, penTipFunction) {
     strokeWidth = width
@@ -15,11 +16,12 @@ export function Setup(width, p, context, penTipFunction) {
     penTip = penTipFunction
 
     beginPoint = pointer.position
-    ctx.save()
+    /*ctx.save()
     ctx.translate(beginPoint.x, beginPoint.y)
     ctx.rotate(-get(canvasTranslation).rotation)
+    ctx.globalAlpha = beginPoint.pressure
     penTip?.(ctx, beginPoint.pressure * strokeWidth)
-    ctx.restore()
+    ctx.restore()*/
 }
 
 function _getQBezierValue(t, p1, p2, p3) {
@@ -39,6 +41,7 @@ function lerp(a, b, n) {
   }
 
 export function Draw() {
+    console.log(pointer.getLastTwoPoints())
 
     if (pointer.getPointsLenght() > 2) {
         const lastTwoPoints = pointer.getLastTwoPoints()
@@ -50,18 +53,22 @@ export function Draw() {
         const direction = endPoint.Subtract(beginPoint)
         var mag = Math.sqrt(direction.x * direction.x + direction.y * direction.y)
 
-        var progress = 0;
         while(progress < 1) {
             var position = getQuadraticCurvePoint(beginPoint.x, beginPoint.y, controlPoint.x, controlPoint.y, endPoint.x, endPoint.y, progress)
             ctx.save()
             ctx.translate(position.x, position.y)
             ctx.rotate(-get(canvasTranslation).rotation)
+            //ctx.globalAlpha = 0.1//lerp(beginPoint.pressure, lastPoint.pressure, progress)
             penTip?.(ctx, lerp(beginPoint.pressure, lastPoint.pressure, progress) * strokeWidth)
             ctx.restore()
             //ctx.arc(position.x, position.y, lerp(beginPoint.pressure, lastPoint.pressure, progress) * strokeWidth * 0.5, 0, 2 * Math.PI)
 
             progress += 1 / mag
         }
+        progress--
+
+        if (progress > 1)
+            progress = 0
 
         beginPoint = endPoint;
         beginPoint.pressure = lastPoint.pressure

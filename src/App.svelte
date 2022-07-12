@@ -91,6 +91,9 @@
   }
 
   function handlePointerMove(e) {
+    /*if (e.pointerType == "mouse")  // needed to work with windows ink
+      return*/
+
     if (drawing) {
       pointer.set(e)
       tool.pointerMove(e)

@@ -54,7 +54,6 @@ function getCurrentBoundingBox(currentState, baseCanvas) {
 function clampToScreen(boundingBox, main) {
     var currentState = boundingBox.currentState
     var mainRect = main.getBoundingClientRect()
-    console.log(mainRect)
     if (boundingBox.left > mainRect.right - screenOffset) {
         currentState.left -= boundingBox.left - mainRect.right + screenOffset
     }
