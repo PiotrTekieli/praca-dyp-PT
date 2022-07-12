@@ -37,6 +37,7 @@ export default class ToolManager {
         currentTool.set(toolList[toolName])
         toolSettings.setWidth(toolList[toolName]?.strokeWidth)
         toolSettings.setOpacity(toolList[toolName]?.opacity)
+        toolSettings.setMode(toolList[toolName]?.mode)
     }
 
     switchToolTemp(toolName) {

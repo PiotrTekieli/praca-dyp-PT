@@ -27,8 +27,7 @@
         background-repeat: no-repeat;
         background-size: 70%;
         background-color: transparent;
-        border: none;
-        border-radius: 1px;
+        border: solid 1px transparent;
         flex-shrink: 0;
     }
 
@@ -42,6 +41,6 @@
 
     .selected {
         background-color: #FFF2;
-        border: solid 1px black;
+        border-color: black;
     }
 </style>

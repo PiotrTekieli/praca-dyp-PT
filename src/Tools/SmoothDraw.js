@@ -1,17 +1,25 @@
+import { canvasTranslation } from "../lib/stores"
+import { get } from "svelte/store"
+
+
 var beginPoint
 var strokeWidth
 var pointer
 var ctx
+var penTip
 
-export function Setup(width, p, context) {
+export function Setup(width, p, context, penTipFunction) {
     strokeWidth = width
     pointer = p
     ctx = context
+    penTip = penTipFunction
 
     beginPoint = pointer.position
-    ctx.beginPath()
-    ctx.arc(beginPoint.x, beginPoint.y, beginPoint.pressure * strokeWidth * 0.5, 0, 2 * Math.PI)
-    ctx.fill()
+    ctx.save()
+    ctx.translate(beginPoint.x, beginPoint.y)
+    ctx.rotate(-get(canvasTranslation).rotation)
+    penTip?.(ctx, beginPoint.pressure * strokeWidth)
+    ctx.restore()
 }
 
 function _getQBezierValue(t, p1, p2, p3) {
@@ -43,22 +51,18 @@ export function Draw() {
         var mag = Math.sqrt(direction.x * direction.x + direction.y * direction.y)
 
         var progress = 0;
-        ctx.beginPath()
         while(progress < 1) {
             var position = getQuadraticCurvePoint(beginPoint.x, beginPoint.y, controlPoint.x, controlPoint.y, endPoint.x, endPoint.y, progress)
-            ctx.arc(position.x, position.y, lerp(beginPoint.pressure, lastPoint.pressure, progress) * strokeWidth * 0.5, 0, 2 * Math.PI)
-
-            /*var gradient = ctx.createRadialGradient(position.x, position.y, 0, position.x, position.y, lerp(beginPoint.pressure, lastPoint.pressure, progress) * strokeWidth * 0.5)
-            gradient.addColorStop(0, '#0002')
-            gradient.addColorStop(0.3, '#0001')
-            gradient.addColorStop(1, '#0000')
-            ctx.fillStyle = gradient
-            ctx.fillRect(0, 0, 660, 600);*/
+            ctx.save()
+            ctx.translate(position.x, position.y)
+            ctx.rotate(-get(canvasTranslation).rotation)
+            penTip?.(ctx, lerp(beginPoint.pressure, lastPoint.pressure, progress) * strokeWidth)
+            ctx.restore()
+            //ctx.arc(position.x, position.y, lerp(beginPoint.pressure, lastPoint.pressure, progress) * strokeWidth * 0.5, 0, 2 * Math.PI)
 
             progress += 1 / mag
         }
 
-        ctx.fill();
         beginPoint = endPoint;
         beginPoint.pressure = lastPoint.pressure
     }

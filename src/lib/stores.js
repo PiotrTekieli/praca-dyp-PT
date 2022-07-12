@@ -114,7 +114,7 @@ function createCanvasTranslationStore() {
             }
         },
         centerView: () => {
-            var windowCenter =getScreenCenter(mainContainer)
+            var windowCenter = getScreenCenter(mainContainer)
             currentState.left = windowCenter.x - canvasSize.x * 0.5
             currentState.top = windowCenter.y - canvasSize.y * 0.5
         },
@@ -234,6 +234,9 @@ function createToolStore() {
             if (!temp)
                 selected = tool
         },
+        getSelected: () => {
+            return selected
+        },
         hasTempTool: () => {
             return (temporary != null)
         },
@@ -295,7 +298,8 @@ function createToolSettingsStore() {
         width: 1,
         selectedColor: 0,
         colors: ["#000000", "#FFFFFF"],
-        opacity: 1
+        opacity: 1,
+        mode: 0
     }
 
     return {
@@ -306,6 +310,10 @@ function createToolSettingsStore() {
         },
         setOpacity: (opacity) => {
             settings.opacity = opacity
+            set(settings)
+        },
+        setMode: (mode) => {
+            settings.mode = mode
             set(settings)
         },
         setColor: (color) => {

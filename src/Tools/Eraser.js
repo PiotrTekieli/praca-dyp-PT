@@ -12,7 +12,8 @@ export default class Eraser {
     icon = 'favicon.ico'
     useEditingLayer = false;
     strokeWidth = 50
-
+    mode = 1
+    modeIcons = ['favicon.ico', 'favicon.ico']
     pressure = true
 
 
@@ -27,7 +28,19 @@ export default class Eraser {
         ctx.save();
         ctx.globalCompositeOperation = "destination-out"
 
-        Setup(this.strokeWidth, p, ctx)
+        var penTip = (ctx, width) => {
+            ctx.beginPath()
+
+            if (this.mode == 1)
+                ctx.arc(0, 0, width * 0.5, 0, 2 * Math.PI)
+            else
+                ctx.rect(-width * 0.5, -width * 0.5, width, width)
+
+
+            ctx.fill()
+        }
+
+        Setup(this.strokeWidth, p, ctx, penTip)
         drawing = true
     }
 
@@ -54,5 +67,6 @@ export default class Eraser {
 
     saveSettings() {
         this.strokeWidth = get(toolSettings).width
+        this.mode = get(toolSettings).mode
     }
 }

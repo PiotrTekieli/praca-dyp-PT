@@ -98,6 +98,15 @@
                 {currentToolName}
             </div>
             <hr>
+            {#if $toolSettings?.mode}
+                Mode:
+                <div id="modeButtons">
+                {#each currentTool.getSelected()?.modeIcons as icon, index}
+                    <button style="background-image: url({icon})" class={$toolSettings.mode == index + 1 ? 'selected' : ''} on:click={() => toolSettings.setMode(index + 1)}></button>
+                {/each}
+                </div>
+            {/if}
+
             {#if $toolSettings?.width}
                 Stroke Width:
                 <input bind:this={widthSlider} type="range" min="1" max="150" step="0.1" on:input={() => {addGradient(widthSlider); toolSettings.setWidth(widthSlider.value)}}>
@@ -109,6 +118,7 @@
                 <input bind:this={opacitySlider} type="range" min="1" max="100" on:input={() => {addGradient(opacitySlider); toolSettings.setOpacity(opacitySlider.value / 100)}}>
                 <span class="rangeValue">{$toolSettings.opacity}</span>
             {/if}
+
         </div>
 
         <div id="colorWheel">
@@ -127,7 +137,7 @@
         --gap: 8px;
         --padding: 8px;
         --lineWidth: 2px;
-        --lineColor: #262729;
+        --lineColor: #292826;
         --backgroundColor: rgb(65, 63, 68);
 
         height: 100vh;
@@ -165,6 +175,35 @@
 
     #toolOptions {
         width: 100%;
+    }
+
+    #modeButtons {
+        padding: 4px 8px !important;
+    }
+
+    #modeButtons button {
+        height: 28px;
+        width: 28px;
+        padding: auto auto;
+        background-position: center;
+        background-repeat: no-repeat;
+        background-size: 70%;
+        background-color: transparent;
+        border: solid 1px transparent;
+        flex-shrink: 0;
+    }
+
+    #modeButtons button:hover {
+        background-color: #FFF2;
+    }
+
+    #modeButtons button:focus {
+        outline:none
+    }
+
+    #modeButtons .selected {
+        background-color: #FFF2;
+        border-color: black;
     }
 
     #toolOptions div {

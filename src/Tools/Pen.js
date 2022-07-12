@@ -13,6 +13,8 @@ export default class Pen {
     useEditingLayer = true;
     strokeWidth = 20
     opacity = 1
+    mode = 1
+    modeIcons = ['favicon.ico', 'favicon.ico']
     pressure = true
     color = 'black'
 
@@ -29,7 +31,18 @@ export default class Pen {
         ctx.save();
         ctx.fillStyle = this.color
 
-        Setup(this.strokeWidth, p, ctx)
+        var penTip = (ctx, width) => {
+            ctx.beginPath()
+
+            if (this.mode == 1)
+                ctx.arc(0, 0, width * 0.5, 0, 2 * Math.PI)
+            else
+                ctx.rect(-width * 0.5, -width * 0.5, width, width)
+
+            ctx.fill()
+        }
+
+        Setup(this.strokeWidth, p, ctx, penTip)
         drawing = true
     }
 
@@ -57,5 +70,6 @@ export default class Pen {
     saveSettings() {
         this.strokeWidth = get(toolSettings).width
         this.opacity = get(toolSettings).opacity
+        this.mode = get(toolSettings).mode
     }
 }
