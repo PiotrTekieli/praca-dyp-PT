@@ -163,10 +163,11 @@
         background-color: var(--mainColor);
         box-shadow: var(--lineWidth) 0px 4px var(--lineColor);
         padding: 4px;
-        width: 40px;
+        width: 36px;
         display: flex;
         flex-direction: column;
         gap: 5px;
+        flex-shrink: 0;
     }
 
     #toolsContainer hr {
@@ -218,6 +219,12 @@
         width: 5.8ex;
         float: right;
         line-height: 30px;
+    }
+
+    @media (max-height: 480px) {
+        #colorWheel {
+            display:none !important;
+        }
     }
 
     #colorWheel {

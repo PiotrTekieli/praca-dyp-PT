@@ -10,7 +10,7 @@
 #topBar {
     position: absolute;
     width: 100%;
-    height: 20px;
+    height: var(--topUIoffset);
     background-color: var(--mainColor);
     z-index: 2;
     text-align: center;
