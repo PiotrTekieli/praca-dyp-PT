@@ -6,9 +6,9 @@ var p
 var ctx
 var drawing = false
 
-export default class Pen {
-    displayName = 'Hard Round Pen'
-    name = 'pen'
+export default class Brush {
+    displayName = 'Hard Brush'
+    name = 'brush'
     icon = 'favicon.ico'
     useEditingLayer = true;
     strokeWidth = 20
@@ -31,7 +31,7 @@ export default class Pen {
         ctx.save();
         ctx.fillStyle = this.color
 
-        var penTip = (ctx, width) => {
+        var brushTip = (ctx, width) => {
             ctx.beginPath()
 
             if (this.mode == 1)
@@ -42,7 +42,7 @@ export default class Pen {
             ctx.fill()
         }
 
-        Setup(this.strokeWidth, p, ctx, penTip)
+        Setup(this.strokeWidth, p, ctx, brushTip)
         drawing = true
     }
 

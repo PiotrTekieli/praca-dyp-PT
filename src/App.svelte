@@ -171,7 +171,7 @@
 
       switch(pressedKey) {
         case 'KeyQ':
-          toolManager.switchTool("pen")
+          toolManager.switchTool("brush")
           break
 
         case 'KeyE':

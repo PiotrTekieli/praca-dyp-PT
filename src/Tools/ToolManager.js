@@ -1,7 +1,7 @@
 import { currentTool, toolSettings } from "../lib/stores"
 import History from "../Canvas/History"
 
-import Pen from "./Pen"
+import Brush from "./Brush"
 import Eraser from "./Eraser"
 import Move from "./Move"
 import Rotate from "./Rotate"
@@ -13,14 +13,14 @@ let toolList
 export default class ToolManager {
     constructor() {
         toolList = {
-            pen: new Pen(),
+            brush: new Brush(),
             eraser: new Eraser(),
             move: new Move(),
             rotate: new Rotate(),
             zoom: new Zoom(),
         }
 
-        this.switchTool("pen")
+        this.switchTool("brush")
     }
 
     getToolList() {

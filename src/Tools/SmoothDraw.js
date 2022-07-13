@@ -6,19 +6,19 @@ var beginPoint
 var strokeWidth
 var pointer
 var ctx
-var penTip
+var brushTip
 
-export function Setup(width, p, context, penTipFunction) {
+export function Setup(width, p, context, brushFunction) {
     strokeWidth = width
     pointer = p
     ctx = context
-    penTip = penTipFunction
+    brushTip = brushFunction
 
     beginPoint = pointer.position
     ctx.save()
     ctx.translate(beginPoint.x, beginPoint.y)
     ctx.rotate(-get(canvasTranslation).rotation)
-    penTip?.(ctx, beginPoint.pressure * strokeWidth)
+    brushTip?.(ctx, beginPoint.pressure * strokeWidth)
     ctx.restore()
 }
 
@@ -56,11 +56,13 @@ export function Draw() {
             ctx.save()
             ctx.translate(position.x, position.y)
             ctx.rotate(-get(canvasTranslation).rotation)
-            penTip?.(ctx, lerp(beginPoint.pressure, lastPoint.pressure, progress) * strokeWidth)
+            brushTip?.(ctx, lerp(beginPoint.pressure, lastPoint.pressure, progress) * strokeWidth)
             ctx.restore()
             //ctx.arc(position.x, position.y, lerp(beginPoint.pressure, lastPoint.pressure, progress) * strokeWidth * 0.5, 0, 2 * Math.PI)
 
-            progress += 1 / mag
+            if (mag != 0)
+                progress += 1 / mag
+            else progress++
         }
 
         beginPoint = endPoint;
