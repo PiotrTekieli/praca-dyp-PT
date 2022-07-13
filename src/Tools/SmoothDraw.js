@@ -41,8 +41,6 @@ function lerp(a, b, n) {
   }
 
 export function Draw() {
-    console.log(pointer.getLastTwoPoints())
-
     if (pointer.getPointsLenght() > 2) {
         const lastTwoPoints = pointer.getLastTwoPoints()
 

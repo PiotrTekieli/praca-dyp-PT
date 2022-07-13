@@ -6,6 +6,7 @@ import Eraser from "./Eraser"
 import Move from "./Move"
 import Rotate from "./Rotate"
 import Zoom from "./Zoom"
+import Figure from "./Figure"
 import { get } from "svelte/store"
 
 let toolList
@@ -13,11 +14,12 @@ let toolList
 export default class ToolManager {
     constructor() {
         toolList = {
-            brush: new Brush(),
-            eraser: new Eraser(),
             move: new Move(),
             rotate: new Rotate(),
             zoom: new Zoom(),
+            brush: new Brush(),
+            eraser: new Eraser(),
+            figure: new Figure()
         }
 
         this.switchTool("brush")

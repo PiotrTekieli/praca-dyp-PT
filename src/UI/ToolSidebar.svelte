@@ -82,7 +82,7 @@
     <div id="toolsContainer">
         {#each toolList as tool}
             <ToolButton {tool} {currentToolName} on:switch-tool={switchTool}></ToolButton>
-            {#if tool.name == 'eraser'}
+            {#if tool.name == 'eraser' || tool.name == "zoom"}
             <hr>
             {/if}
         {/each}
@@ -109,7 +109,11 @@
 
             {#if $toolSettings?.width}
                 Stroke Width:
-                <input bind:this={widthSlider} type="range" min="1" max="150" step="0.1" on:input={() => {addGradient(widthSlider); toolSettings.setWidth(widthSlider.value)}}>
+                <input bind:this={widthSlider} type="range" min="1" max="100" step="0.1" on:input={() => {addGradient(widthSlider);
+                    if (widthSlider.value < 70)
+                        toolSettings.setWidth(widthSlider.value)
+                    else
+                        toolSettings.setWidth(Math.round((widthSlider.value * 3 - 140) * 10) / 10)}}>
                 <span class="rangeValue">{$toolSettings.width}</span>
             {/if}
 
@@ -136,22 +140,19 @@
     div {
         --gap: 8px;
         --padding: 8px;
-        --lineWidth: 2px;
-        --lineColor: #292826;
-        --backgroundColor: rgb(65, 63, 68);
 
-        height: 100vh;
         box-sizing: border-box;
         position: relative;
         z-index: 1;
         user-select: none;
-        color: white;
         overflow: hidden;
     }
 
     #sidebarContainer {
         width: calc(200px + 36px);
-        background-color: var(--backgroundColor);
+        top: var(--topUIoffset);
+        height: calc(100vh - var(--topUIoffset));
+        background-color: var(--mainColor);
 
         box-shadow: var(--lineWidth) 0px 4px var(--lineColor);
         display: flex;
@@ -159,7 +160,7 @@
     }
 
     #toolsContainer {
-        background-color: var(--backgroundColor);
+        background-color: var(--mainColor);
         box-shadow: var(--lineWidth) 0px 4px var(--lineColor);
         padding: 4px;
         width: 40px;
@@ -231,7 +232,7 @@
 
     #colors {
         width: 27px;
-        margin: 0px auto;
+        margin: 4px auto;
 
         overflow: visible;
     }
@@ -264,12 +265,13 @@
         box-shadow: 0 0 0 1px white;
     }
     #colorDisplay {
-        width: 0.8em !important;
-        height: 0.8em !important;
+        width: 1em !important;
+        height: 1em !important;
         margin: 0.2em;
         padding: 0 !important;
         box-sizing: border-box;
-        right: calc(12 * 1ex);
+        /*right: calc(12 * 1ex);*/
+        left: 8px;
         bottom: var(--padding);
         position: absolute;
         display: inline-block;
@@ -284,10 +286,11 @@
 
     input[type=range] {
         width: calc(100% - 6ex);
-        margin: 12px 0;
-        height: 6px;
+        margin: 10px 0;
+        height: 12px;
         background-color: transparent;
         -webkit-appearance: none;
+        cursor: pointer;
         outline: none;
     }
     input[type=range]::-webkit-slider-runnable-track, input[type=range]::-moz-range-track {
@@ -300,7 +303,7 @@
 
     input[type=range]::-webkit-slider-thumb {
         width: 2px;
-        height: 10px;
+        height: 12px;
         background: #FFFF;
         border: none;
         cursor: pointer;
@@ -309,7 +312,7 @@
 
     input[type=range]::-moz-range-thumb {
         width: 2px;
-        height: 10px;
+        height: 12px;
         background: #FFFF;
         border: none;
         cursor: pointer;

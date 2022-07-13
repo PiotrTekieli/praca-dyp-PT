@@ -9,7 +9,10 @@
 
   import { Point } from "./Canvas/Point"
   import Pointer from './Canvas/Pointer'
-  import ToolSidebar from "./Tools/ToolSidebar.svelte"
+  import ToolSidebar from "./UI/ToolSidebar.svelte"
+  import TopBar from "./UI/TopBar.svelte";
+
+  let fileName = "Illustration"
 
   let canvasSize = {
     x: 600,
@@ -182,8 +185,7 @@
           break
 
         case 'KeyF':
-          canvasTranslation.set({top: 300 * Math.random(), left: 1000 * Math.random(), rotation: 360 * Math.random()})
-          console.log($canvasTranslation)
+          toolManager.switchTool("figure")
           break
 
         case 'KeyT':
@@ -256,6 +258,7 @@
 ></svelte:window>
 
 <main>
+  <TopBar fileProperties={{name: fileName, canvasSize: canvasSize}}></TopBar>
   <ToolSidebar {toolManager}></ToolSidebar>
   <div id="mainContainter" bind:this={mainContainer} style={cursorCss}
     on:pointerdown={handlePointerDown}
@@ -279,6 +282,11 @@
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen,
       Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
     font-size: 14px;
+
+    --lineWidth: 2px;
+    --lineColor: #292826;
+    --mainColor: rgb(65, 63, 68);
+    color: rgb(234, 235, 236);
   }
 
   #canvasContainer {
@@ -295,15 +303,18 @@
   main {
     --leftUIoffset: 236px;
     --rightUIoffset: 0px;
+    --topUIoffset: 20px;
 
+    height: 100vh;
+    width: 100vw;
     background-color: gray;
   }
 
   #mainContainter {
     width: calc(100vw - var(--leftUIoffset) - var(--rightUIoffset));
-    height: 100vh;
+    height: calc(100vh - var(--topUIoffset));
     position: fixed;
-    top: 0;
+    top: var(--topUIoffset);
     left: var(--leftUIoffset);
     cursor: var(--cursor)
   }
