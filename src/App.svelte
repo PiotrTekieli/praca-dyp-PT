@@ -91,6 +91,9 @@
   }
 
   function handlePointerMove(e) {
+    /*if (e.pointerType == "mouse")  // needed to work with windows ink
+      return*/
+
     if (drawing) {
       pointer.set(e)
       tool.pointerMove(e)
@@ -134,7 +137,7 @@
     if (modifierKeys.equals(["Shift"]))
       canvasTranslation.rotate(Math.sign(e.deltaY) * Math.PI / 180 * 15)
     else
-      canvasTranslation.zoom(Math.sign(e.deltaY) * 30, new Point(e.pageX, e.pageY))
+      canvasTranslation.zoom(-Math.sign(e.deltaY) * 30, new Point(e.pageX, e.pageY))
   }
 
 

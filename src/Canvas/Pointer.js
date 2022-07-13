@@ -70,7 +70,7 @@ export default class Pointer {
     }
 
     getLastTwoPoints() {
-        return points.slice(-3)
+        return points.slice(-2)
     }
 
     startPointRecording() {
