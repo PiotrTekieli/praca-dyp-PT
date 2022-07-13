@@ -64,11 +64,11 @@ export default class Figure {
     }
 
     cancel() {
-        ctx?.restore()
-
-        p = null
-        ctx = null
         if (drawing) {
+            ctx.restore()
+
+            p = null
+            ctx = null
             drawing = false
             return true
         }

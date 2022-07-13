@@ -25,9 +25,10 @@ export default class Brush {
         p = pointer
         ctx = context
 
+        drawing = true
         p.startPointRecording()
+        ctx.save()
 
-        ctx.save();
         ctx.fillStyle = this.color
 
         var brushTip = (ctx, width) => {
@@ -42,7 +43,6 @@ export default class Brush {
         }
 
         Setup(this.strokeWidth, p, ctx, brushTip)
-        drawing = true
     }
 
     pointerMove(event) {
@@ -55,12 +55,13 @@ export default class Brush {
     }
 
     cancel() {
-        p?.clearPoints()
-        ctx?.restore()
-
-        p = null
-        ctx = null
         if (drawing) {
+            p.clearPoints()
+            ctx.restore()
+
+            p = null
+            ctx = null
+
             drawing = false
             return true
         }

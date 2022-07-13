@@ -37,9 +37,11 @@ export default class Rotate {
     }
 
     cancel() {
-        p = null
+        if (dragging) {
+            p = null
 
-        dragging = false
+            dragging = false
+        }
         return false
     }
 

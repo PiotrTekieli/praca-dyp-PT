@@ -34,11 +34,13 @@ export default class Move {
     }
 
     cancel() {
-        this.cursor = 'grab'
-        p = null
-        startPosition = null
+        if (dragging) {
+            this.cursor = 'grab'
+            p = null
+            startPosition = null
 
-        dragging = false
+            dragging = false
+        }
         return false
     }
 
