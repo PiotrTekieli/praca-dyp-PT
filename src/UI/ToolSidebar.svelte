@@ -3,6 +3,7 @@
 
     import { currentTool, toolSettings } from "../lib/stores"
     import ToolButton from "./ToolButton.svelte"
+    import Button from "./Button.svelte";
 
     import "reinvented-color-wheel/css/reinvented-color-wheel.min.css"
     import ReinventedColorWheel from "reinvented-color-wheel"
@@ -103,7 +104,7 @@
                 <div id="modeButtons">
 
                     {#each $currentTool && currentTool.getSelected()?.modeIcons as icon, index}
-                        <button style="--icon: url({icon})" class={$toolSettings.mode == index + 1 ? 'selected' : ''} on:click={() => toolSettings.setMode(index + 1)}></button>
+                        <Button icon={icon} selected={$toolSettings.mode == index +1} on:click={() => toolSettings.setMode(index + 1)}></Button>
                     {/each}
 
                 </div>
@@ -183,43 +184,6 @@
 
     #modeButtons {
         padding: 4px 8px !important;
-    }
-
-    #modeButtons button:before {
-        content: "";
-        position: fixed;
-        transform: translate(-50%, -50%);
-        z-index: -1;
-        flex-shrink: 0;
-        width: 28px;
-        height: 28px;
-        background-position: center;
-        background-repeat: no-repeat;
-        background-size: 18px;
-        background-image: var(--icon);
-        filter: brightness(75%);
-    }
-
-    #modeButtons button {
-        height: 28px;
-        width: 28px;
-        background-color: transparent;
-        padding: auto auto;
-        border: solid 1px transparent;
-        flex-shrink: 0;
-    }
-
-    #modeButtons button:hover {
-        background-color: #FFF2;
-    }
-
-    #modeButtons button:focus {
-        outline:none
-    }
-
-    #modeButtons .selected {
-        background-color: #FFF2;
-        border-color: black;
     }
 
     #toolOptions div {

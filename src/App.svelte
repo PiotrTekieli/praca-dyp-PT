@@ -303,7 +303,7 @@
   main {
     --leftUIoffset: 236px;
     --rightUIoffset: 0px;
-    --topUIoffset: 18px;
+    --topUIoffset: 22px;
 
     height: 100vh;
     width: 100vw;
