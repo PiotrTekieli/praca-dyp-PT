@@ -47,6 +47,7 @@
             appendTo: document.getElementById("colorWheel"),
 
             wheelDiameter: 200-16,
+            wheelThickness: 16,
             wheelReflectsSaturation: false,
             hsv: [0, 0, 0],
             onChange: (color) => {
@@ -132,7 +133,7 @@
             <span style={`--color: ${$toolSettings.colors[$toolSettings.selectedColor]}`}>
                 <hr>
                 <div id="colorDisplay"></div>
-                {colorWheel?.rgb}
+                <span>{colorWheel?.rgb[0]}</span>; <span>{colorWheel?.rgb[1]}</span>; <span>{colorWheel?.rgb[2]}</span>
             </span>
         </div>
 
@@ -215,6 +216,11 @@
         text-align: right;
     }
 
+    #colorWheel span span {
+        width: 1.7em;
+        display:inline-block;
+    }
+
     #colors {
         width: 27px;
         margin: 4px auto;
@@ -255,8 +261,8 @@
         margin: 0.2em;
         padding: 0 !important;
         box-sizing: border-box;
-        /*right: calc(12 * 1ex);*/
-        left: 8px;
+        right: calc(4 * 1.7em);
+        /*left: 8px;*/
         bottom: var(--padding);
         position: absolute;
         display: inline-block;
