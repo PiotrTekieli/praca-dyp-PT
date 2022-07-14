@@ -23,9 +23,10 @@ export default class Eraser {
         p = pointer
         ctx = context
 
+        drawing = true
         p.startPointRecording()
-
         ctx.save();
+
         ctx.globalCompositeOperation = "destination-out"
 
         var penTip = (ctx, width) => {
@@ -41,7 +42,6 @@ export default class Eraser {
         }
 
         Setup(this.strokeWidth, p, ctx, penTip)
-        drawing = true
     }
 
     pointerMove(event) {
@@ -54,12 +54,13 @@ export default class Eraser {
     }
 
     cancel() {
-        p?.clearPoints()
-        ctx?.restore()
-
-        p = null
-        ctx = null
         if (drawing) {
+            p.clearPoints()
+            ctx.restore()
+
+            p = null
+            ctx = null
+
             drawing = false
             return true
         }

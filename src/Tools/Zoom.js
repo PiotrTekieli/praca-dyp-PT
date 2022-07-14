@@ -37,10 +37,12 @@ export default class Zoom {
     }
 
     cancel() {
-        p = null
-        startPosition = null
+        if (dragging) {
+            p = null
+            startPosition = null
 
-        dragging = false
+            dragging = false
+        }
         return false
     }
 
