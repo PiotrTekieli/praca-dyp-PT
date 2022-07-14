@@ -9,11 +9,11 @@ var drawing = false
 export default class Eraser {
     displayName = 'Hard Round Eraser'
     name = 'eraser'
-    icon = 'favicon.ico'
+    icon = 'eraser.png'
     useEditingLayer = false;
     strokeWidth = 50
     mode = 1
-    modeIcons = ['favicon.ico', 'favicon.ico']
+    modeIcons = ['circle.png', 'square.png']
     pressure = true
 
 

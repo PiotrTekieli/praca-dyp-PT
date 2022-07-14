@@ -9,12 +9,12 @@ var beginPoint
 export default class Figure {
     displayName = 'Figure Tool'
     name = 'figure'
-    icon = 'favicon.ico'
+    icon = 'hollow_square.png'
     useEditingLayer = true;
     strokeWidth = 20
     opacity = 1
     mode = 1
-    modeIcons = ['favicon.ico', 'favicon.ico', 'favicon.ico']
+    modeIcons = ['line.png', 'hollow_square.png', 'hollow_circle.png']
     pressure = false
     color = 'black'
 

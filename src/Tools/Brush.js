@@ -9,12 +9,12 @@ var drawing = false
 export default class Brush {
     displayName = 'Hard Brush'
     name = 'brush'
-    icon = 'favicon.ico'
+    icon = 'brush.png'
     useEditingLayer = true;
     strokeWidth = 20
     opacity = 1
     mode = 1
-    modeIcons = ['favicon.ico', 'favicon.ico']
+    modeIcons = ['circle.png', 'square.png']
     pressure = true
     color = 'black'
 

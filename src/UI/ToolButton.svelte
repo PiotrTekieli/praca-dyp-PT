@@ -15,17 +15,29 @@
 
 
 <button on:click={() => switchTool(tool.name)} class={currentToolName == tool.displayName ? "selected" : ""} tabindex="-1"
-    style="background-image: url({tool?.icon})">
+    style="--icon: url({tool?.icon})">
 </button>
 
 <style>
+    button:before {
+        content: "";
+        position: fixed;
+        transform: translate(-50%, -50%);
+        z-index: -1;
+        flex-shrink: 0;
+        width: 28px;
+        height: 28px;
+        background-position: center;
+        background-repeat: no-repeat;
+        background-size: 18px;
+        background-image: var(--icon);
+        filter: brightness(75%);
+    }
+
     button {
         height: 28px;
         width: 28px;
         padding: auto auto;
-        background-position: center;
-        background-repeat: no-repeat;
-        background-size: 70%;
         background-color: transparent;
         border: solid 1px transparent;
         flex-shrink: 0;

@@ -1,9 +1,12 @@
 <script>
+    import { canvasTranslation } from "../lib/stores";
+
+
     export let fileProperties
 </script>
 
 <div id="topBar">
-    {fileProperties.name} ({fileProperties.canvasSize.x}x{fileProperties.canvasSize.y})
+    {fileProperties.name} ({fileProperties.canvasSize.x} x {fileProperties.canvasSize.y}px) ({Math.round($canvasTranslation.scale * 100 * 100) / 100}%)
 </div>
 
 <style>

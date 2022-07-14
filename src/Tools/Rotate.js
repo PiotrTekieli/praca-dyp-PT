@@ -10,7 +10,7 @@ var dragging = false
 export default class Rotate {
     displayName = 'Rotate'
     name = 'rotate'
-    icon = 'favicon.ico'
+    icon = 'rotate.png'
     cursor = 'ew-resize'
 
     pointerDown(event, pointer, context) {

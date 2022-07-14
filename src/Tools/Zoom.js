@@ -9,7 +9,7 @@ var dragging = false
 export default class Zoom {
     displayName = 'Zoom'
     name = 'zoom'
-    icon = 'favicon.ico'
+    icon = 'zoom.png'
     cursor = 'zoom-in'
 
     pointerDown(event, pointer, context) {

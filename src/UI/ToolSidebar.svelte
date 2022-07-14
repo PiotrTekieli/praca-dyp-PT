@@ -101,9 +101,11 @@
             {#if $toolSettings?.mode}
                 Mode:
                 <div id="modeButtons">
-                {#each currentTool.getSelected()?.modeIcons as icon, index}
-                    <button style="background-image: url({icon})" class={$toolSettings.mode == index + 1 ? 'selected' : ''} on:click={() => toolSettings.setMode(index + 1)}></button>
-                {/each}
+
+                    {#each $currentTool && currentTool.getSelected()?.modeIcons as icon, index}
+                        <button style="--icon: url({icon})" class={$toolSettings.mode == index + 1 ? 'selected' : ''} on:click={() => toolSettings.setMode(index + 1)}></button>
+                    {/each}
+
                 </div>
             {/if}
 
@@ -183,14 +185,26 @@
         padding: 4px 8px !important;
     }
 
+    #modeButtons button:before {
+        content: "";
+        position: fixed;
+        transform: translate(-50%, -50%);
+        z-index: -1;
+        flex-shrink: 0;
+        width: 28px;
+        height: 28px;
+        background-position: center;
+        background-repeat: no-repeat;
+        background-size: 18px;
+        background-image: var(--icon);
+        filter: brightness(75%);
+    }
+
     #modeButtons button {
         height: 28px;
         width: 28px;
-        padding: auto auto;
-        background-position: center;
-        background-repeat: no-repeat;
-        background-size: 70%;
         background-color: transparent;
+        padding: auto auto;
         border: solid 1px transparent;
         flex-shrink: 0;
     }
