@@ -268,6 +268,7 @@
         display: inline-block;
         background-color: var(--color);
         border: 1px solid black;
+        box-shadow: 0px 0px 0px 1px white;
     }
 
     hr {
