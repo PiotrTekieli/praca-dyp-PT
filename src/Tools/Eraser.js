@@ -10,6 +10,7 @@ export default class Eraser {
     displayName = 'Hard Round Eraser'
     name = 'eraser'
     icon = 'eraser.png'
+    cursor = 'circle'
     useEditingLayer = false;
     strokeWidth = 50
     mode = 1

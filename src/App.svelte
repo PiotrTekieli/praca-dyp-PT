@@ -5,6 +5,8 @@
   import ToolManager from "./Tools/ToolManager"
   import History from "./Canvas/History"
 
+  import MetaCanvas from "./Canvas/MetaCanvas";
+
   import { canvasTranslation, currentContext, currentTool, modifierKeys, toolSettings } from "./lib/stores"
 
   import { Point } from "./Canvas/Point"
@@ -35,6 +37,8 @@
 
   let cursorCss
 
+  $: $currentTool, MetaCanvas.update()
+  $: $canvasTranslation, MetaCanvas.update()
   $: drawing, console.log("Drawing: ", drawing)
   $: {
     tool = $currentTool
@@ -42,7 +46,7 @@
   }
 
   function cursorChange() {
-    cursorCss = `--cursor: ${tool?.cursor ?? 'auto'}`
+    cursorCss = `--cursor: ${tool?.cursor ?? 'none'}`
   }
 
   const modifierKeyNames = ["Alt", "Control", "Shift", " "]
@@ -76,6 +80,9 @@
 
     canvasTranslation.setup(baseCanvas, mainContainer)
     canvasTranslation.centerView()
+
+
+    MetaCanvas.setup(mainContainer, baseCanvas)
   })
 
 
@@ -103,9 +110,9 @@
 
       cursorChange()
 
-
       layerManager.refreshMainCanvas()
     }
+    MetaCanvas.update(e)
   }
 
   function handlePointerUp(e) {
@@ -255,6 +262,8 @@
   on:keydown={handleKeyDown}
   on:keyup={handleKeyUp}
   on:blur={handleOnFocus}
+
+  on:resize={() => MetaCanvas.resize()}
 ></svelte:window>
 
 <main>
@@ -298,6 +307,7 @@
     transform-origin: top left;
     transform: rotate(calc(var(--rotation) * 1rad * var(--flip))) scale(var(--scale)) scale(var(--flip), 1);
     position: fixed;
+    z-index: -1;
   }
 
   main {
@@ -307,7 +317,7 @@
 
     height: 100vh;
     width: 100vw;
-    background-color: gray;
+    background-color: rgb(102, 102, 105);
   }
 
   #mainContainter {

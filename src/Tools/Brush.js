@@ -10,6 +10,7 @@ export default class Brush {
     displayName = 'Hard Brush'
     name = 'brush'
     icon = 'brush.png'
+    cursor = 'circle'
     useEditingLayer = true;
     strokeWidth = 20
     opacity = 1

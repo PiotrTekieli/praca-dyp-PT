@@ -16,12 +16,12 @@ export function Setup(width, p, context, brushFunction) {
     brushTip = brushFunction
 
     beginPoint = pointer.position
-    /*ctx.save()
+    ctx.save()
     ctx.translate(beginPoint.x, beginPoint.y)
     ctx.rotate(-get(canvasTranslation).rotation)
     ctx.globalAlpha = beginPoint.pressure
     brushTip?.(ctx, beginPoint.pressure * strokeWidth)
-    ctx.restore()*/
+    ctx.restore()
 }
 
 function _getQBezierValue(t, p1, p2, p3) {
