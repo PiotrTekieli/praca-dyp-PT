@@ -100,12 +100,12 @@
                 {currentToolName}
             </div>
             <hr>
-            {#if $toolSettings?.mode}
+            {#if $toolSettings?.mode != null}
                 Mode:
                 <div id="modeButtons">
 
                     {#each $currentTool && currentTool.getSelected()?.modeIcons as icon, index}
-                        <Button icon={icon} selected={$toolSettings.mode == index +1} on:click={() => toolSettings.setMode(index + 1)}></Button>
+                        <Button icon={icon} selected={$toolSettings.mode == index} on:click={() => toolSettings.setMode(index)}></Button>
                     {/each}
 
                 </div>

@@ -11,12 +11,13 @@ export default class Brush {
     name = 'brush'
     icon = 'brush.png'
     cursor = 'circle'
-    useEditingLayer = true;
+    mode = 0
+    modeIcons = ['circle.png', 'square.png']
     strokeWidth = 20
     opacity = 1
-    mode = 1
-    modeIcons = ['circle.png', 'square.png']
     pressure = true
+    useEditingLayer = true;
+
     color = 'black'
 
 
@@ -35,7 +36,7 @@ export default class Brush {
         var brushTip = (ctx, width) => {
             ctx.beginPath()
 
-            if (this.mode == 1)
+            if (this.mode == 0)
                 ctx.arc(0, 0, width * 0.5, 0, 2 * Math.PI)
             else
                 ctx.rect(-width * 0.5, -width * 0.5, width, width)
@@ -73,5 +74,13 @@ export default class Brush {
         this.strokeWidth = get(toolSettings).width
         this.opacity = get(toolSettings).opacity
         this.mode = get(toolSettings).mode
+    }
+
+    switchMode(mode) {
+        this.mode = mode
+        if (this.mode == 0)
+            this.cursor = 'circle'
+        else
+            this.cursor = 'square'
     }
 }

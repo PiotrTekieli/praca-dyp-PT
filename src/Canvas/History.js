@@ -1,3 +1,5 @@
+import MetaCanvas from "./MetaCanvas"
+
 const MAX_STEP_COUNT = 51
 
 let stepIndex
@@ -84,9 +86,10 @@ export default {
         }
         disableHistory = false
         stepIndex--
+
+        MetaCanvas.update()
     },
     redo: () => {
-
         if (stepIndex + 1 > historyStepList.length - 1)
             return
 
@@ -112,6 +115,8 @@ export default {
             }
         }
         disableHistory = false
+
+        MetaCanvas.update()
     }
 }
 

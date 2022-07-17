@@ -1,5 +1,6 @@
+import MetaCanvas from "../Canvas/MetaCanvas";
 import { Point } from "../Canvas/Point";
-import { writable } from "svelte/store";
+import { writable, get } from "svelte/store";
 
 const scaleSpeed = 1.01
 const maxScale = 32
@@ -241,11 +242,13 @@ function createToolStore() {
         },
         setTemp: (tool) => {
             set(tool)
+            MetaCanvas.update()
             temporary = tool
         },
         clearTemp: () => {
             if (temporary) {
                 set(selected)
+                MetaCanvas.update()
                 temporary = null
             }
         }
@@ -313,6 +316,8 @@ function createToolSettingsStore() {
         },
         setMode: (mode) => {
             settings.mode = mode
+            get(currentTool).switchMode?.(mode)
+
             set(settings)
         },
         setColor: (color) => {

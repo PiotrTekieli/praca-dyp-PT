@@ -13,7 +13,7 @@ export default class Figure {
     useEditingLayer = true;
     strokeWidth = 20
     opacity = 1
-    mode = 1
+    mode = 0
     modeIcons = ['line.png', 'hollow_square.png', 'hollow_circle.png']
     pressure = false
     color = 'black'
@@ -39,17 +39,17 @@ export default class Figure {
     pointerMove(event) {
         if (drawing) {
             switch(this.mode) {
-                case 1:
+                case 0:
                     ctx.beginPath()
                     ctx.moveTo(beginPoint.x, beginPoint.y)
                     ctx.lineTo(p.position.x, p.position.y)
                     ctx.stroke()
                     break
-                case 2:
+                case 1:
                     var difference = p.position.Subtract(beginPoint)
                     ctx.strokeRect(beginPoint.x, beginPoint.y, difference.x, difference.y)
                     break
-                case 3:
+                case 2:
                     var difference = p.position.Subtract(beginPoint).Multiply(0.5)
                     ctx.beginPath()
                     ctx.ellipse(beginPoint.x + difference.x, beginPoint.y + difference.y, Math.abs(difference.x), Math.abs(difference.y), 0, Math.PI * 2, 0)

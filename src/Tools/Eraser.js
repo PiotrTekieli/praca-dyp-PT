@@ -13,7 +13,7 @@ export default class Eraser {
     cursor = 'circle'
     useEditingLayer = false;
     strokeWidth = 50
-    mode = 1
+    mode = 0
     modeIcons = ['circle.png', 'square.png']
     pressure = true
 
@@ -33,7 +33,7 @@ export default class Eraser {
         var penTip = (ctx, width) => {
             ctx.beginPath()
 
-            if (this.mode == 1)
+            if (this.mode == 0)
                 ctx.arc(0, 0, width * 0.5, 0, 2 * Math.PI)
             else
                 ctx.rect(-width * 0.5, -width * 0.5, width, width)
@@ -70,5 +70,13 @@ export default class Eraser {
     saveSettings() {
         this.strokeWidth = get(toolSettings).width
         this.mode = get(toolSettings).mode
+    }
+
+    switchMode(mode) {
+        this.mode = mode
+        if (this.mode == 0)
+            this.cursor = 'circle'
+        else
+            this.cursor = 'square'
     }
 }

@@ -38,6 +38,20 @@ function copyCanvas() {
     context.restore()
 }
 
+const crossSize = 10
+const crossCenter = 5
+
+function cursorCross() {
+    context.moveTo(mousePosition.x, mousePosition.y + crossSize)
+    context.lineTo(mousePosition.x, mousePosition.y + crossCenter)
+    context.moveTo(mousePosition.x + crossSize, mousePosition.y)
+    context.lineTo(mousePosition.x + crossCenter, mousePosition.y)
+    context.moveTo(mousePosition.x, mousePosition.y - crossSize)
+    context.lineTo(mousePosition.x, mousePosition.y - crossCenter)
+    context.moveTo(mousePosition.x - crossSize, mousePosition.y)
+    context.lineTo(mousePosition.x - crossCenter, mousePosition.y)
+}
+
 function UpdateCursor() {
     switch(get(currentTool)?.cursor) {
         case 'circle':
@@ -46,13 +60,19 @@ function UpdateCursor() {
             context.beginPath()
             var width = get(toolSettings).width * 0.5 * get(canvasTranslation).scale
             context.ellipse(mousePosition.x, mousePosition.y, width, width, 0, 0, Math.PI * 2)
+            if (width < 5)
+                cursorCross()
             context.stroke()
             break
         case 'square':
             copyCanvas()
             context.globalCompositeOperation = 'destination-in'
+            context.beginPath()
             var size = get(toolSettings).width * 0.5 * get(canvasTranslation).scale
-            context.strokeRect(mousePosition.x - size, mousePosition.y - size, size * 2, size *2)
+            context.rect(mousePosition.x - size, mousePosition.y - size, size * 2, size * 2)
+            if (width < 5)
+                cursorCross()
+            context.stroke()
             break
         default:
             context.clearRect(0, 0, canvas.width, canvas.height)
@@ -82,6 +102,9 @@ export default {
         }
         if (mousePosition)
             UpdateCursor()
+    },
+    clear: () => {
+        context.clearRect(0, 0, canvas.width, canvas.height)
     },
     resize: () => {
         Resize()

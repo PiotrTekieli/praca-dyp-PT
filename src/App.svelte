@@ -46,7 +46,11 @@
   }
 
   function cursorChange() {
-    cursorCss = `--cursor: ${tool?.cursor ?? 'none'}`
+    if (tool?.cursor == 'circle' || tool?.cursor == 'square') {
+      cursorCss = `--cursor: none`
+      return
+    }
+    cursorCss = `--cursor: ${tool?.cursor ?? 'default'}`
   }
 
   const modifierKeyNames = ["Alt", "Control", "Shift", " "]
@@ -140,6 +144,8 @@
 
     if (saveStep)
       History.addStep({ type: 'edit-layer' })
+
+    MetaCanvas.clear()
   }
 
   function handleMouseWheel(e) {
