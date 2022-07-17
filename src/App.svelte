@@ -135,6 +135,7 @@
   }
 
   function handlePointerLost() {
+    console.log('a')
     drawing = false
     var saveStep = tool.cancel()
 
@@ -264,6 +265,12 @@
 
 </script>
 
+<svelte:body
+  on:pointermove={handlePointerMove}
+  on:pointerup={handlePointerUp}
+  on:pointerleave={handlePointerLost}
+></svelte:body>
+
 <svelte:window
   on:keydown={handleKeyDown}
   on:keyup={handleKeyUp}
@@ -277,9 +284,6 @@
   <ToolSidebar {toolManager}></ToolSidebar>
   <div id="mainContainter" bind:this={mainContainer} style={cursorCss}
     on:pointerdown={handlePointerDown}
-    on:pointermove={handlePointerMove}
-    on:pointerup={handlePointerUp}
-    on:pointerleave={handlePointerLost}
 
     on:wheel={handleMouseWheel}>
 
