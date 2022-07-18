@@ -13,17 +13,21 @@ function Resize() {
 
     canvas.width = mainRect.width
     canvas.height = mainRect.height
+
+    context = canvas.getContext('2d', { antialias: false })
+    context.translate(0.5, 0.5)
+    context.lineWidth = 0.8
+    context.globalCompositeOperation = 'destination-in'
 }
 
 function copyCanvas() {
+    context.save()
+
     context.globalCompositeOperation = 'copy'
     context.fillStyle = 'white'
     context.fillRect(0, 0, canvas.width, canvas.height)
 
-
     context.globalCompositeOperation = 'source-over'
-
-    context.save()
 
     var canvasState = get(canvasTranslation)
     var mainRect = _main.getBoundingClientRect()
@@ -38,8 +42,8 @@ function copyCanvas() {
     context.restore()
 }
 
-const crossSize = 10
-const crossCenter = 5
+const crossSize = 5
+const crossCenter = 2
 
 function cursorCross() {
     context.moveTo(mousePosition.x, mousePosition.y + crossSize)
@@ -56,22 +60,18 @@ function UpdateCursor() {
     switch(get(currentTool)?.cursor) {
         case 'circle':
             copyCanvas()
-            context.globalCompositeOperation = 'destination-in'
             context.beginPath()
             var width = get(toolSettings).width * 0.5 * get(canvasTranslation).scale
             context.ellipse(mousePosition.x, mousePosition.y, width, width, 0, 0, Math.PI * 2)
-            if (width < 5)
-                cursorCross()
+            cursorCross()
             context.stroke()
             break
         case 'square':
             copyCanvas()
-            context.globalCompositeOperation = 'destination-in'
             context.beginPath()
             var size = get(toolSettings).width * 0.5 * get(canvasTranslation).scale
             context.rect(mousePosition.x - size, mousePosition.y - size, size * 2, size * 2)
-            if (width < 5)
-                cursorCross()
+            cursorCross()
             context.stroke()
             break
         default:
@@ -86,8 +86,6 @@ export default {
         canvas = document.createElement('canvas')
         canvas.style.zIndex = "1"
         canvas.style.imageRendering = "pixelated"
-
-        context = canvas.getContext('2d', { antialias: false })
 
         _main.appendChild(canvas)
         Resize()
