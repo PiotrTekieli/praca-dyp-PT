@@ -5,7 +5,7 @@
   import ToolManager from "./Tools/ToolManager"
   import History from "./Canvas/History"
 
-  import MetaCanvas from "./Canvas/MetaCanvas";
+  import CursorCanvas from "./Canvas/CursorCanvas";
 
   import { canvasTranslation, currentContext, currentTool, modifierKeys, toolSettings } from "./lib/stores"
 
@@ -37,8 +37,8 @@
 
   let cursorCss
 
-  $: $currentTool, MetaCanvas.update()
-  $: $canvasTranslation, MetaCanvas.update()
+  $: $currentTool, CursorCanvas.update()
+  $: $canvasTranslation, CursorCanvas.update()
   $: drawing, console.log("Drawing: ", drawing)
   $: {
     tool = $currentTool
@@ -90,7 +90,7 @@
     canvasTranslation.centerView()
 
 
-    MetaCanvas.setup(mainContainer, baseCanvas)
+    CursorCanvas.setup(mainContainer, baseCanvas)
   })
 
 
@@ -106,7 +106,7 @@
     cursorChange()
 
     layerManager.refreshMainCanvas()
-    MetaCanvas.update(e)
+    CursorCanvas.update(e)
   }
 
   function handlePointerMove(e) {
@@ -121,7 +121,7 @@
 
       layerManager.refreshMainCanvas()
     }
-    MetaCanvas.update(e)
+    CursorCanvas.update(e)
   }
 
   function handlePointerUp(e) {
@@ -138,7 +138,7 @@
     if (saveStep)
       History.addStep({ type: 'edit-layer' })
 
-    MetaCanvas.update(e)
+    CursorCanvas.update(e)
   }
 
   function handlePointerLost() {
@@ -153,7 +153,7 @@
     if (saveStep)
       History.addStep({ type: 'edit-layer' })
 
-    MetaCanvas.clear()
+    CursorCanvas.clear()
   }
 
   function handleMouseWheel(e) {
@@ -283,7 +283,7 @@
   on:keyup={handleKeyUp}
   on:blur={handleOnFocus}
 
-  on:resize={() => MetaCanvas.resize()}
+  on:resize={() => CursorCanvas.resize()}
 ></svelte:window>
 
 <main>

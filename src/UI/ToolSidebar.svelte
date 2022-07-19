@@ -25,7 +25,10 @@
 
     function UpdateSliders() {
         if (widthSlider) {
-            widthSlider.value = $toolSettings?.width
+            if (widthSlider.value < 70)
+                widthSlider.value = $toolSettings?.width
+            else
+                widthSlider.value = ($toolSettings?.width + 140) / 3
             addGradient(widthSlider)
         }
         if (opacitySlider) {

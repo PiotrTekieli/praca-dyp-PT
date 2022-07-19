@@ -1,4 +1,4 @@
-import MetaCanvas from "../Canvas/MetaCanvas";
+import CursorCanvas from "../Canvas/CursorCanvas";
 import { Point } from "../Canvas/Point";
 import { writable, get } from "svelte/store";
 
@@ -242,13 +242,13 @@ function createToolStore() {
         },
         setTemp: (tool) => {
             set(tool)
-            MetaCanvas.update()
+            CursorCanvas.update()
             temporary = tool
         },
         clearTemp: () => {
             if (temporary) {
                 set(selected)
-                MetaCanvas.update()
+                CursorCanvas.update()
                 temporary = null
             }
         }
@@ -307,7 +307,7 @@ function createToolSettingsStore() {
     return {
         subscribe,
         setWidth: (width) => {
-            settings.width = Math.round(width * 100) / 100
+            settings.width = Math.round(width * 10) / 10
             set(settings)
         },
         setOpacity: (opacity) => {

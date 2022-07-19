@@ -1,4 +1,4 @@
-import MetaCanvas from "./MetaCanvas"
+import CursorCanvas from "./CursorCanvas"
 
 const MAX_STEP_COUNT = 51
 
@@ -87,7 +87,7 @@ export default {
         disableHistory = false
         stepIndex--
 
-        MetaCanvas.update()
+        CursorCanvas.update()
     },
     redo: () => {
         if (stepIndex + 1 > historyStepList.length - 1)
@@ -116,7 +116,7 @@ export default {
         }
         disableHistory = false
 
-        MetaCanvas.update()
+        CursorCanvas.update()
     }
 }
 
