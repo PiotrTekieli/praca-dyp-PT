@@ -307,7 +307,7 @@ function createToolSettingsStore() {
     return {
         subscribe,
         setWidth: (width) => {
-            settings.width = width
+            settings.width = Math.round(width * 100) / 100
             set(settings)
         },
         setOpacity: (opacity) => {

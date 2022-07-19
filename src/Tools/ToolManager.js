@@ -7,6 +7,7 @@ import Move from "./Move"
 import Rotate from "./Rotate"
 import Zoom from "./Zoom"
 import Figure from "./Figure"
+import Resize from "./Resize"
 import { get } from "svelte/store"
 
 let toolList
@@ -19,7 +20,8 @@ export default class ToolManager {
             zoom: new Zoom(),
             brush: new Brush(),
             eraser: new Eraser(),
-            figure: new Figure()
+            figure: new Figure(),
+            resize: new Resize()
         }
 
         this.switchTool("brush")
@@ -46,6 +48,8 @@ export default class ToolManager {
         get(currentTool).cancel()
         console.log("Tool switched to: ", toolName)
         currentTool.setTemp(toolList[toolName])
+
+        get(currentTool).copyCursor?.()
     }
 
     clearTempTool() {

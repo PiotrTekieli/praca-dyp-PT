@@ -16,6 +16,7 @@
 
     $: currentToolName = currentTool.hasTempTool() ? currentToolName : $currentTool.displayName
     $: $currentTool.name, UpdateSliders()
+    $: $toolSettings.width, UpdateSliders()
     $: $toolSettings.selectedColor, UpdateWheel()
 
     $: widthSlider, UpdateSliders()
@@ -23,9 +24,6 @@
 
 
     function UpdateSliders() {
-        if (currentTool.hasTempTool())
-            return
-
         if (widthSlider) {
             widthSlider.value = $toolSettings?.width
             addGradient(widthSlider)
@@ -83,9 +81,11 @@
 <div id="sidebarContainer">
     <div id="toolsContainer">
         {#each toolList as tool}
-            <ToolButton {tool} {currentToolName} on:switch-tool={switchTool}></ToolButton>
-            {#if tool.name == 'eraser' || tool.name == "zoom"}
-            <hr>
+            {#if !tool?.hidden}
+                <ToolButton {tool} {currentToolName} on:switch-tool={switchTool}></ToolButton>
+                {#if tool.name == 'eraser' || tool.name == "zoom"}
+                <hr>
+                {/if}
             {/if}
         {/each}
         <hr>

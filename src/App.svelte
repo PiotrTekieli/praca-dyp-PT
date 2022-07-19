@@ -51,6 +51,8 @@
       return
     }
     cursorCss = `--cursor: ${tool?.cursor ?? 'default'}`
+    if ($modifierKeys.includes("Control"))
+      cursorCss = `--cursor: 'default'`
   }
 
   const modifierKeyNames = ["Alt", "Control", "Shift", " "]
@@ -68,6 +70,8 @@
       toolManager.switchToolTemp("rotate")
     else if (modifierKeys.equals([" ", "Control"]))
       toolManager.switchToolTemp("zoom")
+    else if (modifierKeys.equals(["Alt", "Control"]))
+      toolManager.switchToolTemp("resize")
 
 
     tool = $currentTool
@@ -102,6 +106,7 @@
     cursorChange()
 
     layerManager.refreshMainCanvas()
+    MetaCanvas.update(e)
   }
 
   function handlePointerMove(e) {
@@ -132,6 +137,8 @@
 
     if (saveStep)
       History.addStep({ type: 'edit-layer' })
+
+    MetaCanvas.update(e)
   }
 
   function handlePointerLost() {
@@ -288,7 +295,7 @@
     on:wheel={handleMouseWheel}>
 
     <div id="canvasContainer" bind:this={canvasContainer} style={cssCanvasTranslate}>
-      <canvas class="{$canvasTranslation.scale > 1.25 ? 'zoom' : 'no-zoom'}" bind:this={baseCanvas} width={canvasSize.x} height={canvasSize.y}></canvas>
+      <canvas class="{$canvasTranslation.scale > 1.50 ? 'zoom' : 'no-zoom'}" bind:this={baseCanvas} width={canvasSize.x} height={canvasSize.y}></canvas>
     </div>
 
   </div>

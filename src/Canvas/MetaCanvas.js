@@ -46,14 +46,15 @@ const crossSize = 5
 const crossCenter = 2
 
 function cursorCross() {
-    context.moveTo(mousePosition.x, mousePosition.y + crossSize)
-    context.lineTo(mousePosition.x, mousePosition.y + crossCenter)
-    context.moveTo(mousePosition.x + crossSize, mousePosition.y)
-    context.lineTo(mousePosition.x + crossCenter, mousePosition.y)
-    context.moveTo(mousePosition.x, mousePosition.y - crossSize)
-    context.lineTo(mousePosition.x, mousePosition.y - crossCenter)
-    context.moveTo(mousePosition.x - crossSize, mousePosition.y)
-    context.lineTo(mousePosition.x - crossCenter, mousePosition.y)
+    var pos = {x: Math.round(mousePosition.x), y: Math.round(mousePosition.y)}
+    context.moveTo(pos.x, pos.y + crossSize)
+    context.lineTo(pos.x, pos.y + crossCenter)
+    context.moveTo(pos.x + crossSize, pos.y)
+    context.lineTo(pos.x + crossCenter, pos.y)
+    context.moveTo(pos.x, pos.y - crossSize)
+    context.lineTo(pos.x, pos.y - crossCenter)
+    context.moveTo(pos.x - crossSize, pos.y)
+    context.lineTo(pos.x - crossCenter, pos.y)
 }
 
 function UpdateCursor() {
@@ -74,6 +75,26 @@ function UpdateCursor() {
             cursorCross()
             context.stroke()
             break
+        case 'resize':
+            var pos = {x: get(currentTool).getPosition()?.x, y: get(currentTool).getPosition()?.y}
+            if (!pos.x)
+                return
+
+            var mainRect = _main.getBoundingClientRect()
+            pos.x -= mainRect.left
+            pos.y -= mainRect.top
+
+
+            switch(currentTool.getSelected()?.cursor) {
+                case 'circle':
+                    copyCanvas()
+                    context.beginPath()
+                    var width = get(toolSettings).width * 0.5 * get(canvasTranslation).scale
+                    context.ellipse(pos.x, pos.y, width, width, 0, 0, Math.PI * 2)
+                    context.stroke()
+                    break
+            }
+            break
         default:
             context.clearRect(0, 0, canvas.width, canvas.height)
     }
@@ -85,7 +106,6 @@ export default {
         _base = base
         canvas = document.createElement('canvas')
         canvas.style.zIndex = "1"
-        canvas.style.imageRendering = "pixelated"
 
         _main.appendChild(canvas)
         Resize()
