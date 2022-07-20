@@ -10,7 +10,7 @@ export default class Zoom {
     displayName = 'Zoom'
     name = 'zoom'
     icon = 'zoom.png'
-    cursor = 'zoom-in'
+    cursor = 'zoom_in'
 
     pointerDown(event, pointer, context) {
         p = pointer

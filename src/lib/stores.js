@@ -79,7 +79,6 @@ function getScreenCenter(main) {
         x: (rect.left + rect.right) * 0.5,
         y: (rect.top + rect.bottom) * 0.5
     }
-    console.log(screenCenter)
     canvasTranslation.setCenter(screenCenter)
 
     return screenCenter

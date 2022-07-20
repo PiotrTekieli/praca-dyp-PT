@@ -46,8 +46,9 @@
   }
 
   function cursorChange() {
+    cursorCss = `--cursor: none`
+    return
     if (tool?.cursor == 'circle' || tool?.cursor == 'square') {
-      cursorCss = `--cursor: none`
       return
     }
     cursorCss = `--cursor: ${tool?.cursor ?? 'default'}`
@@ -142,7 +143,6 @@
   }
 
   function handlePointerLost() {
-    console.log('a')
     drawing = false
     var saveStep = tool.cancel()
 
