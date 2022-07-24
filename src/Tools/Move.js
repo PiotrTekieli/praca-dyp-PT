@@ -9,7 +9,7 @@ export default class Move {
     displayName = 'Move'
     name = 'move'
     icon = 'move.png'
-    cursor = 'grab'
+    mouseCursor = 'grab'
 
     pointerDown(event, pointer, context) {
         p = pointer

@@ -11,7 +11,7 @@ export default class Rotate {
     displayName = 'Rotate'
     name = 'rotate'
     icon = 'rotate.png'
-    cursor = 'ew_resize'
+    mouseCursor = 'ew_resize'
 
     pointerDown(event, pointer, context) {
         p = pointer

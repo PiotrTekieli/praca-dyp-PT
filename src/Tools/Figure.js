@@ -10,6 +10,7 @@ export default class Figure {
     displayName = 'Figure Tool'
     name = 'figure'
     icon = 'hollow_square.png'
+    cursor = 'cross'
     useEditingLayer = true;
     strokeWidth = 20
     opacity = 1

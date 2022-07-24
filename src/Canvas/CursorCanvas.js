@@ -80,6 +80,9 @@ function cursorCross() {
 }
 
 function drawCursor(cursor) {
+    if (!cursor)
+        return
+
     if (mousePosition.x >= 0 && mousePosition.x <= mainCanvas.width && mousePosition.y >= 0 && mousePosition.y <= mainCanvas.height) {
         mainCtx.save()
         mainCtx.globalCompositeOperation = 'source-over'
@@ -97,6 +100,9 @@ function UpdateCanvas() {
     let cursor = false
 
     switch(get(currentTool)?.cursor) {
+        case 'cross':
+            drawCross()
+            break
         case 'circle':
             memoryCtx.beginPath()
             var width = get(toolSettings).width * 0.5 * get(canvasTranslation).scale
@@ -127,10 +133,16 @@ function UpdateCanvas() {
                     memoryCtx.ellipse(pos.x, pos.y, width, width, 0, 0, Math.PI * 2)
                     memoryCtx.stroke()
                     break
+                case 'square':
+                    memoryCtx.beginPath()
+                    var size = get(toolSettings).width * 0.5 * get(canvasTranslation).scale
+                    memoryCtx.rect(pos.x - size, pos.y - size, size * 2, size * 2)
+                    memoryCtx.stroke()
+                    break
             }
             break
         default:
-            cursor = get(currentTool)?.cursor
+            cursor = get(currentTool)?.mouseCursor
     }
 
     copyCanvas()
@@ -142,8 +154,7 @@ function UpdateCanvas() {
 
     mainCtx.drawImage(memoryCanvas, 0, 0)
 
-    if (cursor)
-        drawCursor(get(currentTool)?.cursor)
+    drawCursor(get(currentTool)?.mouseCursor)
 
     memoryCtx.clearRect(0, 0, mainCanvas.width, mainCanvas.height)
 }

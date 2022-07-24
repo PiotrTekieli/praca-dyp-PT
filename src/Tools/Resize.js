@@ -4,14 +4,16 @@ import { get } from "svelte/store"
 
 var p
 var startPosition
-var comparePosition
 var dragging = false
-var angle = Math.PI / 2
+var angle = 0
+
+var cursorType
 
 export default class Resize {
     displayName = 'Resize'
     name = 'resize'
-    cursor = 'resize'
+    mouseCursor = 'arrow'
+    cursor = null
     hidden = true
 
     pointerDown(event, pointer, context) {
@@ -20,8 +22,25 @@ export default class Resize {
         dragging = true
         startPosition = getScreenPosition(event)
         var width = get(toolSettings).width * 0.5 * get(canvasTranslation).scale
-        startPosition.x -= Math.sin(angle) * width
-        startPosition.y -= Math.cos(angle) * width
+
+        cursorType = currentTool.getSelected()?.cursor
+        switch(cursorType) {
+            case 'circle':
+                startPosition.x -= Math.cos(angle) * width
+                startPosition.y -= Math.sin(angle) * width
+                break
+            case 'square':
+                var angleMod = Math.abs(angle) % (Math.PI / 2)
+
+                if (angleMod < Math.PI / 4)
+                    width /= Math.cos(angleMod)
+                else
+                    width /= Math.sin(angleMod)
+
+                startPosition.x -= Math.cos(angle) * width
+                startPosition.y -= Math.sin(angle) * width
+                break
+        }
 
         this.cursor = 'resize'
     }
@@ -29,10 +48,18 @@ export default class Resize {
     pointerMove(event) {
         if (dragging) {
             var difference = getScreenPosition(event).Subtract(startPosition)
-            var size = Math.sqrt(Math.pow(difference.x, 2) + Math.pow(difference.y, 2)) * 2 / get(canvasTranslation).scale
+            var size
+
+            switch (cursorType) {
+                case 'circle':
+                    size = Math.sqrt(Math.pow(difference.x, 2) + Math.pow(difference.y, 2)) * 2 / get(canvasTranslation).scale
+                    break
+                case 'square':
+                    size = Math.max(Math.abs(difference.x), Math.abs(difference.y)) * 2 / get(canvasTranslation).scale
+            }
             toolSettings.setWidth(size)
 
-            angle = -Math.atan2(difference.y, difference.x) + Math.PI / 2
+            angle = Math.atan2(difference.y, difference.x)
         }
     }
 
@@ -46,7 +73,7 @@ export default class Resize {
             startPosition = null
 
             dragging = false
-            this.copyCursor()
+            this.cursor = null
         }
         return false
     }
@@ -57,10 +84,6 @@ export default class Resize {
 
     getAngle() {
         return angle
-    }
-
-    copyCursor() {
-        this.cursor = currentTool.getSelected()?.cursor
     }
 
 }

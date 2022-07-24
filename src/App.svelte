@@ -17,8 +17,8 @@
   let fileName = "Illustration"
 
   let canvasSize = {
-    x: 600,
-    y: 500
+    x: 1000,
+    y: 800
   }
 
   let mainContainer
@@ -63,9 +63,7 @@
     if ($modifierKeys.length)
       console.log($modifierKeys)
 
-    if (currentTool.hasTempTool() && !$modifierKeys.length)
-      toolManager.clearTempTool()
-    else if (modifierKeys.equals([" "]))        // pressing just space
+    if (modifierKeys.equals([" "]))        // pressing just space
       toolManager.switchToolTemp("move")
     else if (modifierKeys.equals([" ", "Shift"]))
       toolManager.switchToolTemp("rotate")
@@ -73,7 +71,8 @@
       toolManager.switchToolTemp("zoom")
     else if (modifierKeys.equals(["Alt", "Control"]))
       toolManager.switchToolTemp("resize")
-
+    else if (currentTool.hasTempTool())
+      toolManager.clearTempTool()
 
     tool = $currentTool
     cursorChange()
@@ -295,7 +294,7 @@
     on:wheel={handleMouseWheel}>
 
     <div id="canvasContainer" bind:this={canvasContainer} style={cssCanvasTranslate}>
-      <canvas class="{$canvasTranslation.scale > 1.50 ? 'zoom' : 'no-zoom'}" bind:this={baseCanvas} width={canvasSize.x} height={canvasSize.y}></canvas>
+      <canvas class="{$canvasTranslation.scale > 2.50 ? 'zoom' : 'no-zoom'}" bind:this={baseCanvas} width={canvasSize.x} height={canvasSize.y}></canvas>
     </div>
 
   </div>
@@ -351,8 +350,7 @@
   }
 
   .no-zoom {
-    image-rendering: crisp-edges;
-    image-rendering: -webkit-optimize-contrast;
+    image-rendering: auto;
   }
   .zoom {
     image-rendering: pixelated;
