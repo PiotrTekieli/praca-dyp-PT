@@ -11,10 +11,12 @@ export default class Eraser {
     name = 'eraser'
     icon = 'eraser.png'
     cursor = 'circle'
-    useEditingLayer = false;
-    strokeWidth = 50
+
     mode = 0
     modeIcons = ['circle.png', 'square.png']
+
+    useEditingLayer = false
+    strokeWidth = 50
     pressure = true
 
 

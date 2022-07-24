@@ -11,12 +11,14 @@ export default class Brush {
     name = 'brush'
     icon = 'brush.png'
     cursor = 'circle'
+
     mode = 0
     modeIcons = ['circle.png', 'square.png']
+
+    useEditingLayer = true
     strokeWidth = 20
     opacity = 1
     pressure = true
-    useEditingLayer = true;
 
     color = 'black'
 

@@ -11,12 +11,14 @@ export default class Figure {
     name = 'figure'
     icon = 'hollow_square.png'
     cursor = 'cross'
+
+    mode = 0
+    modeIcons = ['line.png', 'hollow_square.png', 'hollow_circle.png']
+
     useEditingLayer = true;
     strokeWidth = 20
     opacity = 1
-    mode = 0
-    modeIcons = ['line.png', 'hollow_square.png', 'hollow_circle.png']
-    pressure = false
+
     color = 'black'
 
 
