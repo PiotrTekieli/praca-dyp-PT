@@ -45,6 +45,9 @@
     cursorChange()
   }
 
+  // Disable Windows Ink Scrolling
+  window.addEventListener('touchmove', (e) => {e.preventDefault()}, {passive: false});
+
   function cursorChange() {
     cursorCss = `--cursor: none`
     return
