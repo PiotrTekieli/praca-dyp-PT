@@ -13,7 +13,7 @@
 <style>
     button:before {
         content: "";
-        position: fixed;
+        position: absolute;
         transform: translate(-50%, -50%);
         z-index: -1;
         flex-shrink: 0;

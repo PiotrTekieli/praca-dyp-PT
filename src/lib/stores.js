@@ -220,8 +220,6 @@ export const currentContext = createSetStore()
 
 
 
-
-
 function createToolStore() {
     const { subscribe, set } = writable();
     let selected, temporary
@@ -331,3 +329,32 @@ function createToolSettingsStore() {
 }
 
 export const toolSettings = createToolSettingsStore()
+
+
+function createLayerListStore() {
+    const { subscribe, set } = writable()
+
+    let layerList = {
+        list: [],
+        selected: 0
+    }
+
+    return {
+        subscribe,
+        splice: (...args) => {
+            // @ts-ignore
+            layerList.list.splice(...args)
+            set(layerList)
+        },
+        set: (list) => {
+            layerList.list = list
+            set(layerList)
+        },
+        select: (index) => {
+            layerList.selected = index
+            set (layerList)
+        }
+    }
+}
+
+export const layerList = createLayerListStore()

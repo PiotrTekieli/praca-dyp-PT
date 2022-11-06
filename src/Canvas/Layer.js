@@ -1,4 +1,5 @@
 export class Layer {
+    name = "New Layer"
     canvas
     context
     opacity = 1

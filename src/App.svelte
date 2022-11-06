@@ -12,6 +12,7 @@
   import { Point } from "./Canvas/Point"
   import Pointer from './Canvas/Pointer'
   import ToolSidebar from "./UI/ToolSidebar.svelte"
+  import LayerSidebar from "./UI/LayerSidebar.svelte"
   import TopBar from "./UI/TopBar.svelte";
 
   let fileName = "Illustration"
@@ -25,7 +26,7 @@
   let canvasContainer
   let baseCanvas
 
-  let layerManager
+  let layerManager = new LayerManager()
   let editingCtx
 
   let pointer
@@ -83,7 +84,7 @@
 
 
   onMount(() => {
-    layerManager = new LayerManager(baseCanvas, canvasContainer)
+    layerManager.setup(baseCanvas, canvasContainer)
     History.setup(layerManager)
     editingCtx = layerManager.getEditingContext()
 
@@ -113,8 +114,8 @@
   }
 
   function handlePointerMove(e) {
-    /*if (e.pointerType == "mouse")  // needed to work with windows ink
-      return*/
+    if (!checkForPen(e))
+      return
 
     if (drawing) {
       pointer.set(e)
@@ -266,6 +267,23 @@
     return tool.useEditingLayer ? editingCtx : $currentContext;
   }
 
+
+  // needed to work with windows ink
+  let _mouseCounter = 0
+  function checkForPen(event) {
+    if (event.pointerType == "mouse")
+      _mouseCounter++
+
+    if (event.pointerType == "pen") {
+      _mouseCounter = 0
+      return true
+    }
+
+    if (_mouseCounter >= 3)
+      return true
+    return false
+  }
+
   window.onbeforeunload = (event) => { event.preventDefault(); return event.returnValue = "Are you sure you want to leave? You have unsaved changes" }
 
 	$: cssCanvasTranslate = Object.entries($canvasTranslation)
@@ -291,6 +309,7 @@
 <main>
   <TopBar fileProperties={{name: fileName, canvasSize: canvasSize}}></TopBar>
   <ToolSidebar {toolManager}></ToolSidebar>
+  <LayerSidebar {layerManager}></LayerSidebar>
   <div id="mainContainter" bind:this={mainContainer} style={cursorCss}
     on:pointerdown={handlePointerDown}
 
@@ -331,7 +350,7 @@
 
   main {
     --leftUIoffset: 236px;
-    --rightUIoffset: 0px;
+    --rightUIoffset: 200px;
     --topUIoffset: 22px;
 
     height: 100vh;
