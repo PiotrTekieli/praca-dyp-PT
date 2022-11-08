@@ -353,6 +353,14 @@ function createLayerListStore() {
         select: (index) => {
             layerList.selected = index
             set (layerList)
+        },
+        renameLayer: (index, name) => {
+            layerList.list[index].name = name
+            set(layerList)
+        },
+        changeOpacity: (index, opacity) => {
+            layerList.list[index].opacity = opacity
+            set(layerList)
         }
     }
 }

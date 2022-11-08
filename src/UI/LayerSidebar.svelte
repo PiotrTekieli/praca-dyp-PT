@@ -8,12 +8,16 @@
         layerManager.putLayerAbove(event.detail.from, event.detail.to)
     }
 
+    function selectLayer(event) {
+        layerManager.selectLayer(event.detail.index)
+    }
+
 </script>
 
 <div id="sidebarContainer">
     <div id="layerList">
         {#each $layerList.list as layer, i}
-            <LayerElement index={i} {layer} selected={$layerList.selected == i} on:changeOrder={changeLayerOrder}></LayerElement>
+            <LayerElement index={i} {layer} selected={$layerList.selected == i} on:changeOrder={changeLayerOrder} on:select={selectLayer}></LayerElement>
         {/each}
     </div>
 </div>
