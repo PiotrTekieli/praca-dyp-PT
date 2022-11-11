@@ -20,8 +20,6 @@ let editingLayer
 
 let backgroundColor = 'white'   // css color value of the background
 
-let layerIncrement = 1
-
 export default class LayerManager {
     constructor() {
         layerList.set([])
@@ -49,8 +47,7 @@ export default class LayerManager {
     addLayerAbove(index) {
 
         let layer = new Layer(canvasSize)
-        layer.name = "Layer " + layerIncrement
-        layerIncrement++
+        layer.name = "Layer " + (get(layerList).list.length + 1)
         layer.canvas.id = get(layerList).list.length.toString()
 
         History.addStep({ type: 'new-layer', index: index, name: layer.name })
