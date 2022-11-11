@@ -1,3 +1,4 @@
+import { layerList } from "../lib/stores"
 import CursorCanvas from "./CursorCanvas"
 
 const MAX_STEP_COUNT = 51
@@ -83,6 +84,10 @@ export default {
                 revertOrderChange(currentStep.source, currentStep.destination)
                 break
             }
+            case 'rename-layer': {
+                layerList.renameLayer(currentStep.index, currentStep.oldName)
+                break
+            }
         }
         disableHistory = false
         stepIndex--
@@ -106,11 +111,15 @@ export default {
                 break
             }
             case 'new-layer': {
-                layerManager.addLayerAbove(nextStep.index)
+                layerManager.addLayerAbove(nextStep.index).name = nextStep.name
                 break
             }
             case 'layer-order': {
                 layerManager.putLayerAbove(nextStep.source, nextStep.destination)
+                break
+            }
+            case 'rename-layer': {
+                layerList.renameLayer(nextStep.index, nextStep.newName)
                 break
             }
         }

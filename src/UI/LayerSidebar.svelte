@@ -35,12 +35,14 @@
         background-color: var(--mainColor);
         box-shadow: calc(var(--lineWidth) * -1) 0px 4px var(--lineColor);
         right: 0;
+        padding-bottom: 20px;
     }
 
     #layerList {
         display: flex;
         flex-direction: column-reverse;
         justify-content: flex-end;
+
     }
 
 </style>

@@ -3,7 +3,7 @@
 
     import { currentTool, toolSettings } from "../lib/stores"
     import ToolButton from "./ToolButton.svelte"
-    import Button from "./Button.svelte";
+    import IconButton from "./IconButton.svelte";
 
     import "reinvented-color-wheel/css/reinvented-color-wheel.min.css"
     import ReinventedColorWheel from "reinvented-color-wheel"
@@ -108,7 +108,7 @@
                 <div id="modeButtons">
 
                     {#each $currentTool && currentTool.getSelected()?.modeIcons as icon, index}
-                        <Button icon={icon} selected={$toolSettings.mode == index} on:click={() => toolSettings.setMode(index)}></Button>
+                        <IconButton icon={icon} selected={$toolSettings.mode == index} on:click={() => toolSettings.setMode(index)}></IconButton>
                     {/each}
 
                 </div>

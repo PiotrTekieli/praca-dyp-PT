@@ -99,7 +99,7 @@
 </script>
 
 <div id={index} class:selected class:drag={0} bind:this={_this} on:pointerdown={PickUp}>
-    {layer.opacity * 100}% | {layer.blendMode}
+    {layer.opacity * 100}% {layer.blendMode}
     <br>
     {layer.name}
 </div>

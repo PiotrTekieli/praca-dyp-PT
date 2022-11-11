@@ -14,6 +14,7 @@
   import ToolSidebar from "./UI/ToolSidebar.svelte"
   import LayerSidebar from "./UI/LayerSidebar.svelte"
   import TopBar from "./UI/TopBar.svelte";
+    import RenameWindow from "./UI/RenameWindow.svelte";
 
   let fileName = "Illustration"
 
@@ -168,8 +169,10 @@
   }
 
 
-
+  let disableKeybinds = false
   function handleKeyDown(e) {
+    if (disableKeybinds)
+      return
     e.preventDefault()
 
     if (drawing)
@@ -200,6 +203,14 @@
     if (!$modifierKeys.length) {              // no modifier keys pressed
 
       switch(pressedKey) {
+        case 'F2':
+          let renameWindow = new RenameWindow({
+            target: document.body
+          })
+          disableKeybinds = true
+          renameWindow.$on("finish", () => disableKeybinds = false)
+          break
+
         case 'KeyQ':
           toolManager.switchTool("brush")
           break

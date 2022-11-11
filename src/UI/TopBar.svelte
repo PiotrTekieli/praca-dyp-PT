@@ -1,6 +1,6 @@
 <script>
     import { canvasTranslation } from "../lib/stores";
-    import Button from "./Button.svelte";
+    import IconButton from "./IconButton.svelte";
 
     export let fileProperties
 </script>
@@ -10,8 +10,8 @@
         {fileProperties.name} ({fileProperties.canvasSize.x} x {fileProperties.canvasSize.y}px) ({Math.round($canvasTranslation.scale * 100 * 100) / 100}%)
     </span>
     <span id="buttons">
-        <Button icon="help.png" size={20}></Button>
-        <Button icon="dropdown.png" size={20}></Button>
+        <IconButton icon="help.png" size={20}></IconButton>
+        <IconButton icon="dropdown.png" size={20}></IconButton>
     </span>
 </div>
 
