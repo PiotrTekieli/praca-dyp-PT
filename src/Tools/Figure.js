@@ -11,6 +11,7 @@ export default class Figure {
     name = 'figure'
     icon = 'hollow_square.png'
     cursor = 'cross'
+    editingTool = true
 
     mode = 0
     modeIcons = ['line.png', 'hollow_square.png', 'hollow_circle.png']

@@ -13,6 +13,9 @@ let layerCache
 function historyAdd(step) {
     if (!disableHistory) {
         if (layerManager) {
+            if (layerList.isEmpty() && step.type == 'edit-layer')
+                return
+
             if (stepIndex != historyStepList.length - 1)                //if not last step
                 historyStepList.splice(stepIndex + 1, MAX_STEP_COUNT)   //remove all steps ahead
 

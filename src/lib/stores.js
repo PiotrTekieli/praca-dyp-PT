@@ -361,6 +361,9 @@ function createLayerListStore() {
         changeOpacity: (index, opacity) => {
             layerList.list[index].opacity = opacity
             set(layerList)
+        },
+        isEmpty: () => {
+            return layerList.list.length == 0
         }
     }
 }

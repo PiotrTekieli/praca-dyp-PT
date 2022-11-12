@@ -11,6 +11,7 @@ export default class Eraser {
     name = 'eraser'
     icon = 'eraser.png'
     cursor = 'circle'
+    editingTool = true
 
     mode = 0
     modeIcons = ['circle.png', 'square.png']

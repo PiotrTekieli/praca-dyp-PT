@@ -1,6 +1,6 @@
 // @ts-nocheck
 import { get } from "svelte/store"
-import { currentTool, toolSettings, canvasTranslation } from "../lib/stores"
+import { currentTool, toolSettings, canvasTranslation, layerList } from "../lib/stores"
 import { Point } from "./Point"
 
 var _main, _base
@@ -145,6 +145,14 @@ function UpdateCanvas() {
             cursor = get(currentTool)?.mouseCursor
     }
 
+    if (layerList.isEmpty() && get(currentTool)?.editingTool) {
+        mainCtx.clearRect(0, 0, mainCanvas.width, mainCanvas.height)
+        drawCursor("not_allowed")
+        memoryCtx.clearRect(0, 0, mainCanvas.width, mainCanvas.height)
+        return
+    }
+
+
     copyCanvas()
     /*mainCtx.globalCompositeOperation = 'copy'
     mainCtx.fillStyle = 'white'
@@ -175,7 +183,8 @@ export default {
             ew_resize: new Image(),
             grab: new Image(),
             grabbing: new Image(),
-            zoom_in: new Image()
+            zoom_in: new Image(),
+            not_allowed: new Image()
         }
 
         for (var cursor in cursorList) {

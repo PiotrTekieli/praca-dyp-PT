@@ -68,7 +68,7 @@ export default class LayerManager {
         layerList.splice(layerIndex, 1)
 
         if (layerIndex == selectedLayerIndex)
-                this.selectLayer(Math.max(layerIndex - 1, 0))
+            this.selectLayer(Math.max(layerIndex - 1, 0))
         else if (layerIndex < selectedLayerIndex)
             this.selectLayer(selectedLayerIndex - 1)
     }
@@ -100,6 +100,11 @@ export default class LayerManager {
     }
 
     selectLayer(index) {
+        if (layerList.isEmpty()) {
+            this.updateCaches()
+            return
+        }
+
         currentContext.set(get(layerList).list[index].context)
         selectedLayerIndex = index
         layerList.select(index)
@@ -119,6 +124,12 @@ export default class LayerManager {
 
     refreshMainCanvas() {           // on modifying the current canvas in any way (drawing, opacity or blend mode)
         clear(drawingLayer.context)
+
+        if (layerList.isEmpty()) {
+            clear(mainCanvas.getContext('2d'))
+            return
+        }
+
         this.drawLayerPlain(drawingLayer.context, get(layerList).list[selectedLayerIndex])
         editingLayer.opacity = get(toolSettings).opacity
         this.drawLayer(drawingLayer.context, editingLayer)

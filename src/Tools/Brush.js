@@ -11,6 +11,7 @@ export default class Brush {
     name = 'brush'
     icon = 'brush.png'
     cursor = 'circle'
+    editingTool = true
 
     mode = 0
     modeIcons = ['circle.png', 'square.png']

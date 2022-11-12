@@ -7,14 +7,14 @@
 
   import CursorCanvas from "./Canvas/CursorCanvas";
 
-  import { canvasTranslation, currentContext, currentTool, modifierKeys, toolSettings } from "./lib/stores"
+  import { canvasTranslation, currentContext, currentTool, modifierKeys, toolSettings, layerList } from "./lib/stores"
 
   import { Point } from "./Canvas/Point"
   import Pointer from './Canvas/Pointer'
   import ToolSidebar from "./UI/ToolSidebar.svelte"
   import LayerSidebar from "./UI/LayerSidebar.svelte"
   import TopBar from "./UI/TopBar.svelte";
-    import RenameWindow from "./UI/RenameWindow.svelte";
+  import RenameWindow from "./UI/RenameWindow.svelte";
 
   let fileName = "Illustration"
 
@@ -40,6 +40,7 @@
   let cursorCss
 
   $: $currentTool, CursorCanvas.update()
+  $: $layerList.list, ($layerList.list.length <= 1) ? CursorCanvas.update() : null
   $: $canvasTranslation, CursorCanvas.update()
   $: drawing, console.log("Drawing: ", drawing)
   $: {
@@ -103,9 +104,13 @@
   function handlePointerDown(e) {
     if (e.button != 0)
       return
+    if (layerList.isEmpty() && tool?.editingTool)
+      return
+
+    if (tool?.editingTool)
+      History.addCacheIfNeeded()
     pointer.set(e)
     drawing = true
-    History.addCacheIfNeeded()
     tool.pointerDown(e, pointer, getContextForTool(tool))
 
     cursorChange()
@@ -118,6 +123,11 @@
     if (!checkForPen(e))
       return
 
+    CursorCanvas.update(e)
+
+    if (layerList.isEmpty() && tool?.editingTool)
+      return
+
     if (drawing) {
       pointer.set(e)
       tool.pointerMove(e)
@@ -126,12 +136,14 @@
 
       layerManager.refreshMainCanvas()
     }
-    CursorCanvas.update(e)
   }
 
   function handlePointerUp(e) {
     if (e.button != 0)
       return
+    if (layerList.isEmpty() && tool?.editingTool)
+      return
+
     pointer.set(e)
     drawing = false
     var saveStep = tool.pointerUp(e)
@@ -147,6 +159,9 @@
   }
 
   function handlePointerLost() {
+    if (layerList.isEmpty() && tool?.editingTool)
+      return
+
     drawing = false
     var saveStep = tool.cancel()
 
@@ -254,7 +269,11 @@
     }
 
     else if (modifierKeys.equals(["Control"])) {   // pressing just ctrl
-
+      switch(pressedKey) {
+        case 'Delete':
+          layerManager.removeLayer($layerList.selected)
+          break
+      }
     }
   }
 
