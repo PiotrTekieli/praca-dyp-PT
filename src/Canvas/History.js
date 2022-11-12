@@ -1,4 +1,5 @@
 import { layerList } from "../lib/stores"
+import { get } from "svelte/store"
 import CursorCanvas from "./CursorCanvas"
 
 const MAX_STEP_COUNT = 51
@@ -83,6 +84,12 @@ export default {
                 layerManager.removeLayer(currentStep.index + 1)
                 break
             }
+            case 'remove-layer': {
+                layerManager.addLayerAbove(currentStep.index-1, currentStep.layer)
+                if (get(layerList).selected >= currentStep.index && !layerList.isEmpty())
+                    layerManager.selectLayer(get(layerList).selected+1)
+                break
+            }
             case 'layer-order': {
                 revertOrderChange(currentStep.source, currentStep.destination)
                 break
@@ -115,6 +122,10 @@ export default {
             }
             case 'new-layer': {
                 layerManager.addLayerAbove(nextStep.index).name = nextStep.name
+                break
+            }
+            case 'remove-layer': {
+                layerManager.removeLayer(nextStep.index)
                 break
             }
             case 'layer-order': {

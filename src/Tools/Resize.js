@@ -13,6 +13,8 @@ export default class Resize {
     displayName = 'Resize'
     name = 'resize'
     mouseCursor = 'arrow'
+    editingTool = true
+
     cursor = null
     hidden = true
 

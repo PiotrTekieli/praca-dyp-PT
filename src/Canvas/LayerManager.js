@@ -42,12 +42,14 @@ export default class LayerManager {
 
     newLayer() {
         this.addLayerAbove(selectedLayerIndex)
+        this.selectLayer(selectedLayerIndex+1)
     }
 
-    addLayerAbove(index) {
-
-        let layer = new Layer(canvasSize)
-        layer.name = "Layer " + (get(layerList).list.length + 1)
+    addLayerAbove(index, layer = null) {
+        if (!layer) {
+            layer = new Layer(canvasSize)
+            layer.name = "Layer " + (get(layerList).list.length + 1)
+        }
         layer.canvas.id = get(layerList).list.length.toString()
 
         History.addStep({ type: 'new-layer', index: index, name: layer.name })
@@ -58,19 +60,25 @@ export default class LayerManager {
             return layer
         }
 
-        layerList.splice(index+1, 0, layer)                 // add above index
+        layerList.splice(index+1, 0, layer)                   // add above index
 
-        this.selectLayer(index+1)                           // and select it
+        //this.selectLayer(index+1)                           // and select it
         return layer
     }
 
     removeLayer(layerIndex) {
+        layerIndex = Math.min(Math.max(layerIndex, 0), get(layerList).list.length-1);
+
+        History.addStep({ type: "remove-layer", index: layerIndex, layer: get(layerList).list[layerIndex] })
+
         layerList.splice(layerIndex, 1)
 
         if (layerIndex == selectedLayerIndex)
             this.selectLayer(Math.max(layerIndex - 1, 0))
         else if (layerIndex < selectedLayerIndex)
             this.selectLayer(selectedLayerIndex - 1)
+        else
+            this.updateCaches()
     }
 
     putSelectedLayerAbove(layerIndex) {
@@ -101,9 +109,11 @@ export default class LayerManager {
 
     selectLayer(index) {
         if (layerList.isEmpty()) {
-            this.updateCaches()
+            this.refreshMainCanvas()
             return
         }
+
+        index = Math.min(Math.max(index, 0), get(layerList).list.length-1);
 
         currentContext.set(get(layerList).list[index].context)
         selectedLayerIndex = index
