@@ -1,32 +1,34 @@
 <script>
+    export let title = ""
     export let icon = ""
     export let selected = false
     export let size = 28
-
+    export let iconScale = 0.642
+    export let style = ""
 </script>
 
 
-<button on:click class={selected ? "selected" : ""} tabindex="-1"
-    style="--icon: url({icon}); --size: {size}px">
-</button>
+<div title={title} on:click class={selected ? "selected" : ""} tabindex="-1"
+    style="--icon: url({icon}); --size: {size}px; --iconScale: {iconScale * 100}%; {style}">
+</div>
 
 <style>
-    button:before {
+    div:before {
         content: "";
         position: absolute;
-        transform: translate(-50%, -50%);
         z-index: -1;
         flex-shrink: 0;
         width: var(--size);
         height: var(--size);
         background-position: center;
         background-repeat: no-repeat;
-        background-size: auto 64.2%;
+        background-size: auto var(--iconScale);
         background-image: var(--icon);
         filter: brightness(75%);
     }
 
-    button {
+    div {
+        display: inline-block;
         height: var(--size);
         width: var(--size);
         padding: auto auto;
@@ -34,13 +36,14 @@
         border: solid 1px transparent;
         flex-shrink: 0;
         flex-grow: 0;
+        margin-bottom: -4px;
     }
 
-    button:hover {
+    div:hover {
         background-color: #FFF2;
     }
 
-    button:focus {
+    div:focus {
         outline:none
     }
 

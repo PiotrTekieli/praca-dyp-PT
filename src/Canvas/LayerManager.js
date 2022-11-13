@@ -146,7 +146,6 @@ export default class LayerManager {
         drawingLayer.opacity = get(layerList).list[selectedLayerIndex].opacity
         drawingLayer.blendMode = get(layerList).list[selectedLayerIndex].blendMode
 
-
         var ctx = mainCanvas.getContext('2d')
 
         clear(ctx)
@@ -159,6 +158,7 @@ export default class LayerManager {
         console.log(get(layerList).list)
         //console.log("Selected layer: ", selectedLayerIndex)
 
+        backCacheLayer.context.globalAlpha = 1
         backCacheLayer.context.fillStyle = backgroundColor
         backCacheLayer.context.fillRect(0, 0, canvasSize.x, canvasSize.y)
         clear(frontCacheLayer.context)

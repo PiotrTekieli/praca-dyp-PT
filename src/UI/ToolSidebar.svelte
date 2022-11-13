@@ -196,7 +196,7 @@
         padding: var(--padding);
     }
 
-    #toolOptions .rangeValue {
+    :global(.rangeValue) {
         text-align: right;
         width: 5.8ex;
         float: right;
@@ -279,7 +279,7 @@
         margin: var(--gap) -20px;
     }
 
-    input[type=range] {
+    :global(input[type=range]) {
         width: calc(100% - 6ex);
         margin: 10px 0;
         height: 12px;
@@ -288,7 +288,7 @@
         cursor: pointer;
         outline: none;
     }
-    input[type=range]::-webkit-slider-runnable-track, input[type=range]::-moz-range-track {
+    :global(input[type=range]::-webkit-slider-runnable-track, input[type=range]::-moz-range-track) {
         background: #0000;
         border: 0.2px solid #0006;
         width: 100%;
@@ -296,7 +296,7 @@
         cursor: pointer;
     }
 
-    input[type=range]::-webkit-slider-thumb {
+    :global(input[type=range]::-webkit-slider-thumb) {
         width: 2px;
         height: 12px;
         background: #FFFF;
@@ -305,7 +305,7 @@
         -webkit-appearance: none;
     }
 
-    input[type=range]::-moz-range-thumb {
+    :global(input[type=range]::-moz-range-thumb) {
         width: 2px;
         height: 12px;
         background: #FFFF;
