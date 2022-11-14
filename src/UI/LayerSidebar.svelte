@@ -116,12 +116,6 @@
         justify-content: flex-end;
     }
 
-    select {
-        height: 1.8em;
-        font-size: 0.8em;
-        width: 7em;
-    }
-
     .rangeValue {
         width: 2em;
     }
