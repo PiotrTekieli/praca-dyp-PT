@@ -8,7 +8,6 @@
     export let layerManager
 
     let opacitySlider
-    let blendModeSelect
     let previousOpacityValue = null
 
     $: $layerList.selected, updateOpacitySlider()
@@ -61,10 +60,6 @@
 <div id="sidebarContainer">
     <div id="layerControls">
         <div id="sliderContainer">
-            <select bind:this={blendModeSelect} on:change={() => layerList.changeBlendingMode($layerList.selected, blendModeSelect.value)}>
-                <option value="source-over">Normal</option>
-                <option value="multiply">Multiply</option>
-            </select>
             <input bind:this={opacitySlider} type="range" min="0" max="1" step="0.01" on:input={() => {
                 if (!previousOpacityValue)
                     previousOpacityValue = layerList.getSelected().opacity
@@ -132,7 +127,7 @@
     }
 
     input[type=range] {
-        width: 60px;
+        width: 140px;
     }
 
 </style>

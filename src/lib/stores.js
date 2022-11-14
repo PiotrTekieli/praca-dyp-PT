@@ -365,10 +365,6 @@ function createLayerListStore() {
             layerList.list[index].opacity = opacity
             set(layerList)
         },
-        changeBlendingMode: (index, blendMode) => {
-            layerList.list[index].blendMode = blendMode
-            set(layerList)
-        },
         isEmpty: () => {
             return layerList.list.length == 0
         }

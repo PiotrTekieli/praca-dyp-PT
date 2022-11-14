@@ -144,7 +144,7 @@ export default class LayerManager {
         editingLayer.opacity = get(toolSettings).opacity
         this.drawLayer(drawingLayer.context, editingLayer)
         drawingLayer.opacity = get(layerList).list[selectedLayerIndex].opacity
-        drawingLayer.blendMode = get(layerList).list[selectedLayerIndex].blendMode
+        // drawingLayer.blendMode = get(layerList).list[selectedLayerIndex].blendMode
 
         var ctx = mainCanvas.getContext('2d')
 
@@ -159,7 +159,6 @@ export default class LayerManager {
         //console.log("Selected layer: ", selectedLayerIndex)
 
         backCacheLayer.context.globalAlpha = 1
-        backCacheLayer.context.blendMode = 'source-over'
         backCacheLayer.context.fillStyle = backgroundColor
         backCacheLayer.context.fillRect(0, 0, canvasSize.x, canvasSize.y)
         clear(frontCacheLayer.context)
@@ -180,13 +179,12 @@ export default class LayerManager {
     }
 
     drawLayer(context, layer) {
-        context.globalCompositeOperation = layer.blendMode
         context.globalAlpha = layer.opacity
         context.drawImage(layer.canvas, 0, 0)
     }
 
     drawLayerPlain(context, layer) {
-        context.globalCompositeOperation = 'source-over'
+        // context.globalCompositeOperation = 'source-over'
         context.globalAlpha = 1
         context.drawImage(layer.canvas, 0, 0)
     }

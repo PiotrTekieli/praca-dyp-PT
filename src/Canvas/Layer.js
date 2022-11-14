@@ -3,7 +3,7 @@ export class Layer {
     canvas
     context
     opacity = 1
-    blendMode = 'source-over'
+    // blendMode = 'source-over'
 
     constructor(canvasSize) {
         var canvas = document.createElement("canvas")
