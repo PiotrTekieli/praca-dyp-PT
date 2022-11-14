@@ -86,8 +86,10 @@ export default {
             }
             case 'remove-layer': {
                 layerManager.addLayerAbove(currentStep.index-1, currentStep.layer)
-                if (get(layerList).selected >= currentStep.index && !layerList.isEmpty())
+                if (get(layerList).selected >= currentStep.index)
                     layerManager.selectLayer(get(layerList).selected+1)
+                else
+                    layerManager.updateCaches()
                 break
             }
             case 'layer-order': {
@@ -96,6 +98,11 @@ export default {
             }
             case 'rename-layer': {
                 layerList.renameLayer(currentStep.index, currentStep.oldName)
+                break
+            }
+            case 'change-opacity': {
+                layerList.changeOpacity(currentStep.index, currentStep.from)
+                layerManager.updateCaches()
                 break
             }
         }
@@ -134,6 +141,11 @@ export default {
             }
             case 'rename-layer': {
                 layerList.renameLayer(nextStep.index, nextStep.newName)
+                break
+            }
+            case 'change-opacity': {
+                layerList.changeOpacity(nextStep.index, nextStep.to)
+                layerManager.updateCaches()
                 break
             }
         }

@@ -3,11 +3,13 @@
     import { layerList } from "../lib/stores"
     import IconButton from "./IconButton.svelte";
     import { onMount } from "svelte";
-    import { is_empty } from "svelte/internal";
+    import History from "../Canvas/History";
 
     export let layerManager
 
     let opacitySlider
+    let blendModeSelect
+    let previousOpacityValue = null
 
     $: $layerList.selected, updateOpacitySlider()
 
@@ -15,13 +17,19 @@
         if (!opacitySlider)
             return
 
+        previousOpacityValue = null
+
         if (layerList.isEmpty()) {
             opacitySlider.value = 1
             opacitySlider.disabled = true
             addGradient(opacitySlider)
             return
         }
-        opacitySlider.value = $layerList.list[$layerList.selected].opacity
+
+        if (!opacitySlider.disabled && opacitySlider.value == (layerList.getSelected()?.opacity ?? -1))
+            return
+
+        opacitySlider.value = layerList.getSelected().opacity
         opacitySlider.disabled = false
         addGradient(opacitySlider)
     }
@@ -53,17 +61,22 @@
 <div id="sidebarContainer">
     <div id="layerControls">
         <div id="sliderContainer">
-            <select>
-                <option>Normal</option>
-                <option>Some Long one</option>
+            <select bind:this={blendModeSelect} on:change={() => layerList.changeBlendingMode($layerList.selected, blendModeSelect.value)}>
+                <option value="source-over">Normal</option>
+                <option value="multiply">Multiply</option>
             </select>
             <input bind:this={opacitySlider} type="range" min="0" max="1" step="0.01" on:input={() => {
+                if (!previousOpacityValue)
+                    previousOpacityValue = layerList.getSelected().opacity
                 addGradient(opacitySlider)
                 layerList.changeOpacity($layerList.selected, opacitySlider.value)
                 layerManager.refreshMainCanvas()
+            }} on:change={() => {
+                History.addStep({ type: 'change-opacity', index: $layerList.selected, from: previousOpacityValue, to: opacitySlider.value })
+                previousOpacityValue = null
             }}>
             <span class="rangeValue">
-                {Math.round(($layerList.list?.[$layerList?.selected]?.opacity ?? 1) * 100)}
+                {Math.round(($layerList.list?.[$layerList.selected]?.opacity ?? 1) * 100)}
             </span>
         </div>
         <IconButton title="New Layer" icon="move.png" size={20} iconScale={0.8} on:click={layerManager.newLayer()}></IconButton>
@@ -115,7 +128,7 @@
     }
 
     .rangeValue {
-        width: unset;
+        width: 2em;
     }
 
     input[type=range] {

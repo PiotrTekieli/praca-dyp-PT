@@ -1,10 +1,13 @@
 <script>
+    import { createEventDispatcher } from 'svelte';
     export let title = "Window"
+
+    const dispatch = createEventDispatcher();
 
     let window
 </script>
 
-<div id="windowBackground" bind:this={window} on:click={() => window.parentElement.removeChild(window)}>
+<div id="windowBackground" bind:this={window} on:click|stopPropagation={() => { dispatch('cancel'); window.parentElement?.querySelector(window)?.remove() }}>
     <div id="window" on:click|stopPropagation>
         <div id="windowHeader">{title}</div>
         <div>

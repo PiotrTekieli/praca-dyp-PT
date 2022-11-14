@@ -74,7 +74,7 @@ export default class LayerManager {
         layerList.splice(layerIndex, 1)
 
         if (layerIndex == selectedLayerIndex)
-            this.selectLayer(Math.max(layerIndex - 1, 0))
+            this.selectLayer(layerIndex - 1)
         else if (layerIndex < selectedLayerIndex)
             this.selectLayer(selectedLayerIndex - 1)
         else
@@ -159,6 +159,7 @@ export default class LayerManager {
         //console.log("Selected layer: ", selectedLayerIndex)
 
         backCacheLayer.context.globalAlpha = 1
+        backCacheLayer.context.blendMode = 'source-over'
         backCacheLayer.context.fillStyle = backgroundColor
         backCacheLayer.context.fillRect(0, 0, canvasSize.x, canvasSize.y)
         clear(frontCacheLayer.context)

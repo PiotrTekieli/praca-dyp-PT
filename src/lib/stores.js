@@ -354,12 +354,19 @@ function createLayerListStore() {
             layerList.selected = index
             set (layerList)
         },
+        getSelected: () => {
+            return layerList.list?.[layerList.selected]
+        },
         renameLayer: (index, name) => {
             layerList.list[index].name = name
             set(layerList)
         },
         changeOpacity: (index, opacity) => {
             layerList.list[index].opacity = opacity
+            set(layerList)
+        },
+        changeBlendingMode: (index, blendMode) => {
+            layerList.list[index].blendMode = blendMode
             set(layerList)
         },
         isEmpty: () => {

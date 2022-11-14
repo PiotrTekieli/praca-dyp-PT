@@ -40,7 +40,7 @@
     }
 </script>
 
-<Window bind:this={_this} title="Rename layer">
+<Window bind:this={_this} title="Rename layer" on:cancel={Cancel}>
     <input bind:this={input} bind:value={_newName} type="text"><br>
     <div>
         <Button on:click={Accept}>OK</Button>
