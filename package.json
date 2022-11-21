@@ -14,6 +14,7 @@
     "vite": "^2.9.9"
   },
   "dependencies": {
-    "reinvented-color-wheel": "^0.4.0"
+    "reinvented-color-wheel": "^0.4.0",
+    "svelte-spa-router": "^3.3.0"
   }
 }

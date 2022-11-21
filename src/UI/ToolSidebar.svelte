@@ -196,13 +196,6 @@
         padding: var(--padding);
     }
 
-    :global(.rangeValue) {
-        text-align: right;
-        width: 5.8ex;
-        float: right;
-        line-height: 30px;
-    }
-
     @media (max-height: 480px) {
         #colorWheel {
             display:none !important;
@@ -278,42 +271,5 @@
         border-color: var(--lineColor);
         margin: var(--gap) -20px;
     }
-
-    :global(input[type=range]) {
-        width: calc(100% - 6ex);
-        margin: 10px 0;
-        height: 12px;
-        background-color: transparent;
-        -webkit-appearance: none;
-        cursor: pointer;
-        outline: none;
-    }
-    :global(input[type=range]::-webkit-slider-runnable-track, input[type=range]::-moz-range-track) {
-        background: #0000;
-        border: 0.2px solid #0006;
-        width: 100%;
-        height: 6px;
-        cursor: pointer;
-    }
-
-    :global(input[type=range]::-webkit-slider-thumb) {
-        width: 2px;
-        height: 12px;
-        background: #FFFF;
-        border: none;
-        cursor: pointer;
-        -webkit-appearance: none;
-    }
-
-    :global(input[type=range]::-moz-range-thumb) {
-        width: 2px;
-        height: 12px;
-        background: #FFFF;
-        border: none;
-        cursor: pointer;
-    }
-
-
-
 
 </style>
