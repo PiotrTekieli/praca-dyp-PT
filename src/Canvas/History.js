@@ -81,6 +81,7 @@ export default {
                 break
             }
             case 'new-layer': {
+                currentStep.visible = get(layerList).list[currentStep.index + 1].visible
                 layerManager.removeLayer(currentStep.index + 1)
                 break
             }
@@ -101,8 +102,13 @@ export default {
                 break
             }
             case 'change-opacity': {
+                console.log(currentStep.from)
                 layerList.changeOpacity(currentStep.index, currentStep.from)
                 layerManager.updateCaches()
+                break
+            }
+            case 'lock-layer': {
+                layerList.toggleLock(currentStep.index)
                 break
             }
         }
@@ -128,7 +134,9 @@ export default {
                 break
             }
             case 'new-layer': {
-                layerManager.addLayerAbove(nextStep.index).name = nextStep.name
+                let layer = layerManager.addLayerAbove(nextStep.index)
+                layer.name = nextStep.name
+                layer.visible = nextStep.visible
                 break
             }
             case 'remove-layer': {
@@ -146,6 +154,10 @@ export default {
             case 'change-opacity': {
                 layerList.changeOpacity(nextStep.index, nextStep.to)
                 layerManager.updateCaches()
+                break
+            }
+            case 'lock-layer': {
+                layerList.toggleLock(nextStep.index)
                 break
             }
         }

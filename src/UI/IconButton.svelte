@@ -9,14 +9,14 @@
 
 
 <div title={title} on:click class={selected ? "selected" : ""} tabindex="-1"
-    style="--icon: url({icon}); --size: {size}px; --iconScale: {iconScale * 100}%; {style}">
+    style="--icon: url({icon}); --size: {size}px; --iconScale: {iconScale * 100}%; {style}"  aria-hidden="true">
 </div>
 
 <style>
     div:before {
         content: "";
         position: absolute;
-        z-index: -1;
+        /* z-index: -1; */
         flex-shrink: 0;
         width: var(--size);
         height: var(--size);

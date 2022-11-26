@@ -150,7 +150,8 @@ export default class LayerManager {
 
         clear(ctx)
         this.drawLayer(ctx, backCacheLayer)
-        this.drawLayer(ctx, drawingLayer)
+        if (get(layerList).list[selectedLayerIndex].visible)
+            this.drawLayer(ctx, drawingLayer)
         this.drawLayer(ctx, frontCacheLayer)
     }
 
@@ -171,7 +172,7 @@ export default class LayerManager {
                 context = frontCacheLayer.context
             else context = null
 
-            if (context)
+            if (context && get(layerList).list[i].visible)
                 this.drawLayer(context, get(layerList).list[i])
         }
 
@@ -224,6 +225,16 @@ export default class LayerManager {
         canvas.height = canvasSize.y
         canvas.getContext('2d').drawImage(original, 0, 0)
         return canvas
+    }
+
+    toggleLayerLock(index) {
+        layerList.toggleLock(index)
+        History.addStep({ type: "lock-layer", index: index })
+    }
+
+    toggleLayerVisibility(index) {
+        layerList.toggleVisibility(index)
+        this.updateCaches()
     }
 
 }

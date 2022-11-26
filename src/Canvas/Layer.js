@@ -3,6 +3,8 @@ export class Layer {
     canvas
     context
     opacity = 1
+    lock = false
+    visible = true
     // blendMode = 'source-over'
 
     constructor(canvasSize) {

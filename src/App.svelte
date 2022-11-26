@@ -40,7 +40,7 @@
   let cursorCss
 
   $: $currentTool, CursorCanvas.update()
-  $: $layerList.list, ($layerList.list.length <= 1) ? CursorCanvas.update() : null
+  $: $layerList, CursorCanvas.update()
   $: $canvasTranslation, CursorCanvas.update()
   $: drawing, console.log("Drawing: ", drawing)
   $: {
@@ -104,7 +104,7 @@
   function handlePointerDown(e) {
     if (e.button != 0)
       return
-    if (layerList.isEmpty() && tool?.editingTool)
+    if ((layerList.isEmpty() || !layerList.isCurrentLayerAvaliable()) && tool?.editingTool)
       return
 
     if (tool?.editingTool)
@@ -125,7 +125,7 @@
 
     CursorCanvas.update(e)
 
-    if (layerList.isEmpty() && tool?.editingTool)
+    if ((layerList.isEmpty() || !layerList.isCurrentLayerAvaliable()) && tool?.editingTool)
       return
 
     if (drawing) {
@@ -141,7 +141,7 @@
   function handlePointerUp(e) {
     if (e.button != 0)
       return
-    if (layerList.isEmpty() && tool?.editingTool)
+    if ((layerList.isEmpty() || !layerList.isCurrentLayerAvaliable()) && tool?.editingTool)
       return
 
     pointer.set(e)
@@ -159,7 +159,7 @@
   }
 
   function handlePointerLost() {
-    if (layerList.isEmpty() && tool?.editingTool)
+    if ((layerList.isEmpty() || !layerList.isCurrentLayerAvaliable()) && tool?.editingTool)
       return
 
     drawing = false

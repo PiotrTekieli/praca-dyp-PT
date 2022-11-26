@@ -93,8 +93,8 @@
         {/each}
         <hr>
         <div id="colors" style='--color1: {$toolSettings.colors[0]}; --color2: {$toolSettings.colors[1]}'>
-            <div id="color1" class={$toolSettings.selectedColor == 0 ? 'selected' : ''} on:click={() => switchColor(0)}></div>
-            <div id="color2" class={$toolSettings.selectedColor == 1 ? 'selected' : ''} on:click={() => switchColor(1)}></div>
+            <div id="color1" class={$toolSettings.selectedColor == 0 ? 'selected' : ''} on:click={() => switchColor(0)} aria-hidden="true"></div>
+            <div id="color2" class={$toolSettings.selectedColor == 1 ? 'selected' : ''} on:click={() => switchColor(1)} aria-hidden="true"></div>
         </div>
     </div>
     <div id="toolOptions">
@@ -290,7 +290,7 @@
     }
     :global(input[type=range]::-webkit-slider-runnable-track, input[type=range]::-moz-range-track) {
         background: #0000;
-        border: 0.2px solid #0006;
+        /* border: 0.2px solid #0006; */
         width: 100%;
         height: 6px;
         cursor: pointer;

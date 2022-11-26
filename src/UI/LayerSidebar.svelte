@@ -16,8 +16,6 @@
         if (!opacitySlider)
             return
 
-        previousOpacityValue = null
-
         if (layerList.isEmpty()) {
             opacitySlider.value = 1
             opacitySlider.disabled = true
@@ -28,6 +26,7 @@
         if (!opacitySlider.disabled && opacitySlider.value == (layerList.getSelected()?.opacity ?? -1))
             return
 
+        previousOpacityValue = null
         opacitySlider.value = layerList.getSelected().opacity
         opacitySlider.disabled = false
         addGradient(opacitySlider)
@@ -39,6 +38,10 @@
 
     function selectLayer(event) {
         layerManager.selectLayer(event.detail.index)
+    }
+
+    function toggleVisibility(event) {
+        layerManager.toggleLayerVisibility(event.detail.index)
     }
 
     function addGradient(o) {
@@ -74,12 +77,13 @@
                 {Math.round(($layerList.list?.[$layerList.selected]?.opacity ?? 1) * 100)}
             </span>
         </div>
-        <IconButton title="New Layer" icon="move.png" size={20} iconScale={0.8} on:click={layerManager.newLayer()}></IconButton>
-        <IconButton title="Delete Layer" icon="rotate.png" size={20} on:click={layerManager.removeLayer($layerList.selected)}></IconButton>
+        <IconButton title="New Layer" icon="new-layer.png" size={20} on:click={layerManager.newLayer()}></IconButton>
+        <IconButton title="Delete Layer" icon="delete.png" size={20} on:click={layerManager.removeLayer($layerList.selected)}></IconButton>
+        <IconButton title="Lock/Unlock Layer" icon="lock.png" size={20} on:click={layerManager.toggleLayerLock($layerList.selected)} selected={$layerList.list[$layerList.selected]?.lock}></IconButton>
     </div>
     <div id="layerList">
         {#each $layerList.list as layer, i}
-            <LayerElement index={i} {layer} selected={$layerList.selected == i} on:changeOrder={changeLayerOrder} on:select={selectLayer}></LayerElement>
+            <LayerElement index={i} {layer} selected={$layerList.selected == i} on:changeOrder={changeLayerOrder} on:select={selectLayer} on:toggleVisibility={toggleVisibility}></LayerElement>
         {/each}
     </div>
 </div>

@@ -7,8 +7,8 @@
     let window
 </script>
 
-<div id="windowBackground" bind:this={window} on:click|stopPropagation={() => { dispatch('cancel'); window.parentElement?.querySelector(window)?.remove() }}>
-    <div id="window" on:click|stopPropagation>
+<div id="windowBackground" bind:this={window} on:click|stopPropagation={() => { dispatch('cancel'); window.parentElement?.querySelector(window)?.remove() }} aria-hidden="true">
+    <div id="window" on:click|stopPropagation aria-hidden="true">
         <div id="windowHeader">{title}</div>
         <div>
             <slot></slot>

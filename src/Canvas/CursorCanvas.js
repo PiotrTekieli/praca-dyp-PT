@@ -145,7 +145,7 @@ function UpdateCanvas() {
             cursor = get(currentTool)?.mouseCursor
     }
 
-    if (layerList.isEmpty() && get(currentTool)?.editingTool) {
+    if ((layerList.isEmpty() || !layerList.isCurrentLayerAvaliable()) && get(currentTool)?.editingTool) {
         mainCtx.clearRect(0, 0, mainCanvas.width, mainCanvas.height)
         drawCursor("not_allowed")
         memoryCtx.clearRect(0, 0, mainCanvas.width, mainCanvas.height)

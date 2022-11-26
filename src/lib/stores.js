@@ -365,8 +365,19 @@ function createLayerListStore() {
             layerList.list[index].opacity = opacity
             set(layerList)
         },
+        toggleLock: (index) => {
+            layerList.list[index].lock = !layerList.list[index].lock
+            set(layerList)
+        },
+        toggleVisibility: (index) => {
+            layerList.list[index].visible = !layerList.list[index].visible
+            set(layerList)
+        },
         isEmpty: () => {
             return layerList.list.length == 0
+        },
+        isCurrentLayerAvaliable: () => {
+            return !layerList.list[layerList.selected].lock && layerList.list[layerList.selected].visible
         }
     }
 }
