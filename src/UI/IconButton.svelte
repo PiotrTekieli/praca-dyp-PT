@@ -9,7 +9,7 @@
 
 
 <div title={title} on:click class={selected ? "selected" : ""} tabindex="-1"
-    style="--icon: url(icons/{icon}); --size: {size}px; --iconScale: {iconScale * 100}%; {style}"  aria-hidden="true">
+    style="--icon: url(/icons/{icon}); --size: {size}px; --iconScale: {iconScale * 100}%; {style}"  aria-hidden="true">
 </div>
 
 <style>
