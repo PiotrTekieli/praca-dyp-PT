@@ -1,3 +1,7 @@
+import { layerList } from "../lib/stores"
+import { get } from "svelte/store"
+import CursorCanvas from "./CursorCanvas"
+
 const MAX_STEP_COUNT = 51
 
 let stepIndex
@@ -10,6 +14,9 @@ let layerCache
 function historyAdd(step) {
     if (!disableHistory) {
         if (layerManager) {
+            if (layerList.isEmpty() && step.type == 'edit-layer')
+                return
+
             if (stepIndex != historyStepList.length - 1)                //if not last step
                 historyStepList.splice(stepIndex + 1, MAX_STEP_COUNT)   //remove all steps ahead
 
@@ -42,6 +49,7 @@ function historyAdd(step) {
 export default {
     setup: (LayerManager) => {
         layerManager = LayerManager
+        historyStepList = []
         historyAdd({ type: 'initialize' })
     },
     addStep: (step) => {
@@ -55,10 +63,10 @@ export default {
         }
     },
     undo: () => {
-        var currentStep = historyStepList[stepIndex]
-
-        if (stepIndex == 0)
+        if (stepIndex == 0 || !layerManager)
             return
+
+        var currentStep = historyStepList[stepIndex]
 
         console.log("Undoing: " + currentStep.type)
 
@@ -74,19 +82,43 @@ export default {
                 break
             }
             case 'new-layer': {
+                currentStep.visible = get(layerList).list[currentStep.index + 1].visible
                 layerManager.removeLayer(currentStep.index + 1)
+                break
+            }
+            case 'remove-layer': {
+                layerManager.addLayerAbove(currentStep.index-1, currentStep.layer)
+                if (get(layerList).selected >= currentStep.index)
+                    layerManager.selectLayer(get(layerList).selected+1)
+                else
+                    layerManager.updateCaches()
                 break
             }
             case 'layer-order': {
                 revertOrderChange(currentStep.source, currentStep.destination)
                 break
             }
+            case 'rename-layer': {
+                layerList.renameLayer(currentStep.index, currentStep.oldName)
+                break
+            }
+            case 'change-opacity': {
+                console.log(currentStep.from)
+                layerList.changeOpacity(currentStep.index, currentStep.from)
+                layerManager.updateCaches()
+                break
+            }
+            case 'lock-layer': {
+                layerList.toggleLock(currentStep.index)
+                break
+            }
         }
         disableHistory = false
         stepIndex--
+
+        CursorCanvas.update()
     },
     redo: () => {
-
         if (stepIndex + 1 > historyStepList.length - 1)
             return
 
@@ -103,15 +135,36 @@ export default {
                 break
             }
             case 'new-layer': {
-                layerManager.addLayerAbove(nextStep.index)
+                let layer = layerManager.addLayerAbove(nextStep.index)
+                layer.name = nextStep.name
+                layer.visible = nextStep.visible
+                break
+            }
+            case 'remove-layer': {
+                layerManager.removeLayer(nextStep.index)
                 break
             }
             case 'layer-order': {
                 layerManager.putLayerAbove(nextStep.source, nextStep.destination)
                 break
             }
+            case 'rename-layer': {
+                layerList.renameLayer(nextStep.index, nextStep.newName)
+                break
+            }
+            case 'change-opacity': {
+                layerList.changeOpacity(nextStep.index, nextStep.to)
+                layerManager.updateCaches()
+                break
+            }
+            case 'lock-layer': {
+                layerList.toggleLock(nextStep.index)
+                break
+            }
         }
         disableHistory = false
+
+        CursorCanvas.update()
     }
 }
 

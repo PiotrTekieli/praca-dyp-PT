@@ -1,8 +1,11 @@
 export class Layer {
+    name = "New Layer"
     canvas
     context
     opacity = 1
-    blendMode = 'source-over'
+    lock = false
+    visible = true
+    // blendMode = 'source-over'
 
     constructor(canvasSize) {
         var canvas = document.createElement("canvas")

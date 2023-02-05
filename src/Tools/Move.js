@@ -6,7 +6,10 @@ var startPosition
 var dragging = false
 
 export default class Move {
-    cursor = 'grab'
+    displayName = 'Move'
+    name = 'move'
+    icon = 'move.png'
+    mouseCursor = 'grab'
 
     pointerDown(event, pointer, context) {
         p = pointer
@@ -31,11 +34,13 @@ export default class Move {
     }
 
     cancel() {
-        this.cursor = 'grab'
-        p = null
-        startPosition = null
+        if (dragging) {
+            this.cursor = 'grab'
+            p = null
+            startPosition = null
 
-        dragging = false
+            dragging = false
+        }
         return false
     }
 

@@ -1,5 +1,6 @@
 import { canvasTranslation } from "../lib/stores"
 import { Point } from "../Canvas/Point"
+import { get } from "svelte/store"
 
 var p
 var screenCenter
@@ -7,13 +8,16 @@ var angle
 var dragging = false
 
 export default class Rotate {
-    cursor = 'ew-resize'
+    displayName = 'Rotate'
+    name = 'rotate'
+    icon = 'rotate.png'
+    mouseCursor = 'ew_resize'
 
     pointerDown(event, pointer, context) {
         p = pointer
 
         dragging = true
-        screenCenter = new Point(window.innerWidth * 0.5, window.innerHeight * 0.5)
+        screenCenter = get(canvasTranslation).screenCenter
         var difference = getScreenPosition(event).Subtract(screenCenter)
         angle = Math.atan2(difference.y, difference.x)
     }
@@ -33,9 +37,11 @@ export default class Rotate {
     }
 
     cancel() {
-        p = null
+        if (dragging) {
+            p = null
 
-        dragging = false
+            dragging = false
+        }
         return false
     }
 

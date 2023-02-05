@@ -1,17 +1,27 @@
+import { canvasTranslation } from "../lib/stores"
+import { get } from "svelte/store"
+
+
 var beginPoint
 var strokeWidth
 var pointer
 var ctx
+var brushTip
+var progress = 0
 
-export function Setup(width, p, context) {
+export function Setup(width, p, context, brushFunction) {
     strokeWidth = width
     pointer = p
     ctx = context
+    brushTip = brushFunction
 
     beginPoint = pointer.position
-    ctx.beginPath()
-    ctx.arc(beginPoint.x, beginPoint.y, beginPoint.pressure * strokeWidth * 0.5, 0, 2 * Math.PI)
-    ctx.fill()
+    ctx.save()
+    ctx.translate(beginPoint.x, beginPoint.y)
+    ctx.rotate(-get(canvasTranslation).rotation)
+    ctx.globalAlpha = beginPoint.pressure
+    brushTip?.(ctx, beginPoint.pressure * strokeWidth)
+    ctx.restore()
 }
 
 function _getQBezierValue(t, p1, p2, p3) {
@@ -31,7 +41,6 @@ function lerp(a, b, n) {
   }
 
 export function Draw() {
-
     if (pointer.getPointsLenght() > 2) {
         const lastTwoPoints = pointer.getLastTwoPoints()
 
@@ -42,15 +51,25 @@ export function Draw() {
         const direction = endPoint.Subtract(beginPoint)
         var mag = Math.sqrt(direction.x * direction.x + direction.y * direction.y)
 
-        var progress = 0;
-        ctx.beginPath()
         while(progress < 1) {
             var position = getQuadraticCurvePoint(beginPoint.x, beginPoint.y, controlPoint.x, controlPoint.y, endPoint.x, endPoint.y, progress)
-            ctx.arc(position.x, position.y, lerp(beginPoint.pressure, lastPoint.pressure, progress) * strokeWidth * 0.5, 0, 2 * Math.PI)
-            progress += 1 / mag
-        }
+            ctx.save()
+            ctx.translate(position.x, position.y)
+            ctx.rotate(-get(canvasTranslation).rotation)
+            //ctx.globalAlpha = 0.1//lerp(beginPoint.pressure, lastPoint.pressure, progress)
+            brushTip?.(ctx, lerp(beginPoint.pressure, lastPoint.pressure, progress) * strokeWidth)
+            ctx.restore()
+            //ctx.arc(position.x, position.y, lerp(beginPoint.pressure, lastPoint.pressure, progress) * strokeWidth * 0.5, 0, 2 * Math.PI)
 
-        ctx.fill();
+            if (mag != 0)
+                progress += 1 / mag
+            else progress++
+        }
+        progress--
+
+        if (progress > 1)
+            progress = 0
+
         beginPoint = endPoint;
         beginPoint.pressure = lastPoint.pressure
     }

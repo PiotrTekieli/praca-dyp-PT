@@ -6,19 +6,22 @@ var p
 var ctx
 var drawing = false
 
-export default class Eraser {
-    displayName = 'Hard Round Eraser'
-    name = 'eraser'
-    icon = 'eraser.png'
+export default class Brush {
+    displayName = 'Hard Brush'
+    name = 'brush'
+    icon = 'brush.png'
     cursor = 'circle'
     editingTool = true
 
     mode = 0
     modeIcons = ['circle.png', 'square.png']
 
-    useEditingLayer = false
-    strokeWidth = 50
+    useEditingLayer = true
+    strokeWidth = 20
+    opacity = 1
     pressure = true
+
+    color = 'black'
 
 
     pointerDown(event, pointer, context) {
@@ -29,11 +32,11 @@ export default class Eraser {
 
         drawing = true
         p.startPointRecording()
-        ctx.save();
+        ctx.save()
 
-        ctx.globalCompositeOperation = "destination-out"
+        ctx.fillStyle = this.color
 
-        var penTip = (ctx, width) => {
+        var brushTip = (ctx, width) => {
             ctx.beginPath()
 
             if (this.mode == 0)
@@ -41,11 +44,10 @@ export default class Eraser {
             else
                 ctx.rect(-width * 0.5, -width * 0.5, width, width)
 
-
             ctx.fill()
         }
 
-        Setup(this.strokeWidth, p, ctx, penTip)
+        Setup(this.strokeWidth, p, ctx, brushTip)
     }
 
     pointerMove(event) {
@@ -71,7 +73,9 @@ export default class Eraser {
     }
 
     saveSettings() {
+        this.color = get(toolSettings).colors[get(toolSettings).selectedColor]
         this.strokeWidth = get(toolSettings).width
+        this.opacity = get(toolSettings).opacity
         this.mode = get(toolSettings).mode
     }
 

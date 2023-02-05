@@ -7,7 +7,10 @@ var comparePosition
 var dragging = false
 
 export default class Zoom {
-    cursor = 'zoom-in'
+    displayName = 'Zoom'
+    name = 'zoom'
+    icon = 'zoom.png'
+    mouseCursor = 'zoom_in'
 
     pointerDown(event, pointer, context) {
         p = pointer
@@ -34,10 +37,12 @@ export default class Zoom {
     }
 
     cancel() {
-        p = null
-        startPosition = null
+        if (dragging) {
+            p = null
+            startPosition = null
 
-        dragging = false
+            dragging = false
+        }
         return false
     }
 
