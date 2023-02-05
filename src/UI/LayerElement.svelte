@@ -111,7 +111,7 @@
         <div>
             {Math.round(layer.opacity * 100)}% Opacity
             {#if layer.lock}
-                <img class="lockIcon" alt="lock" width="12" src="icons/lock.png"/>
+                <img class="lockIcon" alt="lock" width="12" src="/lock.png"/>
             {/if}
             <br>
             {layer.name}
@@ -145,14 +145,14 @@
         margin: auto 0;
         width: 16px;
         height: 16px;
-        background-image: url("icons/eye-crossed.png");
+        background-image: url("/eye-crossed.png");
         background-size: contain;
         background-repeat: no-repeat;
         background-position: center;
     }
 
     .viewIcon.iconVisible {
-        background-image: url("icons/eye.png");
+        background-image: url("/eye.png");
     }
 
     .lockIcon {
