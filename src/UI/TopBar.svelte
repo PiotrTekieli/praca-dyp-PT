@@ -3,6 +3,17 @@
     import IconButton from "./IconButton.svelte";
 
     export let fileProperties
+
+    let dropdown
+    function openDropdown() {
+        if (dropdown)
+            dropdown.style.display = "block"
+    }
+
+    function closeDropdown() {
+        if (dropdown)
+            dropdown.style.display = "none"
+    }
 </script>
 
 <div id="topBar">
@@ -11,7 +22,11 @@
     </span>
     <span id="buttons">
         <IconButton icon="help.png" size={16} iconScale={0.8}></IconButton>
-        <IconButton icon="dropdown.png" size={16} iconScale={0.8}></IconButton>
+        <IconButton icon="dropdown.png" size={16} iconScale={0.8} on:click={openDropdown}></IconButton>
+        <!-- svelte-ignore a11y-click-events-have-key-events -->
+        <div id="dropdown" bind:this={dropdown} on:pointerleave={closeDropdown} on:click={closeDropdown}>
+            <slot name="dropdown"></slot>
+        </div>
     </span>
 </div>
 
@@ -40,6 +55,32 @@
 #buttons {
     margin-left: auto;
     margin-right: 8px;
+}
+
+#dropdown {
+    display:none;
+    position: absolute;
+    z-index: 10;
+    right: 0;
+    top: -22px;
+    width: 180px;
+    margin-top: 22px;
+    padding-top: 22px;
+}
+:global(#dropdown button) {
+    border: none;
+    padding: 8px;
+    width: 100%;
+    text-align: left;
+    background-color: white;
+}
+
+:global(#dropdown button:disabled:hover, button[disabled]:hover) {
+    background-color: rgb(197, 196, 196);
+}
+
+:global(#dropdown button:hover) {
+    background-color: #3B6BA4;
 }
 
 </style>

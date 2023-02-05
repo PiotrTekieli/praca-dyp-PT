@@ -9,6 +9,8 @@
 
     const dispatch = createEventDispatcher();
 
+    export let DestoryCallback
+
     let _this
     let input
     let _newName = $layerList.list[$layerList.selected].name
@@ -36,6 +38,7 @@
     function Cancel() {
         window.removeEventListener("keydown", CheckKey, true)
         dispatch('finish')
+        DestoryCallback()
         _this.$destroy()
     }
 </script>

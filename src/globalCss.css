@@ -1,0 +1,28 @@
+body {
+    background-color: var(--mainColor);
+    margin: 0;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen,
+      Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+    font-size: 14px;
+
+    --lineWidth: 2px;
+    --lineColor: #292826;
+    --mainColor: rgb(65, 63, 68);
+    --darkerColor: #242424;
+    --fontColor: rgb(234, 235, 236);
+    color: var(--fontColor);
+}
+
+.primary-button {
+    width: 160px;
+    height: 40px;
+    background-color: #3B6BA4;
+    color: rgb(234, 235, 236);
+    border-radius: 4px;
+    border: none;
+}
+
+.primary-button:hover {
+    background-color: rgb(67, 122, 167);
+    border: var(--fontColor) 1px solid;
+}

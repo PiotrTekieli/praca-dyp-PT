@@ -1,4 +1,8 @@
-<button on:click>
+<script>
+    export let primary = false
+
+</script>
+<button on:click class={primary ? "primary" : ""}>
     <slot></slot>
 </button>
 
@@ -18,6 +22,10 @@
 
     button:focus {
         outline:none
+    }
+
+    .primary {
+        background-color: #3B6BA4;
     }
 
 </style>

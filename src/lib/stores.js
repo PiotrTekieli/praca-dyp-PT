@@ -114,8 +114,14 @@ function createCanvasTranslationStore() {
         },
         centerView: () => {
             var windowCenter = getScreenCenter(mainContainer)
-            currentState.left = windowCenter.x - canvasSize.x * 0.5
-            currentState.top = windowCenter.y - canvasSize.y * 0.5
+
+            var rect = mainContainer.getBoundingClientRect()
+            currentState.scale = Math.min(Math.min(rect.height / canvasSize.y, rect.width / canvasSize.x) * .9, 3)
+            currentState.rotation = 0
+
+            currentState.left = windowCenter.x - canvasSize.x * 0.5 * currentState.scale
+            currentState.top = windowCenter.y - canvasSize.y * 0.5 * currentState.scale
+
         },
         move: (x, y) => {
             currentState.left += x

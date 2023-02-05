@@ -49,6 +49,7 @@ function historyAdd(step) {
 export default {
     setup: (LayerManager) => {
         layerManager = LayerManager
+        historyStepList = []
         historyAdd({ type: 'initialize' })
     },
     addStep: (step) => {
@@ -62,10 +63,10 @@ export default {
         }
     },
     undo: () => {
-        var currentStep = historyStepList[stepIndex]
-
-        if (stepIndex == 0)
+        if (stepIndex == 0 || !layerManager)
             return
+
+        var currentStep = historyStepList[stepIndex]
 
         console.log("Undoing: " + currentStep.type)
 

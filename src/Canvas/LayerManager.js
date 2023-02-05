@@ -20,12 +20,14 @@ let editingLayer
 
 let backgroundColor = 'white'   // css color value of the background
 
+let layerManager
+
 export default class LayerManager {
     constructor() {
         layerList.set([])
     }
 
-    setup(canvas, container) {
+    setup(canvas, container, fileData) {
         mainCanvas = canvas
 
         canvasSize.x = canvas.width
@@ -36,13 +38,51 @@ export default class LayerManager {
         frontCacheLayer = new Layer(canvasSize)
 
         editingLayer = new Layer(canvasSize)
+        layerManager = this
 
-        this.newLayer()
+        if (!fileData || !fileData.layers.length) {
+            this.newLayer()
+            return
+        }
+        console.log(fileData)
+        fileData.layers.forEach(layer => {
+            let _layer = this.newLayer()
+            _layer.name = layer.layer_name
+            _layer.opacity = layer.opacity
+            _layer.lock = layer.locked
+            _layer.visible = layer.visible
+
+            var image = new Image
+            image.src = layer.data
+            image.onload = function(){
+                _layer.context.drawImage(image, 0, 0)
+                layerManager.updateCaches()
+            }
+        })
+    }
+
+    getLayerData() {
+        let _layerList = get(layerList)
+        let layerData = []
+        _layerList.list.forEach(layer => {
+            let data = {
+                layer_name: layer.name,
+                data: layer.canvas.toDataURL(),
+                opacity: layer.opacity,
+                locked: layer.lock,
+                visible: layer.visible
+            }
+            layerData.push(data)
+        });
+
+        return layerData
     }
 
     newLayer() {
-        this.addLayerAbove(selectedLayerIndex)
+        let newLayer = this.addLayerAbove(selectedLayerIndex)
         this.selectLayer(selectedLayerIndex+1)
+
+        return newLayer
     }
 
     addLayerAbove(index, layer = null) {
