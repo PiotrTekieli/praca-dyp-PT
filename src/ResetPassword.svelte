@@ -22,7 +22,10 @@
       return ErrorToast("Passwords do not match")
 
     let loginResponse = (await axios.post(import.meta.env.VITE_HOSTURL + "/auth/reset-password?key=" + key, { password: newPassword }).catch(err => {
-      ErrorToast(err.response.data.message)
+      if (err.response)
+        ErrorToast(err.response.data.message)
+      else
+        ErrorToast()
     }))
 
     if (loginResponse && loginResponse.status == 200) {

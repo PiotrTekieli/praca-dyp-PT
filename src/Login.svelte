@@ -26,7 +26,10 @@
 
   async function AttemptLogin() {
     let loginResponse = (await axios.post(import.meta.env.VITE_HOSTURL + "/auth/login", { username: username, password: password }).catch(err => {
-      ErrorToast(err.response.data.message)
+      if (err.response)
+        ErrorToast(err.response.data.message)
+      else
+        ErrorToast()
     }))
 
     if (loginResponse && loginResponse.status == 200) {
@@ -41,7 +44,10 @@
       return ErrorToast("Invalid email address")
 
     let signupResponse = (await axios.post(import.meta.env.VITE_HOSTURL + "/auth/signup", { username: registerUsername, email: email, password: registerPassword }).catch(err => {
-      ErrorToast(err.response.data.message)
+      if (err.response)
+        ErrorToast(err.response.data.message)
+      else
+        ErrorToast()
     }))
 
     console.log(signupResponse)

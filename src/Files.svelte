@@ -48,7 +48,10 @@
 
   async function CreateNewFile(name, width, height) {
     let response = (await axios.post(import.meta.env.VITE_HOSTURL + "/file/create-new", { filename: name, width: width, height: height }, config).catch(err => {
-      ErrorToast(err.response.data.message)
+      if (err.response)
+        ErrorToast(err.response.data.message)
+      else
+        ErrorToast()
     }))
     console.log(response)
     if (response && response.status == 201) {
