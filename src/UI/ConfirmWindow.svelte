@@ -9,8 +9,6 @@
 
     let _this
 
-    window.addEventListener("keydown", CheckKey, true)
-
     function CheckKey(e) {
         if (e.code == "Enter")
             Accept()
@@ -30,6 +28,8 @@
         _this.$destroy()
     }
 </script>
+
+<svelte:window on:keydown={CheckKey} />
 
 <Window bind:this={_this} title="Confirm" on:cancel={Cancel}>
     {body}

@@ -129,7 +129,8 @@
 
       canvasContainer.appendChild(baseCanvas)
     }
-    console.log(fileData)
+
+    toolSettings.resetColor()
     layerManager.setup(baseCanvas, canvasContainer, fileData)
     History.setup(layerManager)
     editingCtx = layerManager.getEditingContext()
@@ -371,36 +372,45 @@
     if (saving)
       return
 
-    saving = true
-    let config = {
-      headers: {
-        Authorization: "Bearer " + localStorage.getItem("token")
+    try {
+
+      saving = true
+      let config = {
+        headers: {
+          Authorization: "Bearer " + localStorage.getItem("token")
+        }
       }
-    }
 
-    InfoToast("Saving...")
+      InfoToast("Saving...")
 
-    let resizedCanvas = document.createElement("canvas");
-    var resizedContext = resizedCanvas.getContext("2d");
 
-    let scale = Math.min(100 / canvasSize.x, 100 / canvasSize.y)
+      let resizedCanvas = document.createElement("canvas");
+      var resizedContext = resizedCanvas.getContext("2d");
 
-    resizedCanvas.width = Math.min(canvasSize.x * scale, 100);
-    resizedCanvas.height = Math.min(canvasSize.y * scale, 100);
+      const thumbnailSize = 200
 
-    resizedContext.drawImage(baseCanvas, 0, 0, canvasSize.x * scale, canvasSize.y * scale);
-    let resizedData = resizedCanvas.toDataURL();
+      let scale = Math.min(thumbnailSize / canvasSize.x, thumbnailSize / canvasSize.y)
 
-    let response = (await axios.post(import.meta.env.VITE_HOSTURL + "/file/save", { file_id: fileId, thumbnail_data: resizedData, layers: layerManager.getLayerData() }, config).catch((err) => {
+      resizedCanvas.width = Math.min(canvasSize.x * scale, thumbnailSize);
+      resizedCanvas.height = Math.min(canvasSize.y * scale, thumbnailSize);
+
+      resizedContext.drawImage(baseCanvas, 0, 0, canvasSize.x * scale, canvasSize.y * scale);
+      let resizedData = resizedCanvas.toDataURL();
+
+      let response = (await axios.post(import.meta.env.VITE_HOSTURL + "/file/save", { file_id: fileId, thumbnail_data: resizedData, layers: layerManager.getLayerData() }, config).catch((err) => {
+        ErrorToast("Something went wrong while saving")
+        // push("/error/" + err.response.status)
+      }))
+
+      console.log(response)
+      if (response && response.status == 200)
+        SuccessToast("Saved successfully!")
+      saving = false
+
+    } catch (e) {
       ErrorToast("Something went wrong while saving")
-      // push("/error/" + err.response.status)
-    }))
-
-    console.log(response)
-    if (response && response.status == 200)
-      SuccessToast("Saved successfully!")
-
-    saving = false
+      saving = false
+    }
   }
 
   // window.onbeforeunload = (event) => { event.preventDefault(); return event.returnValue = "Are you sure you want to leave? You have unsaved changes" }
@@ -427,26 +437,24 @@
 
 <main>
   <TopBar fileProperties={{name: fileName, canvasSize: canvasSize}}>
-    <span slot="dropdown">
+    <span id="dropdown" slot="dropdown">
       <button on:click={() => {
         let canvasImage = baseCanvas.toDataURL('image/png');
-
-        // this can be used to download any image from webpage to local disk
         let xhr = new XMLHttpRequest();
         xhr.responseType = 'blob';
         xhr.onload = function () {
-            let a = document.createElement('a');
-            a.href = window.URL.createObjectURL(xhr.response);
-            a.download = `${fileName}.png`;
-            a.style.display = 'none';
-            document.body.appendChild(a);
-            a.click();
-            a.remove();
+            let a = document.createElement('a')
+            a.href = window.URL.createObjectURL(xhr.response)
+            a.download = `${fileName}.png`
+            a.style.display = 'none'
+            document.body.appendChild(a)
+            a.click()
+            a.remove()
           };
-          xhr.open('GET', canvasImage); // This is to download the canvas Image
-          xhr.send();
-      }}>Download</button>
-      <button disabled={!fileId} on:click={saveFile}>Save</button>
+          xhr.open('GET', canvasImage)
+          xhr.send()
+      }}><img alt='i' src="/download.png"/>Download</button>
+      <button disabled={!fileId} on:click={saveFile}><img alt='i' src="/save.png"/>Save</button>
       <button on:click={() => {
         let confirmWindow = new ConfirmWindow({
           target: document.body,
@@ -456,7 +464,7 @@
             DestroyCallback: () => { confirmWindow.$destroy() }
           }
         })
-      }}>Exit</button>
+      }}><img alt='i' src="/exit.png"/>Exit</button>
     </span>
   </TopBar>
   <ToolSidebar {toolManager}></ToolSidebar>
@@ -487,6 +495,14 @@
     z-index: -1;
   }
 
+  #dropdown img {
+    width: 14px;
+    height: 14px;
+    margin-right: 6px;
+    margin-bottom: -2px;
+    filter: brightness(0);
+  }
+
   main {
     --leftUIoffset: 236px;
     --rightUIoffset: 200px;
@@ -504,10 +520,6 @@
     top: var(--topUIoffset);
     left: var(--leftUIoffset);
     cursor: var(--cursor)
-  }
-
-  canvas {
-    position: absolute;
   }
 
   .no-zoom {

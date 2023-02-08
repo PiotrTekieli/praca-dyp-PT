@@ -12,7 +12,7 @@ export async function checkToken() {
 
     let tokenValid = (await axios.get(import.meta.env.VITE_HOSTURL + "/auth/checkToken", config).catch(err => {}))
     if (tokenValid && tokenValid.status == 200)
-        return true
+        return tokenValid.data.user
     else
         return false
 }

@@ -10,14 +10,15 @@ body {
     --mainColor: rgb(65, 63, 68);
     --darkerColor: #242424;
     --fontColor: rgb(234, 235, 236);
+    --mainBlueColor: #3B6BA4;
     color: var(--fontColor);
 }
 
 .primary-button {
     width: 160px;
     height: 40px;
-    background-color: #3B6BA4;
-    color: rgb(234, 235, 236);
+    background-color: var(--mainBlueColor);
+    color: var(--fontColor);
     border-radius: 4px;
     border: none;
 }
@@ -25,4 +26,13 @@ body {
 .primary-button:hover {
     background-color: rgb(67, 122, 167);
     border: var(--fontColor) 1px solid;
+}
+
+.input-style {
+    box-sizing: border-box;
+    color: var(--fontColor);
+    background-color: var(--darkerColor);
+    border: none;
+    border-bottom: 1px var(--fontColor) solid;
+    padding: 6px;
 }

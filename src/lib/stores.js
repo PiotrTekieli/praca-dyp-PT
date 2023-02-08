@@ -323,6 +323,10 @@ function createToolSettingsStore() {
 
             set(settings)
         },
+        resetColor: () => {
+            settings.colors = ["#000000", "#FFFFFF"]
+            set(settings)
+        },
         setColor: (color) => {
             settings.colors[settings.selectedColor] = color
             set(settings)

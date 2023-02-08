@@ -7,10 +7,12 @@
 
 
   import Router from 'svelte-spa-router'
+    import ResetPassword from "./ResetPassword.svelte";
 
   const routes = {
     '/': Login,
     '/auth/confirm/:key': ConfirmEmail,
+    '/auth/reset-password/:key': ResetPassword,
     '/files': Files,
     '/edit/:fileId?': DrawingApp,
     '/error/:statusCode?': ErrorPage,

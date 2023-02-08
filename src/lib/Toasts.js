@@ -1,30 +1,26 @@
 import Toastify from "toastify-js";
 import "toastify-js/src/toastify.css"
 
-
 export function SuccessToast(message) {
-    Toastify({
-        text: message,
-        style: {
-        background: "#63bd42"
-        }
-    }).showToast();
+    Toast(message, "#63bd42")
 }
 
 export function ErrorToast(message) {
-    Toastify({
-        text: message,
-        style: {
-        background: "#cf3a3a"
-        }
-    }).showToast();
+    Toast(message, "#cf3a3a")
 }
 
 export function InfoToast(message) {
-    Toastify({
-        text: message,
+    Toast(message, "#3b6ba4")
+}
+
+function Toast(message, color) {
+    let toast = Toastify({
+        text: message ?? "Something went wrong",
+        close: true,
+        onClick: () => toast.hideToast(),
         style: {
-        background: "#3b6ba4"
+            background: color,
+            border: "1px var(--fontColor) solid",
         }
     }).showToast();
 }

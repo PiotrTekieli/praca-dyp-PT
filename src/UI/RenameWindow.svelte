@@ -16,8 +16,6 @@
     let _newName = $layerList.list[$layerList.selected].name
     let _oldName = _newName
 
-    window.addEventListener("keydown", CheckKey, true)
-
     onMount(() => {
         input.select()
     })
@@ -36,12 +34,13 @@
     }
 
     function Cancel() {
-        window.removeEventListener("keydown", CheckKey, true)
         dispatch('finish')
         DestoryCallback()
         _this.$destroy()
     }
 </script>
+
+<svelte:window on:keydown={CheckKey} />
 
 <Window bind:this={_this} title="Rename layer" on:cancel={Cancel}>
     <input bind:this={input} bind:value={_newName} type="text"><br>

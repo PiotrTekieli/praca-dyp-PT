@@ -3,9 +3,9 @@
   import { link, push } from 'svelte-spa-router'
   import { onMount } from 'svelte';
   import { checkToken } from './lib/checkToken';
-  import { ErrorToast, SuccessToast } from './lib/Toasts';
+  import { ErrorToast, InfoToast, SuccessToast } from './lib/Toasts';
 
-  let registerView = false
+  let viewId = 0
 
   let username
   let password
@@ -15,6 +15,9 @@
   let registerPassword
   let email
   let registerButton
+
+  let forgotPasswordUsername
+  let forgotPasswordButton
 
   onMount(async () => {
     if ((await checkToken()))
@@ -46,55 +49,72 @@
       SuccessToast("Account creation successful! Please confirm your email")
   }
 
+  async function AttemptPasswordReset() {
+    if (!forgotPasswordUsername)
+      return ErrorToast("Please input a username")
+
+    let signupResponse = (await axios.post(import.meta.env.VITE_HOSTURL + "/auth/forgot-password", { username: forgotPasswordUsername }).catch(err => {}))
+    InfoToast("If the username exists, the email to reset password has been sent")
+  }
+
   function checkEnter(event) {
     if (event.key === "Enter") {
       event.preventDefault()
-      if (!registerView)
+      if (viewId == 0)
         loginButton.click()
-      else
+      else if (viewId == 1)
         registerButton.click()
+      else if (viewId == 2)
+        forgotPasswordButton.click()
     }
   }
 
-  function toggleRegisterView() {
-    registerView = !registerView
-  }
 </script>
 
 <div id="background"></div>
 
 <div id="mainWindow">
-  {#if !registerView}
+  {#if viewId == 0}
     <div class="header">Login</div>
 
     <div class="label">Username</div>
-    <input bind:value={username} on:keypress={checkEnter}/>
+    <input class="input-style" bind:value={username} on:keypress={checkEnter}/>
     <div class="label">Password</div>
-    <input type="password" bind:value={password} on:keypress={checkEnter}/>
+    <input class="input-style" type="password" bind:value={password} on:keypress={checkEnter}/>
 
-    <a href="/#">Forgot Password</a>
+    <a href="/#" on:click={() => viewId = 2}>Forgot Password</a>
 
     <div class="loginContainer" style="margin-top: 12px;">
-      <a href="/#" on:click={toggleRegisterView}>Create an Account</a>
+      <a href="/#" on:click={() => viewId = 1}>Create an Account</a>
 
       <button bind:this={loginButton} on:click={AttemptLogin} class="primary-button">Login</button>
     </div>
-  {:else}
+  {:else if viewId == 1}
     <div class="header">Register Account</div>
 
     <div class="label">Username</div>
-    <input bind:value={registerUsername} on:keypress={checkEnter}/>
+    <input class="input-style" bind:value={registerUsername} on:keypress={checkEnter}/>
 
     <div class="label">Password</div>
-    <input type="password" bind:value={registerPassword} on:keypress={checkEnter}/>
+    <input class="input-style" type="password" bind:value={registerPassword} on:keypress={checkEnter}/>
 
     <div class="label">Email</div>
-    <input bind:value={email} on:keypress={checkEnter}/>
+    <input class="input-style" bind:value={email} on:keypress={checkEnter}/>
 
     <div class="loginContainer">
-      <a href="/#" on:click={toggleRegisterView}>Login</a>
+      <a href="/#" on:click={() => viewId = 0}>Back to Login</a>
 
       <button bind:this={registerButton} on:click={AttemptSignup} class="primary-button">Register</button>
+    </div>
+  {:else if viewId == 2}
+    <div class="header">Forgot Password</div>
+
+    <div class="label">Username</div>
+    <input class="input-style" bind:value={forgotPasswordUsername} on:keypress={checkEnter}/>
+    <div class="loginContainer">
+      <a href="/#" on:click={() => viewId = 0}>Back to Login</a>
+
+      <button bind:this={forgotPasswordButton} on:click={AttemptPasswordReset} class="primary-button">Submit</button>
     </div>
   {/if}
   <span class="guestLink">
@@ -166,12 +186,6 @@
     width: 100%;
     height: 30px;
     margin-bottom: 24px;
-    box-sizing: border-box;
-    color: var(--fontColor);
-    background-color: var(--darkerColor);
-    border: none;
-    border-bottom: 1px var(--fontColor) solid;
-    padding: 6px;
   }
 
   #mainWindow .loginContainer {

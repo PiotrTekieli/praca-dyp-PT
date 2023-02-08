@@ -1,8 +1,8 @@
 <script>
     export let primary = false
-
+    export let style = ""
 </script>
-<button on:click class={primary ? "primary" : ""}>
+<button on:click class={primary ? "primary" : ""} style={style}>
     <slot></slot>
 </button>
 
