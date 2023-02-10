@@ -21,7 +21,7 @@
         {fileProperties.name} ({fileProperties.canvasSize.x} x {fileProperties.canvasSize.y}px) ({Math.round($canvasTranslation.scale * 100 * 100) / 100}%)
     </span>
     <span id="buttons">
-        <IconButton icon="help.png" size={16} iconScale={0.8}></IconButton>
+        <!-- <IconButton icon="help.png" size={16} iconScale={0.8}></IconButton> -->
         <IconButton icon="dropdown.png" size={16} iconScale={0.8} on:click={openDropdown}></IconButton>
         <!-- svelte-ignore a11y-click-events-have-key-events -->
         <div id="dropdown" bind:this={dropdown} on:pointerleave={closeDropdown} on:click={closeDropdown}>

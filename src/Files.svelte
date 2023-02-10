@@ -189,7 +189,8 @@
     display: flex;
     margin: auto auto;
     /* width: fit-content; */
-    width: calc(var(--tileWidth) * 4 + 32px);
+    max-width: calc(var(--tileWidth) * 4 + 32px);
+    justify-content: center;
     flex-wrap: wrap;
   }
 
@@ -236,13 +237,5 @@
     align-items: center;
     justify-content: center;
     background-color: #c4c4c4;
-  }
-
-  #sidebar {
-    width: 300px;
-    box-shadow: calc(var(--lineWidth) * -1) 0px 4px var(--lineColor);
-    position: fixed;
-    right: 0;
-    height: 100%;
   }
 </style>

@@ -10,14 +10,15 @@
     button {
         color: rgb(234, 235, 236);
         border: 1px solid black;
-        background-color: transparent;
+        background-color: var(--mainColor);
         padding: 4px 8px;
         min-width: 60px;
         margin: 4px;
     }
 
     button:hover {
-        background-color: #FFF2;
+        /* background-color: #FFF2; */
+        filter: brightness(150%)
     }
 
     button:focus {
