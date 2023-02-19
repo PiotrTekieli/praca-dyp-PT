@@ -17,13 +17,13 @@ test('renders confirm window with correct body', async () => {
   expect(heading).toBeInTheDocument()
 })
 
-test('confirm window accept and cancel callback works properly', async () => {
-  let test, test2
-  render(ConfirmWindow, { AcceptCallback: () => test = true, DestroyCallback: () => test2 = true})
+test('confirm window destroy callback works properly on accepting', async () => {
+  let acceptCallbackResult, destroyCallbackResult
+  render(ConfirmWindow, { AcceptCallback: () => acceptCallbackResult = true, DestroyCallback: () => destroyCallbackResult = true})
 
   const button = screen.getByText('Yes')
   await fireEvent.click(button)
 
-  expect(test).toBeTruthy()
-  expect(test2).toBeTruthy()
+  expect(acceptCallbackResult).toBeTruthy()
+  expect(destroyCallbackResult).toBeTruthy()
 })
